@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "turbo run build",
+    "dev": "turbo run dev --no-cache --parallel --continue",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "repository": {
     "type": "git",
@@ -15,5 +20,42 @@
   "bugs": {
     "url": "https://github.com/CSUN-COMP-490-Team-KBBQ/wya/issues"
   },
-  "homepage": "https://github.com/CSUN-COMP-490-Team-KBBQ/wya#readme"
+  "homepage": "https://github.com/CSUN-COMP-490-Team-KBBQ/wya#readme",
+  "devDependencies": {
+    "turbo": "^1.0.20"
+  },
+  "turbo": {
+    "baseBranch": "origin/main",
+    "npmClient": "npm",
+    "pipeline": {
+      "build": {
+        "dependsOn": [
+          "^build"
+        ],
+        "outputs": [
+          "dist/**"
+        ]
+      },
+      "test": {
+        "dependsOn": [
+          "^build"
+        ]
+      },
+      "deploy": {
+        "dependsOn": [
+          "build",
+          "test",
+          "lint"
+        ]
+      },
+      "lint": {},
+      "dev": {
+        "cache": false
+      }
+    }
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
 }
