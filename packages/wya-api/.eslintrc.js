@@ -1,3 +1,1 @@
-module.exports = {
-  extends: "config/eslint-preset.js",
-};
+module.exports = require('config/eslint-preset');

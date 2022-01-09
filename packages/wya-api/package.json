@@ -7,7 +7,7 @@
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "test": "echo testing wya-api",
     "deploy": "echo deploying wya-api",
-    "lint": "echo linting wya-api",
+    "lint": "eslint src --fix",
     "dev": "echo dev wya-api"
   },
   "main": "./dist/index.js",
