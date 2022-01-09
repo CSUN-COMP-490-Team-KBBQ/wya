@@ -22,8 +22,9 @@
   },
   "homepage": "https://github.com/CSUN-COMP-490-Team-KBBQ/wya#readme",
   "devDependencies": {
+    "eslint": "^8.6.0",
     "prettier": "^2.5.1",
-    "turbo": "latest"
+    "turbo": "^1.0.24"
   },
   "turbo": {
     "baseBranch": "origin/main",
