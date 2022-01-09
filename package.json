@@ -70,10 +70,10 @@
     "packages/*"
   ],
   "lint-staged": {
-    "apps/**/*.{js,jsx,ts,tsx}": [
+    "apps/**/src/**/*.{js,jsx,ts,tsx}": [
       "eslint --fix"
     ],
-    "packages/**/*.{js,jsx,ts,tsx}": [
+    "packages/**/src/**/*.{js,jsx,ts,tsx}": [
       "eslint --fix"
     ]
   }

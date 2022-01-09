@@ -2,7 +2,6 @@
   "name": "config",
   "version": "1.0.0",
   "private": true,
-  "main": "index.js",
   "files": [
     "eslint-preset.js"
   ],
@@ -10,6 +9,8 @@
     "eslint-config-prettier": "^8.3.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
     "typescript": "^4.5.4"
   }
 }
