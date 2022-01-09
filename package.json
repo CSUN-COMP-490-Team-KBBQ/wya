@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/CSUN-COMP-490-Team-KBBQ/wya#readme",
   "devDependencies": {
-    "turbo": "^1.0.20"
+    "prettier": "^2.5.1",
+    "turbo": "latest"
   },
   "turbo": {
     "baseBranch": "origin/main",
@@ -39,7 +40,8 @@
       "test": {
         "dependsOn": [
           "^build"
-        ]
+        ],
+        "outputs": []
       },
       "deploy": {
         "dependsOn": [
@@ -48,8 +50,13 @@
           "lint"
         ]
       },
-      "lint": {},
+      "lint": {
+        "outputs": []
+      },
       "dev": {
+        "cache": false
+      },
+      "clean": {
         "cache": false
       }
     }
