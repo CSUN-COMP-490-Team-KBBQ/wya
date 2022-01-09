@@ -1,0 +1,19 @@
+{
+  "name": "cli",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+  },
+  "devDependencies": {
+    "config": "*",
+    "ts-node": "^10.4.0",
+    "tsconfig": "*",
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {
+    "wya-api": "*",
+    "commander": "^8.3.0"
+  }
+}
