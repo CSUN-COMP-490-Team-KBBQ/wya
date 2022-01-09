@@ -12,8 +12,19 @@
 
 ## Repository Structure
 
-    *root*
-    - api
-    - cli
-    - functions
-    - web
+This repo is architeched as a monorepo with high modularity. The main motivation for high modularity is so that independent `packages` can be reused across many different `apps`. For example, a `package` that contains all fundamental business logic could not only be easily maintained within one module but, simply imported across many different applications such as a cli app, web app, mobile app, rest-api app, etc.
+
+We use [turborepo](https://turborepo.org/) as the tool to manage our monorepo.
+
+```
+   *root*
+   - apps
+      - cli       : our cli tool that provides many useful functions for both dev and prod environments
+      - web       : our web application
+      - mobile    : our mobile application
+      - functions : our firebase cloud-functions
+   - packages
+      - config   : shared configurations
+      - tsconfig : typescript configurations
+      - wya-api  : core / business logic
+```
