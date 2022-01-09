@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "test": "echo testing cli",
+    "deploy": "echo deploying cli",
+    "lint": "echo linting cli",
+    "dev": "echo dev cli"
   },
   "devDependencies": {
     "config": "*",
@@ -13,7 +17,13 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "wya-api": "*",
-    "commander": "^8.3.0"
+    "commander": "^8.3.0",
+    "wya-api": "*"
+  },
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "wya-cli": "./dist/index.js"
   }
 }

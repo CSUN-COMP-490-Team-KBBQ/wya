@@ -1,14 +1,15 @@
-{
-  "name": "wya-api",
+export default function (name: string) {
+  return `{
+  "name": "${name}",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "test": "echo testing wya-api",
-    "deploy": "echo deploying wya-api",
-    "lint": "echo linting wya-api",
-    "dev": "echo dev wya-api"
+    "test": "echo testing ${name}",
+    "deploy": "echo deploying ${name}",
+    "lint": "echo linting ${name}",
+    "dev": "echo dev ${name}"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,15 +17,9 @@
     "dist"
   ],
   "devDependencies": {
-    "@types/fs-extra": "^9.0.13",
-    "@types/lodash": "^4.14.178",
     "config": "*",
-    "jest": "^27.4.7",
     "tsconfig": "*",
     "typescript": "^4.5.4"
-  },
-  "dependencies": {
-    "fs-extra": "^10.0.0",
-    "lodash": "^4.17.21"
   }
+}`;
 }
