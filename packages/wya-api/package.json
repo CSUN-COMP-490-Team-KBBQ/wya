@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "wya-api",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,9 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "source": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "config": "*",
     "tsconfig": "*",
