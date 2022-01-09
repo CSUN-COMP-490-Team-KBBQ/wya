@@ -17,14 +17,14 @@ This repo is architeched as a monorepo with high modularity. The main motivation
 We use [turborepo](https://turborepo.org/) as the tool to manage our monorepo.
 
 ```
-   *root*
-   - apps
-      - cli       : our cli tool that provides many useful functions for both dev and prod environments
-      - web       : our web application
-      - mobile    : our mobile application
-      - functions : our firebase cloud-functions
-   - packages
-      - config   : shared configurations
-      - tsconfig : typescript configurations
-      - wya-api  : core / business logic
+*root*
+- apps
+   - cli       : our cli tool that provides many useful functions for both dev and prod environments
+   - web       : our web application
+   - mobile    : our mobile application
+   - functions : our firebase cloud-functions
+- packages
+   - config   : shared configurations
+   - tsconfig : typescript configurations
+   - wya-api  : core / business logic
 ```
