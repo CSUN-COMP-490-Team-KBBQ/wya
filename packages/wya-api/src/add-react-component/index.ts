@@ -17,7 +17,8 @@ const addReactComponent = (
   params: addReactComponentParams,
   { fsInjection = fs } = {}
 ) => {
-  let { name, path, web, mobile, ui } = params;
+  const { path, web, mobile, ui } = params;
+  let { name } = params;
   name = fp.pipe(fp.camelCase, fp.upperFirst)(name);
 
   const cwd = process.cwd();
