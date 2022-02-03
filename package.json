@@ -27,43 +27,7 @@
     "husky": "^7.0.4",
     "lint-staged": "^12.1.7",
     "prettier": "^2.5.1",
-    "turbo": "^1.0.24"
-  },
-  "turbo": {
-    "baseBranch": "origin/main",
-    "npmClient": "npm",
-    "pipeline": {
-      "build": {
-        "dependsOn": [
-          "^build"
-        ],
-        "outputs": [
-          "dist/**"
-        ]
-      },
-      "test": {
-        "dependsOn": [
-          "^build"
-        ],
-        "outputs": []
-      },
-      "deploy": {
-        "dependsOn": [
-          "build",
-          "test",
-          "lint"
-        ]
-      },
-      "lint": {
-        "outputs": []
-      },
-      "dev": {
-        "cache": false
-      },
-      "clean": {
-        "cache": false
-      }
-    }
+    "turbo": "^1.1.2"
   },
   "workspaces": [
     "apps/*",
@@ -76,5 +40,6 @@
     "packages/**/src/**/*.{js,jsx,ts,tsx}": [
       "eslint --fix"
     ]
-  }
+  },
+  "packageManager": "npm@8.3.0"
 }

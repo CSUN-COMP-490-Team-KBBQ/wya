@@ -1,10 +1,5 @@
 {
   "include": ["src"],
-  "exclude": ["node_modules"],
-  "extends": "tsconfig/base.json",
-  "compilerOptions": {
-    "outDir": "dist",
-    "target": "ES5",
-    "lib": ["ES2021"]
-  }
+  "exclude": ["node_modules", "dist", "build"],
+  "extends": "tsconfig/react-base.json"
 }

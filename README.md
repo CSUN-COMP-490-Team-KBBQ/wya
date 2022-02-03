@@ -28,3 +28,7 @@ We use [turborepo](https://turborepo.org/) as the tool to manage our monorepo.
    - tsconfig : typescript configurations
    - wya-api  : core / business logic
 ```
+
+## Installation
+
+1. `npm install` on root of this repo
