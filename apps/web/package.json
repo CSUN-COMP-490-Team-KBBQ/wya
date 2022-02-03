@@ -1,0 +1,18 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "test": "echo testing web",
+    "deploy": "echo deploying web",
+    "lint": "echo linting web",
+    "dev": "echo dev web"
+  },
+  "devDependencies": {
+    "config": "*",
+    "tsconfig": "*",
+    "typescript": "^4.5.4"
+  }
+}
