@@ -50,5 +50,8 @@
       "eslint --fix"
     ]
   },
-  "packageManager": "npm@8.3.0"
+  "packageManager": "npm@8.3.0",
+  "dependencies": {
+    "tslib": "^2.3.1"
+  }
 }
