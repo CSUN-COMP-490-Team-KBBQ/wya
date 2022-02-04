@@ -10,8 +10,7 @@
     "test": "turbo run test",
     "clean": "turbo run clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepare": "husky install",
-    "postinstall": "cd apps/web && npm install"
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
