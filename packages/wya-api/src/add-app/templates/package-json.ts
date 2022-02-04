@@ -1,4 +1,8 @@
+import assert from 'assert';
+
 export default function (name: string) {
+  assert(name, 'App name is required.');
+
   return `{
   "name": "${name}",
   "version": "1.0.0",
@@ -8,7 +12,7 @@ export default function (name: string) {
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "test": "echo testing ${name}",
     "deploy": "echo deploying ${name}",
-    "lint": "echo linting ${name}",
+    "lint": "eslint src --fix",
     "dev": "echo dev ${name}"
   },
   "devDependencies": {
