@@ -1,0 +1,35 @@
+/* !important override every .clickable-link */
+.clickable-link {
+    text-decoration: none;
+    color: #0081d9 !important;
+    font-size: small;
+    font-style: italic;
+}
+.clickable-link:hover {
+    color: purple !important;
+}
+
+.form-login {
+    width: 40%;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-button {
+    width: 100%;
+    background-color: #0081d9 !important;
+    border: solid 2px #0081d9 !important;
+}
+
+.form-button:hover {
+    background-color: #3895d3 !important;
+}
+
+.row {
+    margin-bottom: 0.5rem;
+}
