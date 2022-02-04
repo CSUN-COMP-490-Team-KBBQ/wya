@@ -21,14 +21,16 @@ We use [turborepo](https://turborepo.org/) as the tool to manage our monorepo.
 - apps
    - cli       : our cli tool that provides many useful functions for both dev and prod environments
    - web       : our web application
-   - mobile    : our mobile application
    - functions : our firebase cloud-functions
+   - discord   : our discord integration
 - packages
    - config   : shared configurations
    - tsconfig : typescript configurations
    - wya-api  : core / business logic
 ```
 
-## Installation
+## Setup
 
-1. `npm install` on root of this repo
+1. `npm install` at the root of this directory
+2. Navigate into the `apps/web` directory and run `npm install` (Annoying react-scripts webpack issue and firebase; easiest fix so far without having to stop using react-scripts)
+3. At the root of this directory run `npm run dev` to run the dev environments across all apps
