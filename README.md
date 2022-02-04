@@ -32,5 +32,4 @@ We use [turborepo](https://turborepo.org/) as the tool to manage our monorepo.
 ## Setup
 
 1. `npm install` at the root of this directory
-2. Navigate into the `apps/web` directory and run `npm install` (Annoying react-scripts webpack issue and firebase; easiest fix so far without having to stop using react-scripts)
-3. At the root of this directory run `npm run dev` to run the dev environments across all apps
+2. At the root of this directory run `npm run dev` to run the dev environments across all apps
