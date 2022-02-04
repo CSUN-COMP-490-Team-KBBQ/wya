@@ -106,9 +106,7 @@ function AddAvailabilityModal({
     return onHide ? onHide() : undefined;
   };
 
-  const onSubmitHandler = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const onSubmitHandler = () => {
     const newEventAvailability = appendUserAvailabilityToGroup(
       sortedXData,
       sortedYData,
@@ -367,7 +365,7 @@ export default function EventPage({
         },
       });
     }
-  }, [userRecord]);
+  }, [userRecord, match.params.id]);
 
   /**
    * Renders an event in the planning stage
