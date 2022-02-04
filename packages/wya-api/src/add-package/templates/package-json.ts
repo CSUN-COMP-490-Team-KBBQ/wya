@@ -1,4 +1,8 @@
+import assert from 'assert';
+
 export default function (name: string) {
+  assert(name, 'Package name is required.');
+
   return `{
   "name": "${name}",
   "version": "1.0.0",

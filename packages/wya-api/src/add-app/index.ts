@@ -16,7 +16,7 @@ const addApp = (name: string, { fsInjection = fs } = {}) => {
   const cwd = process.cwd();
   const dir = path.join(cwd, 'apps', name);
 
-  assert(fsInjection.existsSync(dir), `[${name}] app already exists`);
+  assert(!fsInjection.existsSync(dir), `[${name}] app already exists`);
 
   fsInjection.ensureDirSync(dir);
 
