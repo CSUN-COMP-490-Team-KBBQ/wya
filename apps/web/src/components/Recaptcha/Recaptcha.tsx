@@ -4,25 +4,16 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import './Recaptcha.css';
 
 type RecaptchaProps = {
-  recaptchaRef: React.RefObject<ReCAPTCHA>;
-  onChange?: (token: string | null) => void;
+  ref: React.MutableRefObject<ReCAPTCHA | null>;
 };
 
-export default function Recaptcha({
-  recaptchaRef,
-  onChange,
-}: RecaptchaProps): JSX.Element {
+export default function Recaptcha({ ref }: RecaptchaProps): JSX.Element {
   return (
     <ReCAPTCHA
       data-testid="recaptcha"
       sitekey={(process.env.REACT_APP_RECAPTCHA_SITEKEY as string) || ''}
-      ref={() => recaptchaRef}
-      onChange={onChange}
+      ref={ref}
       size="invisible"
     />
   );
 }
-
-Recaptcha.defaultProps = {
-  onChange: undefined,
-};
