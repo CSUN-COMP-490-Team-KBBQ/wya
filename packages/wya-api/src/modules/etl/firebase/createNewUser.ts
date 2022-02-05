@@ -10,7 +10,7 @@ type CreateNewUserParams = {
   password: string;
 };
 
-export const etlFirebaseCreateNewUser = (
+export const etlFirebaseCreateNewUser = async (
   params: CreateNewUserParams,
   { firebaseAuthInjection = firebaseAuth } = {}
 ) => {
@@ -20,5 +20,24 @@ export const etlFirebaseCreateNewUser = (
   assert(password);
 
   debug(`Creating a new user: ${email}`);
-  return firebaseAuthInjection.createUser({ email, password });
+
+  try {
+    const { uid } = await firebaseAuthInjection.createUser({ email, password });
+    assert(uid);
+
+    return {
+      data: {
+        uid,
+      },
+    };
+  } catch (err) {
+    return {
+      errors: [
+        {
+          status: '500',
+          code: 'etlFirebaseCreateNewUser',
+        },
+      ],
+    };
+  }
 };

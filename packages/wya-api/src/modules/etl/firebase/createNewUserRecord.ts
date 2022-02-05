@@ -12,7 +12,7 @@ type CreateNewUserRecordParams = {
   lastName?: string;
 };
 
-export const etlFirebaseCreateNewUserRecord = (
+export const etlFirebaseCreateNewUserRecord = async (
   params: CreateNewUserRecordParams,
   { firebaseFirestoreInjection = firebaseFirestore } = {}
 ) => {
@@ -23,13 +23,28 @@ export const etlFirebaseCreateNewUserRecord = (
 
   debug(`Creating a new user record: ${uid} ${email}`);
 
-  return firebaseFirestoreInjection.doc(`/users/${uid}`).create({
-    uid,
-    email,
-    firstName: firstName ?? 'Guest',
-    lastName: lastName ?? 'Guest',
-    timeFormat24Hr: false,
-    events: [],
-    availability: [],
-  });
+  try {
+    await firebaseFirestoreInjection.doc(`/users/${uid}`).create({
+      uid,
+      email,
+      firstName: firstName ?? 'Guest',
+      lastName: lastName ?? 'Guest',
+      timeFormat24Hr: false,
+      events: [],
+      availability: [],
+    });
+
+    return {
+      data: [],
+    };
+  } catch (err) {
+    return {
+      errors: [
+        {
+          status: '500',
+          code: 'etlFirebaseCreateNewUserRecord',
+        },
+      ],
+    };
+  }
 };
