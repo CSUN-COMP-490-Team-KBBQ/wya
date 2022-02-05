@@ -52,8 +52,9 @@ export default function CreateEventForm(): JSX.Element {
     formValue.endTime = moment(formValue.endTime, ['hh:mm A']).format('HH:mm');
     formValue = { ...formValue, guests };
 
-    assert(recaptchaRef.current, 'ReCaptcha has not loaded');
-    const _token = await recaptchaRef.current.executeAsync();
+    assert(recaptchaRef.current, 'ReCAPTCHA has not loaded');
+    const token = await recaptchaRef.current.executeAsync();
+    assert(token, 'Missing ReCAPTCHA token');
 
     const eventId = await createEvent(formValue);
     history.push(`/event/${eventId}`);

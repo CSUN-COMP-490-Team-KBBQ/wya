@@ -38,8 +38,10 @@ export default function RegisterForm(): JSX.Element {
     ) as any;
     const { email, password } = formValue;
 
-    assert(recaptchaRef.current, 'ReCaptcha has not loaded');
-    const _token = await recaptchaRef.current.executeAsync();
+    assert(recaptchaRef.current, 'ReCAPTCHA has not loaded');
+    const token = await recaptchaRef.current.executeAsync();
+
+    assert(token, 'Missing ReCAPTCHA token');
 
     const { data } = await registerUser(formValue);
     // eslint-disable-next-line
