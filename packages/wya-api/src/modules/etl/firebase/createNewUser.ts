@@ -31,10 +31,10 @@ export const etlFirebaseCreateNewUser = async (
       },
     };
   } catch (err) {
-    return {
+    throw {
       errors: [
         {
-          status: '500',
+          status: 500,
           code: 'etlFirebaseCreateNewUser',
         },
       ],

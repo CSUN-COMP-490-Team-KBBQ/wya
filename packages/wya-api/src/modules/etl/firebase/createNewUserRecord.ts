@@ -38,10 +38,10 @@ export const etlFirebaseCreateNewUserRecord = async (
       data: [],
     };
   } catch (err) {
-    return {
+    throw {
       errors: [
         {
-          status: '500',
+          status: 500,
           code: 'etlFirebaseCreateNewUserRecord',
         },
       ],
