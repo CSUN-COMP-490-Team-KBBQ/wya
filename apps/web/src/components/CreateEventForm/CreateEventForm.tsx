@@ -177,7 +177,7 @@ export default function CreateEventForm(): JSX.Element {
             </Col>
           </Row>
 
-          <Recaptcha ref={recaptchaRef} />
+          <Recaptcha recaptchaRef={recaptchaRef} />
         </Form>
       </Col>
     </Container>

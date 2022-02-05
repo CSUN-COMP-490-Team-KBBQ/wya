@@ -83,7 +83,7 @@ export default function RegisterForm(): JSX.Element {
               Have an account?
             </Link>
           </Form.Text>
-          <Recaptcha ref={recaptchaRef} />
+          <Recaptcha recaptchaRef={recaptchaRef} />
         </Form>
       </Col>
     </Container>

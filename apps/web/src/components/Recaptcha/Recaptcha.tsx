@@ -4,15 +4,17 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import './Recaptcha.css';
 
 type RecaptchaProps = {
-  ref: React.MutableRefObject<ReCAPTCHA | null>;
+  recaptchaRef: React.MutableRefObject<ReCAPTCHA | null>;
 };
 
-export default function Recaptcha({ ref }: RecaptchaProps): JSX.Element {
+export default function Recaptcha({
+  recaptchaRef,
+}: RecaptchaProps): JSX.Element {
   return (
     <ReCAPTCHA
       data-testid="recaptcha"
       sitekey={(process.env.REACT_APP_RECAPTCHA_SITEKEY as string) || ''}
-      ref={ref}
+      ref={recaptchaRef}
       size="invisible"
     />
   );
