@@ -1,9 +1,9 @@
 import assert from 'assert';
 import Debug from 'debug';
 
-import { firebaseAuth } from '../firebase';
+import { firebaseAuth } from '.';
 
-const debug = Debug('wya-api:etl/firebase/createNewUser');
+const debug = Debug('wya-api:etl/firebase/create-new-user');
 
 type CreateNewUserParams = {
   email: string;

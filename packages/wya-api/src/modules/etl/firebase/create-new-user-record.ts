@@ -1,9 +1,9 @@
 import assert from 'assert';
 import Debug from 'debug';
 
-import { firebaseFirestore } from '../firebase';
+import { firebaseFirestore } from '.';
 
-const debug = Debug('wya-api:etl/firebase/createNewUserRecord');
+const debug = Debug('wya-api:etl/firebase/create-new-user-record');
 
 type CreateNewUserRecordParams = {
   uid: string;

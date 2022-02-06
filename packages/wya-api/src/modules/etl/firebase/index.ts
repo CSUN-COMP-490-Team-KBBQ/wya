@@ -8,5 +8,5 @@ const firebaseAuth = firebaseAdmin.auth(firebase);
 
 export { firebase, firebaseFirestore, firebaseAuth };
 
-export * from './createNewUser';
-export * from './createNewUserRecord';
+export * from './create-new-user';
+export * from './create-new-user-record';
