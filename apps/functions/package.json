@@ -2,7 +2,7 @@
   "name": "functions",
   "private": true,
   "scripts": {
-    "build": "tsc",
+    "build": "webpack",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "test": "echo testing functions",
     "deploy": "firebase deploy --only functions",
@@ -11,24 +11,25 @@
     "shell": "npm run build && firebase functions:shell",
     "dev": "npm run shell"
   },
-  "engines": {
-    "node": "14"
-  },
-  "main": "lib/index.js",
   "devDependencies": {
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/nodemailer": "^6.4.4",
     "config": "*",
     "firebase-functions-test": "^0.3.3",
+    "generate-package-json-webpack-plugin": "^2.6.0",
+    "ts-loader": "^9.2.6",
     "tsconfig": "*",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "webpack": "^5.68.0",
+    "webpack-cli": "^4.9.2"
   },
   "dependencies": {
     "assert": "^2.0.0",
     "body-parser": "^1.19.1",
     "cors": "^2.8.5",
     "express": "^4.17.2",
+    "firebase-admin": "^10.0.2",
     "firebase-functions": "~3.16.0",
     "nodemailer": "^6.7.2",
     "wya-api": "*"
