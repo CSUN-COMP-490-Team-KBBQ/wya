@@ -1,6 +1,7 @@
 export * as functions from 'firebase-functions';
-export {
-  firebase,
-  firebaseFirestore as firestore,
-  firebaseAuth as auth,
-} from 'wya-api';
+
+import { makeFirebaseClient } from 'wya-api';
+
+export const firebase = makeFirebaseClient();
+export const auth = firebase.auth();
+export const firestore = firebase.firestore();

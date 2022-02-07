@@ -5,6 +5,7 @@ import {
   etlFirebaseCreateNewUser,
   etlFirebaseCreateNewUserRecord,
 } from 'wya-api';
+import { firebase } from '../firebase';
 
 const router = Router();
 
@@ -14,18 +15,24 @@ router.post('/', async (req, res) => {
   try {
     // Create the user
 
-    const { data } = await etlFirebaseCreateNewUser({ email, password });
+    const { data } = await etlFirebaseCreateNewUser(
+      { email, password },
+      { firebase }
+    );
     const uid = data?.uid;
     assert(uid);
 
     // Create the user record
 
-    await etlFirebaseCreateNewUserRecord({
-      uid,
-      email,
-      firstName,
-      lastName,
-    });
+    await etlFirebaseCreateNewUserRecord(
+      {
+        uid,
+        email,
+        firstName,
+        lastName,
+      },
+      { firebase }
+    );
 
     res.status(200).send({
       data: { uid },
