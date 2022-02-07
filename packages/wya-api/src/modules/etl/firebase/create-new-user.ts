@@ -1,7 +1,6 @@
 import assert from 'assert';
 import Debug from 'debug';
-
-import { firebaseAuth } from '.';
+import firebaseAdmin from 'firebase-admin';
 
 const debug = Debug('wya-api:etl/firebase/create-new-user');
 
@@ -10,9 +9,13 @@ type CreateNewUserParams = {
   password: string;
 };
 
+type CreateNewUserContext = {
+  firebase: firebaseAdmin.app.App;
+};
+
 export const etlFirebaseCreateNewUser = async (
   params: CreateNewUserParams,
-  { firebaseAuthInjection = firebaseAuth } = {}
+  context: CreateNewUserContext
 ) => {
   const { email, password } = params;
 
@@ -22,7 +25,9 @@ export const etlFirebaseCreateNewUser = async (
   debug(`Creating a new user: ${email}`);
 
   try {
-    const { uid } = await firebaseAuthInjection.createUser({ email, password });
+    const { firebase } = context;
+    const firebaseAuth = firebase.auth();
+    const { uid } = await firebaseAuth.createUser({ email, password });
     assert(uid);
 
     return {
@@ -30,12 +35,13 @@ export const etlFirebaseCreateNewUser = async (
         uid,
       },
     };
-  } catch (err) {
+  } catch (err: any) {
     throw {
       errors: [
         {
           status: 500,
-          code: 'etlFirebaseCreateNewUser',
+          code: `etlFirebaseCreateNewUser:${err?.errorInfo?.code}`,
+          message: err?.errorInfo?.message,
         },
       ],
     };

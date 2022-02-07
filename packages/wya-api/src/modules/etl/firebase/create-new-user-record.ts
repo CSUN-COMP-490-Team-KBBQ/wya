@@ -1,7 +1,6 @@
 import assert from 'assert';
 import Debug from 'debug';
-
-import { firebaseFirestore } from '.';
+import firebaseAdmin from 'firebase-admin';
 
 const debug = Debug('wya-api:etl/firebase/create-new-user-record');
 
@@ -12,9 +11,13 @@ type CreateNewUserRecordParams = {
   lastName?: string;
 };
 
+type CreateNewUserRecordContext = {
+  firebase: firebaseAdmin.app.App;
+};
+
 export const etlFirebaseCreateNewUserRecord = async (
   params: CreateNewUserRecordParams,
-  { firebaseFirestoreInjection = firebaseFirestore } = {}
+  context: CreateNewUserRecordContext
 ) => {
   const { uid, email, firstName, lastName } = params;
 
@@ -24,7 +27,9 @@ export const etlFirebaseCreateNewUserRecord = async (
   debug(`Creating a new user record: ${uid} ${email}`);
 
   try {
-    await firebaseFirestoreInjection.doc(`/users/${uid}`).create({
+    const { firebase } = context;
+    const firebaseFirestore = firebase.firestore();
+    await firebaseFirestore.doc(`/users/${uid}`).create({
       uid,
       email,
       firstName: firstName ?? 'Guest',
@@ -37,12 +42,13 @@ export const etlFirebaseCreateNewUserRecord = async (
     return {
       data: [],
     };
-  } catch (err) {
+  } catch (err: any) {
     throw {
       errors: [
         {
           status: 500,
-          code: 'etlFirebaseCreateNewUserRecord',
+          code: `etlFirebaseCreateNewUserRecord:${err?.errorInfo?.code}`,
+          message: err?.errorInfo?.message,
         },
       ],
     };
