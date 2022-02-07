@@ -5,6 +5,7 @@ import { Command } from 'commander';
 import {
   generatePassword,
   etlFirebaseCreateNewUser,
+  etlFirebaseCreateNewUserRecord,
   makeFirebaseClient,
 } from 'wya-api';
 
@@ -17,6 +18,8 @@ const firebaseClient = makeFirebaseClient(
 );
 
 const firebase = new Command('firebase');
+
+/** Create New User */
 firebase
   .command('create-new-user <email> [password]')
   .alias('cnu')
@@ -30,10 +33,20 @@ firebase
     assert(password);
 
     try {
+      // Create the user
       const {
         data: { uid },
       } = await etlFirebaseCreateNewUser(
         { email, password },
+        { firebase: firebaseClient }
+      );
+
+      // Create the user record
+      await etlFirebaseCreateNewUserRecord(
+        {
+          uid,
+          email,
+        },
         { firebase: firebaseClient }
       );
 
