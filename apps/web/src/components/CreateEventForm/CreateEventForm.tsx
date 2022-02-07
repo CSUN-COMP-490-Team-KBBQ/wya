@@ -19,44 +19,38 @@ import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import './CreateEventForm.css';
 import 'rc-time-picker/assets/index.css';
+import { getFormValues } from '../../lib/availability';
 
 export default function CreateEventForm(): JSX.Element {
+  // Extract
   const { user } = useUserContext();
   const { userRecord } = useUserRecordContext();
-
   const history = useHistory();
   const [guests, updateGuests] = React.useState<string[]>([]);
-
   const recaptchaRef = React.useRef<ReCAPTCHA>(null);
 
-  const today = new Date();
-  const dd = String(today.getDate()).padStart(2, '0');
-  const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-  const yyyy = today.getFullYear();
-  const currentDate = String(`${yyyy}-${mm}-${dd}`);
+  const currentDate = moment().format('YYYY-MM-DD');
   const start = moment().startOf('hour');
   const end = moment().startOf('hour').add(15, 'minutes');
-
   const [startTimeValue, setStartTimeValue] =
     React.useState<moment.Moment>(start);
   const [endTimeValue, setEndTimeValue] = React.useState<moment.Moment>(end);
 
+
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    // eslint-disable-next-line
-    let formValue = Object.fromEntries(formData.entries()) as any;
-    formValue.startTime = moment(formValue.startTime, ['hh:mm A']).format(
-      'HH:mm'
-    );
-    formValue.endTime = moment(formValue.endTime, ['hh:mm A']).format('HH:mm');
-    formValue = { ...formValue, guests };
 
+    // Transform 
+    const formData = new FormData(e.target as HTMLFormElement);
+    const formValues = getFormValues(formData, guests);
+
+    // Load
     assert(recaptchaRef.current, 'ReCAPTCHA has not loaded');
     const token = await recaptchaRef.current.executeAsync();
     assert(token, 'Missing ReCAPTCHA token');
 
-    const eventId = await createEvent(formValue);
+    const eventId = await createEvent(formValues);
+
     history.push(`/event/${eventId}`);
   };
 
