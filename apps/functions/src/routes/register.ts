@@ -15,11 +15,9 @@ router.post('/', async (req, res) => {
   try {
     // Create the user
 
-    const { data } = await etlFirebaseCreateNewUser(
-      { email, password },
-      { firebase }
-    );
-    const uid = data?.uid;
+    const {
+      data: [uid],
+    } = await etlFirebaseCreateNewUser({ email, password }, { firebase });
     assert(uid);
 
     // Create the user record

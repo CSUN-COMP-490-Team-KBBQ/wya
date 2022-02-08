@@ -6,6 +6,7 @@ import {
   generatePassword,
   etlFirebaseCreateNewUser,
   etlFirebaseCreateNewUserRecord,
+  etlFirebaseDeleteUser,
   makeFirebaseClient,
 } from 'wya-api';
 
@@ -35,7 +36,7 @@ firebase
     try {
       // Create the user
       const {
-        data: { uid },
+        data: [uid],
       } = await etlFirebaseCreateNewUser(
         { email, password },
         { firebase: firebaseClient }
@@ -54,7 +55,24 @@ firebase
         `Generated new user ${uid} email: ${email} | password: ${password}`
       );
     } catch (err) {
-      console.log(err);
+      console.error(err);
+    }
+  });
+
+/** Delete User */
+firebase
+  .command('delete-user <uid>')
+  .alias('du')
+  .description('Delete existing user')
+  .action(async (uid) => {
+    assert(uid);
+
+    try {
+      await etlFirebaseDeleteUser({ uid }, { firebase: firebaseClient });
+
+      console.log(`Deleted user: ${uid}`);
+    } catch (err) {
+      console.error(err);
     }
   });
 
