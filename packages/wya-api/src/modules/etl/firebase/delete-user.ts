@@ -27,6 +27,10 @@ export const etlFirebaseDeleteUser = async (
     const firebaseAuth = firebase.auth();
 
     await firebaseAuth.deleteUser(uid);
+
+    return {
+      data: [],
+    };
   } catch (err: any) {
     throw {
       errors: [
