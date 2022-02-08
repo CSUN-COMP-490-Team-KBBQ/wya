@@ -3,11 +3,10 @@ import { render } from '@testing-library/react';
 
 import AvailabilityHeatMap from './AvailabilityHeatMap';
 import {
-    getYTimesSorted,
-    getXDaysSorted,
     formatXDays,
     createAvailabilityDataArray,
     createZeroStateArray,
+    sortObjectByKeys,
 } from '../../lib/availability';
 
 const FAKE_AVAILABILITY = {
@@ -29,8 +28,8 @@ const FAKE_AVAILABILITY = {
     },
 };
 
-const FAKE_YTIMES = getYTimesSorted(FAKE_AVAILABILITY);
-const FAKE_XDAYS = getXDaysSorted(FAKE_YTIMES, FAKE_AVAILABILITY);
+const FAKE_YTIMES = sortObjectByKeys(FAKE_AVAILABILITY);
+const FAKE_XDAYS = sortObjectByKeys(FAKE_AVAILABILITY['04:00']);
 
 const FAKE_HEATMAPDATA = {
     yData: FAKE_YTIMES,

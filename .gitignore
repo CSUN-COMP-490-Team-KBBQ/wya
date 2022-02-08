@@ -107,6 +107,9 @@ dist
 # turbo
 .turbo
 
+# VSCode personal settings
+.vscode
+
 build/
 dist/
 
