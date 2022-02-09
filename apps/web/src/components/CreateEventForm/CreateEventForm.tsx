@@ -13,6 +13,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 
 import Recaptcha from '../Recaptcha/Recaptcha';
 import { createEvent } from '../../lib/firestore';
+import { PrepForFirestore } from '../../lib/PrepForFirestore';
 import { useUserContext } from '../../contexts/UserContext';
 import GuestList from '../GuestList/GuestList';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
@@ -42,13 +43,15 @@ export default function CreateEventForm(): JSX.Element {
         // Transform
         const formData = new FormData(e.target as HTMLFormElement);
         const formValues = getFormValues(formData, guests);
+        const convertedFormValues =
+            PrepForFirestore.convertFormValues(formValues);
 
         // Load
         assert(recaptchaRef.current, 'ReCAPTCHA has not loaded');
         const token = await recaptchaRef.current.executeAsync();
         assert(token, 'Missing ReCAPTCHA token');
 
-        const eventId = await createEvent(formValues);
+        const eventId = await createEvent(convertedFormValues);
 
         history.push(`/event/${eventId}`);
     };

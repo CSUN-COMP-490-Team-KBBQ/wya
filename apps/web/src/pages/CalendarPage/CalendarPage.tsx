@@ -10,10 +10,8 @@ import EventList from '../../components/EventList/EventList';
 import Page from '../../components/Page/Page';
 import AvailabilityScheduleSelector from '../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
-import {
-    PrepForFirestore,
-    updateCalendarAvailability,
-} from '../../lib/firestore';
+import { updateCalendarAvailability } from '../../lib/firestore';
+import { PrepForFirestore } from '../../lib/PrepForFirestore';
 import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
 import { getScheduleSelectorData } from '../../lib/availability';
 
