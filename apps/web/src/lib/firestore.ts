@@ -17,9 +17,15 @@ import UserData from '../interfaces/User';
 
 const firestore = getFirestore(app);
 
-const getDocRef = (path: string): DocumentReference<DocumentData> => {
+export class PrepForFirestore {
+    static convertUserAvailabilityData(userAvailabilityData: Date[]): number[] {
+        return userAvailabilityData.map((value) => value.getTime());
+    }
+}
+
+function getDocRef(path: string): DocumentReference<DocumentData> {
     return doc(firestore, path);
-};
+}
 
 const formatAvailability = (
     startDate: string,

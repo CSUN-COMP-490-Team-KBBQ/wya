@@ -31,7 +31,7 @@ export const getFormValues = (
 
 /** 
     add appropriate 15 minute increment to startTime
-**/
+*/
 export const startTimeFormatted = (timeString: string): number => {
     const minutesString = timeString.slice(3, 5);
     const hoursNum = Number(timeString.slice(0, 2));
@@ -49,7 +49,7 @@ export const startTimeFormatted = (timeString: string): number => {
     return hoursNum;
 };
 
-/*
+/**
     adds appropriate 15 minutes increment since endTime is rounded down
 */
 export const endTimeFormatted = (timeString: string): number => {

@@ -101,7 +101,23 @@ export const cleanUpUserAvailability = (
     return userAvailability;
 };
 
-export const setHeatMapAndScheduleSelectorData = (
+export const getScheduleSelectorData = (
+    userAvailability: number[],
+    is24Hour: boolean
+): ScheduleSelectorData => {
+    const scheduleSelectorData: ScheduleSelectorData = {
+        scheduleData: createCalendarAvailabilityDataArray(userAvailability),
+        sortedXData: [],
+        formattedXData: [],
+        sortedYData: [],
+        formattedYData: [],
+        is24Hour: is24Hour,
+    };
+
+    return scheduleSelectorData;
+};
+
+export const getHeatMapAndScheduleSelectorData = (
     eventAvailability: EventDataAvailability,
     userAvailability: number[],
     is24Hour: boolean
@@ -125,7 +141,7 @@ export const setHeatMapAndScheduleSelectorData = (
         ),
     };
 
-    const scheduleSelectorData = {
+    const scheduleSelectorData: ScheduleSelectorData = {
         scheduleData: createPreloadArray(
             sortedYTimes,
             formattedXDays,
