@@ -7,14 +7,14 @@ import EventData, {
 import HeatMapData from '../../../interfaces/HeatMapData';
 import ScheduleSelectorData from '../../../interfaces/ScheduleSelectorData';
 import ConfirmEventModal from '../../../components/ConfirmEventModal/ConfirmEventModal';
-import { appendUserAvailabilityToGroup } from '../../../lib/availability';
+import { appendUserAvailabilityToGroupEventAvailability } from '../../../lib/availability';
 import { updateEventAvailability } from '../../../lib/firestore';
 import AvailabilityScheduleSelector from '../../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
 
 import '../EventPage.css';
 import {
-    startTimeFormatted,
-    endTimeFormatted,
+    transformStartTime,
+    transformEndTime,
 } from '../../../lib/eventHelpers';
 
 type AddAvailabilityModalProps = {
@@ -40,8 +40,8 @@ function AddAvailabilityModal({
     const [userAvailabilityData, setUserAvailabilityData] =
         React.useState<Array<Date>>(scheduleData);
 
-    const startTime = startTimeFormatted(sortedYData[0]);
-    const endTime = endTimeFormatted(sortedYData[sortedYData.length - 1]);
+    const startTime = transformStartTime(sortedYData[0]);
+    const endTime = transformEndTime(sortedYData[sortedYData.length - 1]);
 
     const onClickScheduleSelectorHandle = (newSchedule: Array<Date>) => {
         setUserAvailabilityData(newSchedule);
@@ -53,13 +53,14 @@ function AddAvailabilityModal({
     };
 
     const onSubmitHandler = () => {
-        const newEventAvailability = appendUserAvailabilityToGroup(
-            sortedXData,
-            sortedYData,
-            eventAvailability,
-            userAvailabilityData,
-            uid
-        );
+        const newEventAvailability =
+            appendUserAvailabilityToGroupEventAvailability(
+                sortedXData,
+                sortedYData,
+                eventAvailability,
+                userAvailabilityData,
+                uid
+            );
         updateEventAvailability(newEventAvailability, eventId)
             .then(() => {
                 return onHide ? onHide() : undefined;

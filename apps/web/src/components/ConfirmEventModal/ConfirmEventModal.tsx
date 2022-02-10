@@ -9,47 +9,14 @@ import HeatMapData from '../../interfaces/HeatMapData';
 import { updateEvent } from '../../lib/firestore';
 
 import './ConfirmEventModal.css';
+import {
+    convertStringArrayToObjectWithValueAndLabel,
+    shiftTimeOptions,
+} from '../../lib/eventHelpers';
 
 interface ConfirmEventModalProps {
     event: EventData;
     heatMapData: HeatMapData;
-}
-
-/**
- *
- * This function is used to correct the end time options
- * for an event. Since the end time will always be 15mins
- * from the value selected on the map, the values must be
- * shifted to account for the block of time.
- *
- *  Example: If an event starts at 11:00am, then the options
- *  to select an end time need to start at 11:15am to account
- *  for this block of time.
- *
- */
-function shiftTimeOptions(
-    options: { value: string; label: string }[]
-): { value: string; label: string }[] {
-    // clone options
-    const newOptions = options.map((opts) => ({ ...opts }));
-
-    // get the last time from options and add 15 mins
-    const endTimeOption = newOptions.slice(-1)[0].value;
-    const endTimeDate = new Date(`1970-01-01T${endTimeOption}`);
-    const newEndTime = endTimeDate.getMinutes() + 15;
-    endTimeDate.setMinutes(newEndTime);
-
-    // shift all values to offset start time by 15 minutes
-    newOptions.shift();
-
-    // trim the timezone and add the new time to array of options
-    const newEndTimeOption = endTimeDate.toTimeString().slice(0, 5);
-    newOptions.push({
-        value: newEndTimeOption,
-        label: newEndTimeOption,
-    });
-
-    return newOptions;
 }
 
 export default function ConfirmEventModal(
@@ -61,15 +28,9 @@ export default function ConfirmEventModal(
     const { yData, xDataFormatted } = heatMapData;
 
     // prepping Select component options
-    const dayOptions = xDataFormatted.map((time) => ({
-        value: time,
-        label: time,
-    }));
-
-    const startTimeOptions = yData.map((time) => ({
-        value: time,
-        label: time,
-    }));
+    const dayOptions =
+        convertStringArrayToObjectWithValueAndLabel(xDataFormatted);
+    const startTimeOptions = convertStringArrayToObjectWithValueAndLabel(yData);
     const endTimeOptions = shiftTimeOptions(startTimeOptions);
 
     // defining Select component onChange values

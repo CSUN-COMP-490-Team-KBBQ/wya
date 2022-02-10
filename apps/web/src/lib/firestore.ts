@@ -21,13 +21,13 @@ function getDocRef(path: string): DocumentReference<DocumentData> {
     return doc(firestore, path);
 }
 
-export const createEvent = (data: EventData): Promise<string> => {
+export const createEvent = (eventData: EventData): Promise<string> => {
     return new Promise((resolve, reject) => {
         // rather than handling this on the client side we will POST the form data to the cloud function api
         axios
             .post(
                 'https://us-central1-kbbq-wya-35414.cloudfunctions.net/api/create-event',
-                JSON.stringify(data),
+                JSON.stringify(eventData),
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export const createEvent = (data: EventData): Promise<string> => {
             .then((res) => {
                 // eslint-disable-next-line
                 console.log(res.data);
-                resolve(data.eventId);
+                resolve(eventData.eventId);
             })
             .catch(reject);
     });

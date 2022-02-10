@@ -13,14 +13,14 @@ import ReCAPTCHA from 'react-google-recaptcha';
 
 import Recaptcha from '../Recaptcha/Recaptcha';
 import { createEvent } from '../../lib/firestore';
-import { PrepForFirestore } from '../../lib/PrepForFirestore';
 import { useUserContext } from '../../contexts/UserContext';
 import GuestList from '../GuestList/GuestList';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import './CreateEventForm.css';
 import 'rc-time-picker/assets/index.css';
-import { getFormValues } from '../../lib/eventHelpers';
+import { createEventDataWithoutAvailability } from '../../lib/eventHelpers';
+import { createAndAppendAvailability } from '../../lib/availability';
 
 export default function CreateEventForm(): JSX.Element {
     // Extract
@@ -42,16 +42,18 @@ export default function CreateEventForm(): JSX.Element {
 
         // Transform
         const formData = new FormData(e.target as HTMLFormElement);
-        const formValues = getFormValues(formData, guests);
-        const convertedFormValues =
-            PrepForFirestore.convertFormValues(formValues);
+        const eventDataWithoutAvail = createEventDataWithoutAvailability(
+            formData,
+            guests
+        );
+        const eventData = createAndAppendAvailability(eventDataWithoutAvail);
 
         // Load
         assert(recaptchaRef.current, 'ReCAPTCHA has not loaded');
         const token = await recaptchaRef.current.executeAsync();
         assert(token, 'Missing ReCAPTCHA token');
 
-        const eventId = await createEvent(convertedFormValues);
+        const eventId = await createEvent(eventData);
 
         history.push(`/event/${eventId}`);
     };

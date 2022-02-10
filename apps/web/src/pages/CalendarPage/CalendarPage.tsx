@@ -11,9 +11,11 @@ import Page from '../../components/Page/Page';
 import AvailabilityScheduleSelector from '../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import { updateCalendarAvailability } from '../../lib/firestore';
-import { PrepForFirestore } from '../../lib/PrepForFirestore';
 import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
-import { getScheduleSelectorData } from '../../lib/availability';
+import {
+    convertUserAvailabilityDateArrayToTimestampArray,
+    createScheduleSelectorData,
+} from '../../lib/availability';
 
 type UpdateAvailabilityModalProps = {
     uid: string;
@@ -57,7 +59,9 @@ function UpdateAvailabilityModal({
     ) => {
         // converting to array number for firestore upload
         const convertedUserAvailabilityData =
-            PrepForFirestore.convertUserAvailabilityData(userAvailabilityData);
+            convertUserAvailabilityDateArrayToTimestampArray(
+                userAvailabilityData
+            );
 
         updateCalendarAvailability(convertedUserAvailabilityData, uid)
             .then(() => {
@@ -120,12 +124,12 @@ export default function CalendarPage(): JSX.Element {
 
     React.useEffect(() => {
         if (userRecord) {
-            const scheduleSelector = getScheduleSelectorData(
+            const createdScheduleSelectorData = createScheduleSelectorData(
                 userRecord.availability,
                 userRecord.timeFormat24Hr
             );
 
-            setScheduleSelectorData(scheduleSelector);
+            setScheduleSelectorData(createdScheduleSelectorData);
         }
     }, [userRecord]);
 

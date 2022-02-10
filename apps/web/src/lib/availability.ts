@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { EventDataAvailability } from '../interfaces/EventData';
+import EventData, { EventDataAvailability } from '../interfaces/EventData';
 import HeatMapData from '../interfaces/HeatMapData';
 import ScheduleSelectorData from '../interfaces/ScheduleSelectorData';
 
@@ -7,7 +7,10 @@ export const sortObjectByKeys = <T>(item: T): string[] => {
     return Object.keys(item).sort();
 };
 
-export const formatYTimes = (is24hr: boolean, yTimes: string[]): string[] => {
+export const formatYTimesTo12Or24Hour = (
+    is24hr: boolean,
+    yTimes: string[]
+): string[] => {
     return is24hr
         ? yTimes
         : yTimes.map((value) => {
@@ -25,13 +28,13 @@ export const formatYTimes = (is24hr: boolean, yTimes: string[]): string[] => {
     Formats days to 'ddd MMM DD YYYY'
     Cannot use moment since this is being used by heatmap and expects a date
  **/
-export const formatXDays = (xDays: string[]): string[] => {
+export const formatXDaysTo_ddd_MMM_DD_YYYY = (xDays: string[]): string[] => {
     return xDays.map((timeStamp) =>
         new Date(Number(timeStamp)).toDateString().slice(0, 15)
     );
 };
 
-export const createAvailabilityDataArray = (
+export const createHeatMapAvailabilityDataArray = (
     yTimes: string[],
     xDays: string[],
     availability: EventDataAvailability
@@ -51,14 +54,7 @@ export const createCalendarAvailabilityDataArray = (
     return scheduleData;
 };
 
-export const createZeroStateArray = (
-    yTimesLen: number,
-    xDaysLen: number
-): number[][] => {
-    return new Array(yTimesLen).fill(0).map(() => new Array(xDaysLen).fill(0));
-};
-
-export const createPreloadArray = (
+export const createScheduleSelectorPreloadDataArray = (
     yTimes: string[],
     xDays: string[],
     userAvailability: Array<number>
@@ -88,7 +84,7 @@ export const createPreloadArray = (
     return scheduleData;
 };
 
-export const cleanUpUserAvailability = (
+export const removeInvalidDatesFromUserAvailability = (
     userAvailability: Array<Date>
 ): Array<Date> => {
     for (let i = 0; i < userAvailability.length; i += 1) {
@@ -101,7 +97,7 @@ export const cleanUpUserAvailability = (
     return userAvailability;
 };
 
-export const getScheduleSelectorData = (
+export const createScheduleSelectorData = (
     userAvailability: number[],
     is24Hour: boolean
 ): ScheduleSelectorData => {
@@ -117,24 +113,24 @@ export const getScheduleSelectorData = (
     return scheduleSelectorData;
 };
 
-export const getHeatMapAndScheduleSelectorData = (
+export const createHeatMapDataAndScheduleSelectorData = (
     eventAvailability: EventDataAvailability,
     userAvailability: number[],
     is24Hour: boolean
 ): [HeatMapData, ScheduleSelectorData] => {
     const sortedYTimes =
         sortObjectByKeys<EventDataAvailability>(eventAvailability);
-    const formattedYTimes = formatYTimes(is24Hour, sortedYTimes);
+    const formattedYTimes = formatYTimesTo12Or24Hour(is24Hour, sortedYTimes);
     const sortedXDays = sortObjectByKeys<{
         [date: string]: string[];
     }>(eventAvailability[sortedYTimes[0]]);
-    const formattedXDays = formatXDays(sortedXDays);
+    const formattedXDays = formatXDaysTo_ddd_MMM_DD_YYYY(sortedXDays);
 
     const heatMapData = {
         yData: formattedYTimes,
         xData: sortedXDays,
         xDataFormatted: formattedXDays,
-        mapData: createAvailabilityDataArray(
+        mapData: createHeatMapAvailabilityDataArray(
             sortedYTimes,
             sortedXDays,
             eventAvailability
@@ -142,7 +138,7 @@ export const getHeatMapAndScheduleSelectorData = (
     };
 
     const scheduleSelectorData: ScheduleSelectorData = {
-        scheduleData: createPreloadArray(
+        scheduleData: createScheduleSelectorPreloadDataArray(
             sortedYTimes,
             formattedXDays,
             userAvailability
@@ -157,14 +153,14 @@ export const getHeatMapAndScheduleSelectorData = (
     return [heatMapData, scheduleSelectorData];
 };
 
-export const appendUserAvailabilityToGroup = (
+export const appendUserAvailabilityToGroupEventAvailability = (
     xDays: string[],
     yTimes: string[],
     eventAvailability: EventDataAvailability,
     userAvailability: Array<Date>,
     uid: string
 ): EventDataAvailability => {
-    cleanUpUserAvailability(userAvailability);
+    removeInvalidDatesFromUserAvailability(userAvailability);
 
     // removes uid from each cell to start from scratch
     for (let i = 0; i < yTimes.length; i += 1) {
@@ -196,7 +192,7 @@ export const appendUserAvailabilityToGroup = (
     return eventAvailability;
 };
 
-export const formatAvailability = (
+export const createEventAvailability = (
     startDate: string,
     endDate: string,
     startTime: string,
@@ -242,4 +238,23 @@ export const formatAvailability = (
     }
 
     return AvailabilityHeatMap;
+};
+
+export const convertUserAvailabilityDateArrayToTimestampArray = (
+    userAvailabilityData: Date[]
+): number[] => {
+    return userAvailabilityData.map((value) => value.getTime());
+};
+
+export const createAndAppendAvailability = (
+    eventDataWithoutAvail: EventData
+): EventData => {
+    const availability = createEventAvailability(
+        eventDataWithoutAvail.startDate,
+        eventDataWithoutAvail.endDate,
+        eventDataWithoutAvail.startTime,
+        eventDataWithoutAvail.endTime
+    );
+
+    return { ...eventDataWithoutAvail, availability };
 };

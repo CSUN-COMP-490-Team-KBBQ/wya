@@ -3,9 +3,8 @@ import { render } from '@testing-library/react';
 
 import AvailabilityHeatMap from './AvailabilityHeatMap';
 import {
-    formatXDays,
-    createAvailabilityDataArray,
-    createZeroStateArray,
+    formatXDaysTo_ddd_MMM_DD_YYYY,
+    createHeatMapAvailabilityDataArray,
     sortObjectByKeys,
 } from '../../lib/availability';
 
@@ -33,13 +32,12 @@ const FAKE_XDAYS = sortObjectByKeys(FAKE_AVAILABILITY['04:00']);
 
 const FAKE_HEATMAPDATA = {
     yData: FAKE_YTIMES,
-    xData: formatXDays(FAKE_XDAYS),
-    mapData: createAvailabilityDataArray(
+    xData: formatXDaysTo_ddd_MMM_DD_YYYY(FAKE_XDAYS),
+    mapData: createHeatMapAvailabilityDataArray(
         FAKE_YTIMES,
         FAKE_XDAYS,
         FAKE_AVAILABILITY
     ),
-    zeroState: createZeroStateArray(FAKE_YTIMES.length, FAKE_XDAYS.length),
 };
 
 it('renders component', () => {

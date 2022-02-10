@@ -3,7 +3,7 @@ import Page from '../../components/Page/Page';
 import EventData, { EventDataAvailability } from '../../interfaces/EventData';
 import { getDocSnapshot$ } from '../../lib/firestore';
 import HeatMapData from '../../interfaces/HeatMapData';
-import { getHeatMapAndScheduleSelectorData } from '../../lib/availability';
+import { createHeatMapDataAndScheduleSelectorData } from '../../lib/availability';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
 import EventFinalized from './EventFinalized/EventFinalized';
@@ -43,15 +43,15 @@ export default function EventPage({
                 next: (eventSnapshot) => {
                     const event = eventSnapshot.data() as EventData;
                     eventInfo.current = event;
-                    const [heatMap, scheduleSelector] =
-                        getHeatMapAndScheduleSelectorData(
+                    const [createdHeatMapData, createdScheduleSelectorData] =
+                        createHeatMapDataAndScheduleSelectorData(
                             event.availability,
                             userRecord.availability,
                             userRecord.timeFormat24Hr
                         );
 
-                    setHeatMapData(heatMap);
-                    setScheduleSelectorData(scheduleSelector);
+                    setHeatMapData(createdHeatMapData);
+                    setScheduleSelectorData(createdScheduleSelectorData);
                 },
             });
         }
