@@ -198,43 +198,29 @@ export const createEventAvailability = (
     startTime: string,
     endTime: string
 ): EventDataAvailability => {
-    const ONEDAYTOMILLISEC = 86400000;
-    const TIMEINCREMENT = new Date(900000);
-    const startDateTimeStamp = new Date(`${startDate}T00:00`);
-    const endDateTimeStamp = new Date(`${endDate}T23:59`);
-    const startTimeTimeStamp = new Date(`1999-12-31T${startTime}`);
-    const endTimeTimeStamp = new Date(
-        new Date(`1999-12-31T${endTime}`).getTime() - TIMEINCREMENT.getTime()
-    );
-    let tempDateTimeStamp = startDateTimeStamp;
-    let tempTimeTimeStamp = startTimeTimeStamp;
+    const endDateTimeStamp = moment(endDate);
+    const endTimeTimeStamp = moment(endTime, 'HH:mm');
+    const tempDateTimeStamp = moment(startDate);
+    const tempTimeTimeStamp = moment(startTime, 'HH:mm');
     const days = {};
     const AvailabilityHeatMap = {};
 
     // creating days map
-    let i = 0;
-    while (tempDateTimeStamp < endDateTimeStamp) {
+    while (tempDateTimeStamp.isSameOrBefore(endDateTimeStamp)) {
         const tempDays = {
-            [tempDateTimeStamp.valueOf().toString()]: [],
+            [tempDateTimeStamp.valueOf()]: [],
         };
         Object.assign(days, tempDays);
-        tempDateTimeStamp = new Date(
-            startDateTimeStamp.getTime() + i * ONEDAYTOMILLISEC
-        );
-        i += 1;
+        tempDateTimeStamp.add(1, 'days');
     }
 
     // creating availability map
-    i = 0;
-    while (tempTimeTimeStamp <= endTimeTimeStamp) {
+    while (tempTimeTimeStamp.isSameOrBefore(endTimeTimeStamp)) {
         const tempAvailabilityHeatMap = {
-            [tempTimeTimeStamp.toTimeString().slice(0, 5)]: days,
+            [tempTimeTimeStamp.format('HH:mm')]: days,
         };
         Object.assign(AvailabilityHeatMap, tempAvailabilityHeatMap);
-        tempTimeTimeStamp = new Date(
-            startTimeTimeStamp.getTime() + i * TIMEINCREMENT.getTime()
-        );
-        i += 1;
+        tempTimeTimeStamp.add(15, 'minutes');
     }
 
     return AvailabilityHeatMap;

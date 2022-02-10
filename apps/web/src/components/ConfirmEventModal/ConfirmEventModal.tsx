@@ -9,10 +9,7 @@ import HeatMapData from '../../interfaces/HeatMapData';
 import { updateEvent } from '../../lib/firestore';
 
 import './ConfirmEventModal.css';
-import {
-    convertStringArrayToObjectWithValueAndLabel,
-    shiftTimeOptions,
-} from '../../lib/eventHelpers';
+import { convertStringArrayToObjectWithValueAndLabel } from '../../lib/eventHelpers';
 
 interface ConfirmEventModalProps {
     event: EventData;
@@ -31,7 +28,12 @@ export default function ConfirmEventModal(
     const dayOptions =
         convertStringArrayToObjectWithValueAndLabel(xDataFormatted);
     const startTimeOptions = convertStringArrayToObjectWithValueAndLabel(yData);
-    const endTimeOptions = shiftTimeOptions(startTimeOptions);
+    const endTimeOptions = convertStringArrayToObjectWithValueAndLabel(yData);
+
+    // removes the last option for the start time options since we need at least 15 minutes of time
+    startTimeOptions.pop();
+    // removes the first optins for the end time options since we need at least 15 minutes of time
+    endTimeOptions.shift();
 
     // defining Select component onChange values
     const [day, setDay] = React.useState<string>();

@@ -69,31 +69,6 @@ export const transformEndTime = (timeString: string): number => {
     return hoursNum + 0.25;
 };
 
-export const shiftTimeOptions = (
-    options: { value: string; label: string }[]
-): { value: string; label: string }[] => {
-    // clone options
-    const newOptions = options.map((opts) => ({ ...opts }));
-
-    // get the last time from options and add 15 mins
-    const endTimeOption = newOptions.slice(-1)[0].value;
-    const endTimeDate = new Date(`1970-01-01T${endTimeOption}`);
-    const newEndTime = endTimeDate.getMinutes() + 15;
-    endTimeDate.setMinutes(newEndTime);
-
-    // shift all values to offset start time by 15 minutes
-    newOptions.shift();
-
-    // trim the timezone and add the new time to array of options
-    const newEndTimeOption = endTimeDate.toTimeString().slice(0, 5);
-    newOptions.push({
-        value: newEndTimeOption,
-        label: newEndTimeOption,
-    });
-
-    return newOptions;
-};
-
 export const convertStringArrayToObjectWithValueAndLabel = (
     optionData: string[]
 ): {
