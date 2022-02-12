@@ -3,10 +3,17 @@
 ## Principles / Guidelines
 
 1. Git
-   1. Commit messages must follow (TBD)
+   1. Commit messages must follow these rules:
+      - Message is proper grammar (no need for period at the end)
+      - Imperative mood (act as if you are telling Git to do something)
+        Examples:
+        - `Update package`
+        - `Fix bug where input is not being read`
+        - `Refactor with better function names`
    2. **Do not** commit directly to main
-   3. Open pull requests (prs) to merge changes into `staging`
-   4. Try to keep prs small
+   3. Open pull requests (PR) to merge changes into `staging`
+   4. Try to keep PRs small
+   5. Once a PR has been merged, please delete your branch -- this will help keep our repo branches clean.
 2. General
    1. Follow linting rules (helps to install prettier / eslint plugins for your editor)
 
@@ -31,10 +38,18 @@ We use [turborepo](https://turborepo.org/) as the tool to manage our monorepo.
 
 ## Setup
 
-1. `npm install` at the root of this directory
-2. At the root of this directory run `npm run dev` to run the dev environments across all apps
+1. Make sure your code editor has eslint and prettier installed. Each app and package has its own ts, eslint, and prettier config.
+   - For vscode:
+     - prettier - esbenp.prettier-vscode
+     - eslint - dbaeumer.vscode-eslint
+2. `npm install` at the root of this directory
+3. At the root of this directory run `npm run dev` to run the dev environments across all apps
 
 ## Usage
+
+npm commands should be executed at the root of this repository (ie. same level as this README)
+
+### Installing packages
 
 We use [npm workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces) in tandem with turbo repo to either run npm commands across all `apps` and `packages` or on singular `workspaces`.
 
@@ -46,10 +61,10 @@ This will save typescript as a dev dependency across all `workspaces`. If you wa
 
 `npm install react --workspace=web`
 
-This command will only be installed on the for the `web` app, you can verify this by checking that directory's `package.json`. You can further extend this to other npm scripts for testing, building, linting, etc.
+This command will only be installed on the for the `web` app, you can verify this by checking that directory's `package.json`.
 
-Here are a couple more examples:
+### Executing npm scripts
 
-- `npm run test` : This command will run tests across all workspaces
+Similar to `npm install` executing npm scripts like build, test, lint, can all be executed at the root level in order to run the npm script across all `apps` and `packages`, ie., running `npm run build` will build all `apps` and `packages`.
 
-- `npm run test -w web` : This command will only run tests for the `web` app. _Note the alias for --workspace as -w_
+In addition to this you can also execute commands within the scope of a workspace with a flag similar to the `--workspace` flag. If you made changes to `apps/web` and wanted to build all the related `packages` then you would execute the command: `npm run build -- --scope=web`. This will build all `packages` that `apps/web` relies on first before building `apps/web`.
