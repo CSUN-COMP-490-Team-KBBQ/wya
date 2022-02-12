@@ -81,8 +81,8 @@ export default function EventPage({
                 ) : (
                     <EventPlanning
                         userId={userRecord.uid}
-                        event={eventInfo.current}
-                        heatMap={heatMapData}
+                        eventData={eventInfo.current}
+                        heatMapData={heatMapData}
                         scheduleSelector={scheduleSelectorData}
                         isHost={isHost}
                     />

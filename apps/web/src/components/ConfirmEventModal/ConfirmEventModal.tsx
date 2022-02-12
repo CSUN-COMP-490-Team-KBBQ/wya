@@ -22,13 +22,21 @@ export default function ConfirmEventModal(
     const [show, setShow] = React.useState<boolean>(false);
     const [displayError, setDisplayError] = React.useState<string>('');
     const { event, heatMapData } = props;
-    const { yData, xDataFormatted } = heatMapData;
+    const {
+        yTimesHeatMapLabelsArray: yTimesHeatMapLabelArray,
+        xDaysFormattedToSlicedDateString: xDaysFormattedToSlicedDateString,
+    } = heatMapData;
 
     // prepping Select component options
-    const dayOptions =
-        convertStringArrayToObjectWithValueAndLabel(xDataFormatted);
-    const startTimeOptions = convertStringArrayToObjectWithValueAndLabel(yData);
-    const endTimeOptions = convertStringArrayToObjectWithValueAndLabel(yData);
+    const dayOptions = convertStringArrayToObjectWithValueAndLabel(
+        xDaysFormattedToSlicedDateString
+    );
+    const startTimeOptions = convertStringArrayToObjectWithValueAndLabel(
+        yTimesHeatMapLabelArray
+    );
+    const endTimeOptions = convertStringArrayToObjectWithValueAndLabel(
+        yTimesHeatMapLabelArray
+    );
 
     // removes the last option for the start time options since we need at least 15 minutes of time
     startTimeOptions.pop();

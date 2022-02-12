@@ -1,8 +1,8 @@
 export default interface ScheduleSelectorData {
     scheduleData: Array<Date>;
-    sortedXData: string[];
-    formattedXData: string[];
-    sortedYData: string[];
-    formattedYData: string[];
+    yTimesScheduleSelectorLabelsArray: string[];
+    xDaysFormattedToSlicedDateString: string[];
+    xDaysScheduleSelectorLabelsArray: string[];
+    yTimesFormattedTo12Or24Hour: string[];
     is24Hour: boolean;
 }

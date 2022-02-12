@@ -34,8 +34,13 @@ function AddAvailabilityModal({
     eventId,
     uid,
 }: AddAvailabilityModalProps): JSX.Element {
-    const { scheduleData, sortedXData, formattedXData, sortedYData, is24Hour } =
-        scheduleSelectorData;
+    const {
+        scheduleData,
+        yTimesScheduleSelectorLabelsArray: sortedXData,
+        xDaysFormattedToSlicedDateString: formattedXData,
+        xDaysScheduleSelectorLabelsArray: sortedYData,
+        is24Hour,
+    } = scheduleSelectorData;
 
     const [userAvailabilityData, setUserAvailabilityData] =
         React.useState<Array<Date>>(scheduleData);
@@ -109,16 +114,16 @@ function AddAvailabilityModal({
 
 interface EventPlanningProps {
     userId: string;
-    event: EventData;
-    heatMap: HeatMapData;
+    eventData: EventData;
+    heatMapData: HeatMapData;
     scheduleSelector: ScheduleSelectorData;
     isHost: boolean;
 }
 
 export default function EventPlanning({
     userId,
-    event,
-    heatMap,
+    eventData: eventData,
+    heatMapData: heatMapData,
     scheduleSelector,
     isHost,
 }: EventPlanningProps): JSX.Element {
@@ -126,20 +131,20 @@ export default function EventPlanning({
 
     return (
         <Container fluid id="eventPlanningContainer">
-            <h1>{event.name}</h1>
+            <h1>{eventData.name}</h1>
             <Col id="containerCol" sm={6}>
                 <Row>
                     <div id="eventDetails">
                         <h2>Description</h2>
-                        <p>{event.description}</p>
+                        <p>{eventData.description}</p>
                     </div>
                 </Row>
                 <h2>Group Availabilities</h2>
                 <Row>
                     <AvailabilityHeatMap
-                        yLabels={heatMap.yData}
-                        xLabels={heatMap.xDataFormatted}
-                        data={heatMap.mapData}
+                        yLabels={heatMapData.yTimesHeatMapLabelsArray}
+                        xLabels={heatMapData.xDaysFormattedToSlicedDateString}
+                        data={heatMapData.heatMap2dArray}
                         onClick={() => undefined}
                     />
                 </Row>
@@ -156,14 +161,14 @@ export default function EventPlanning({
                             scheduleSelectorData={scheduleSelector}
                             show={modalShow}
                             onHide={() => setModalShow(false)}
-                            eventAvailability={event.availability}
-                            eventId={event.eventId}
+                            eventAvailability={eventData.availability}
+                            eventId={eventData.eventId}
                             uid={userId}
                         />
-                        {isHost && !event.isFinalized && (
+                        {isHost && !eventData.isFinalized && (
                             <ConfirmEventModal
-                                event={event}
-                                heatMapData={heatMap}
+                                event={eventData}
+                                heatMapData={heatMapData}
                             />
                         )}
                     </div>

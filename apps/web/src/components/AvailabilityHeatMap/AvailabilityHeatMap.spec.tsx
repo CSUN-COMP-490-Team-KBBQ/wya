@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 
 import AvailabilityHeatMap from './AvailabilityHeatMap';
 import {
-    formatXDaysTo_ddd_MMM_DD_YYYY,
+    formatXDaysToSlicedDateString,
     createHeatMapAvailabilityDataArray,
     sortObjectByKeys,
 } from '../../lib/availability';
@@ -32,7 +32,7 @@ const FAKE_XDAYS = sortObjectByKeys(FAKE_AVAILABILITY['04:00']);
 
 const FAKE_HEATMAPDATA = {
     yData: FAKE_YTIMES,
-    xData: formatXDaysTo_ddd_MMM_DD_YYYY(FAKE_XDAYS),
+    xData: formatXDaysToSlicedDateString(FAKE_XDAYS),
     mapData: createHeatMapAvailabilityDataArray(
         FAKE_YTIMES,
         FAKE_XDAYS,

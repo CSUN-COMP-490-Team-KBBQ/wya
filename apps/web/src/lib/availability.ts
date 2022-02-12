@@ -28,7 +28,7 @@ export const formatYTimesTo12Or24Hour = (
     Formats days to 'ddd MMM DD YYYY'
     Cannot use moment since this is being used by heatmap and expects a date
  **/
-export const formatXDaysTo_ddd_MMM_DD_YYYY = (xDays: string[]): string[] => {
+export const formatXDaysToSlicedDateString = (xDays: string[]): string[] => {
     return xDays.map((timeStamp) =>
         new Date(Number(timeStamp)).toDateString().slice(0, 15)
     );
@@ -103,10 +103,10 @@ export const createScheduleSelectorData = (
 ): ScheduleSelectorData => {
     const scheduleSelectorData: ScheduleSelectorData = {
         scheduleData: createCalendarAvailabilityDataArray(userAvailability),
-        sortedXData: [],
-        formattedXData: [],
-        sortedYData: [],
-        formattedYData: [],
+        yTimesScheduleSelectorLabelsArray: [],
+        xDaysFormattedToSlicedDateString: [],
+        xDaysScheduleSelectorLabelsArray: [],
+        yTimesFormattedTo12Or24Hour: [],
         is24Hour: is24Hour,
     };
 
@@ -118,35 +118,40 @@ export const createHeatMapDataAndScheduleSelectorData = (
     userAvailability: number[],
     is24Hour: boolean
 ): [HeatMapData, ScheduleSelectorData] => {
-    const sortedYTimes =
+    const sortedYTimesLabelsArray =
         sortObjectByKeys<EventDataAvailability>(eventAvailability);
-    const formattedYTimes = formatYTimesTo12Or24Hour(is24Hour, sortedYTimes);
-    const sortedXDays = sortObjectByKeys<{
+    const formattedYTimesTo12Or24Hour = formatYTimesTo12Or24Hour(
+        is24Hour,
+        sortedYTimesLabelsArray
+    );
+    const sortedXDaysLabelsArray = sortObjectByKeys<{
         [date: string]: string[];
-    }>(eventAvailability[sortedYTimes[0]]);
-    const formattedXDays = formatXDaysTo_ddd_MMM_DD_YYYY(sortedXDays);
+    }>(eventAvailability[sortedYTimesLabelsArray[0]]);
+    const formattedXDaysToSlicedDateString = formatXDaysToSlicedDateString(
+        sortedXDaysLabelsArray
+    );
 
-    const heatMapData = {
-        yData: formattedYTimes,
-        xData: sortedXDays,
-        xDataFormatted: formattedXDays,
-        mapData: createHeatMapAvailabilityDataArray(
-            sortedYTimes,
-            sortedXDays,
+    const heatMapData: HeatMapData = {
+        yTimesHeatMapLabelsArray: formattedYTimesTo12Or24Hour,
+        xDaysHeatMapLabelsArray: sortedXDaysLabelsArray,
+        xDaysFormattedToSlicedDateString: formattedXDaysToSlicedDateString,
+        heatMap2dArray: createHeatMapAvailabilityDataArray(
+            sortedYTimesLabelsArray,
+            sortedXDaysLabelsArray,
             eventAvailability
         ),
     };
 
     const scheduleSelectorData: ScheduleSelectorData = {
         scheduleData: createScheduleSelectorPreloadDataArray(
-            sortedYTimes,
-            formattedXDays,
+            sortedYTimesLabelsArray,
+            formattedXDaysToSlicedDateString,
             userAvailability
         ),
-        sortedXData: sortedXDays,
-        formattedXData: formattedXDays,
-        sortedYData: sortedYTimes,
-        formattedYData: formattedYTimes,
+        yTimesScheduleSelectorLabelsArray: sortedXDaysLabelsArray,
+        xDaysFormattedToSlicedDateString: formattedXDaysToSlicedDateString,
+        xDaysScheduleSelectorLabelsArray: sortedYTimesLabelsArray,
+        yTimesFormattedTo12Or24Hour: formattedYTimesTo12Or24Hour,
         is24Hour: is24Hour,
     };
 

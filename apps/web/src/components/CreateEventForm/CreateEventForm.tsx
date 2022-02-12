@@ -31,11 +31,12 @@ export default function CreateEventForm(): JSX.Element {
     const recaptchaRef = React.useRef<ReCAPTCHA>(null);
 
     const currentDate = moment().format('YYYY-MM-DD');
-    const start = moment().startOf('hour');
-    const end = moment().startOf('hour').add(15, 'minutes');
+    const startTime = moment().startOf('hour');
+    const endTime = moment().startOf('hour').add(15, 'minutes');
     const [startTimeValue, setStartTimeValue] =
-        React.useState<moment.Moment>(start);
-    const [endTimeValue, setEndTimeValue] = React.useState<moment.Moment>(end);
+        React.useState<moment.Moment>(startTime);
+    const [endTimeValue, setEndTimeValue] =
+        React.useState<moment.Moment>(endTime);
 
     const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
