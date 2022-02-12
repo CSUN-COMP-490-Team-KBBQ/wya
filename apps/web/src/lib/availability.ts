@@ -1,129 +1,16 @@
-import { EventDataAvailability } from '../interfaces/EventData';
+import moment from 'moment';
+import EventData, { EventDataAvailability } from '../interfaces/EventData';
+import HeatMapData from '../interfaces/HeatMapData';
+import ScheduleSelectorData from '../interfaces/ScheduleSelectorData';
 
-export const LABELS = {
-    xLabels: [
-        'Sunday',
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-    ],
-    yLabels: [
-        '00:00',
-        '00:15',
-        '00:30',
-        '00:45',
-        '01:00',
-        '01:15',
-        '01:30',
-        '01:45',
-        '02:00',
-        '02:15',
-        '02:30',
-        '02:45',
-        '03:00',
-        '03:15',
-        '03:30',
-        '03:45',
-        '04:00',
-        '04:15',
-        '04:30',
-        '04:45',
-        '05:00',
-        '05:15',
-        '05:30',
-        '05:45',
-        '06:00',
-        '06:15',
-        '06:30',
-        '06:45',
-        '07:00',
-        '07:15',
-        '07:30',
-        '07:45',
-        '08:00',
-        '08:15',
-        '08:30',
-        '08:45',
-        '09:00',
-        '09:15',
-        '09:30',
-        '09:45',
-        '10:00',
-        '10:15',
-        '10:30',
-        '10:45',
-        '11:00',
-        '11:15',
-        '11:30',
-        '11:45',
-        '12:00',
-        '12:15',
-        '12:30',
-        '12:45',
-        '13:00',
-        '13:15',
-        '13:30',
-        '13:45',
-        '14:00',
-        '14:15',
-        '14:30',
-        '14:45',
-        '15:00',
-        '15:15',
-        '15:30',
-        '15:45',
-        '16:00',
-        '16:15',
-        '16:30',
-        '16:45',
-        '17:00',
-        '17:15',
-        '17:30',
-        '17:45',
-        '18:00',
-        '18:15',
-        '18:30',
-        '18:45',
-        '19:00',
-        '19:15',
-        '19:30',
-        '19:45',
-        '20:00',
-        '20:15',
-        '20:30',
-        '20:45',
-        '21:00',
-        '21:15',
-        '21:30',
-        '21:45',
-        '22:00',
-        '22:15',
-        '22:30',
-        '22:45',
-        '23:00',
-        '23:15',
-        '23:30',
-        '23:45',
-    ],
+export const sortObjectByKeys = <T>(item: T): string[] => {
+    return Object.keys(item).sort();
 };
 
-export const getYTimesSorted = (
-    availability: EventDataAvailability
+export const formatYTimesTo12Or24Hour = (
+    is24hr: boolean,
+    yTimes: string[]
 ): string[] => {
-    return Object.keys(availability).sort();
-};
-
-export const getXDaysSorted = (
-    yTimes: string[],
-    availability: EventDataAvailability
-): string[] => {
-    return Object.keys(availability[yTimes[0]]).sort();
-};
-
-export const formatYTimes = (is24hr: boolean, yTimes: string[]): string[] => {
     return is24hr
         ? yTimes
         : yTimes.map((value) => {
@@ -137,13 +24,17 @@ export const formatYTimes = (is24hr: boolean, yTimes: string[]): string[] => {
           });
 };
 
-export const formatXDays = (xDays: string[]): string[] => {
+/**
+    Formats days to 'ddd MMM DD YYYY'
+    Cannot use moment since this is being used by heatmap and expects a date
+ **/
+export const formatXDaysToSlicedDateString = (xDays: string[]): string[] => {
     return xDays.map((timeStamp) =>
         new Date(Number(timeStamp)).toDateString().slice(0, 15)
     );
 };
 
-export const createAvailabilityDataArray = (
+export const createHeatMapAvailabilityDataArray = (
     yTimes: string[],
     xDays: string[],
     availability: EventDataAvailability
@@ -158,21 +49,12 @@ export const createAvailabilityDataArray = (
 export const createCalendarAvailabilityDataArray = (
     userAvailability: Array<number>
 ): Array<Date> => {
-    // userAvailability structure: [ { seconds: number, nanoseconds: number } ]
-    // need to convert seconds to miliseconds to create a new date
     const scheduleData = userAvailability.map((value) => new Date(value));
 
     return scheduleData;
 };
 
-export const createZeroStateArray = (
-    yTimesLen: number,
-    xDaysLen: number
-): number[][] => {
-    return new Array(yTimesLen).fill(0).map(() => new Array(xDaysLen).fill(0));
-};
-
-export const createPreloadArray = (
+export const createScheduleSelectorPreloadDataArray = (
     yTimes: string[],
     xDays: string[],
     userAvailability: Array<number>
@@ -202,7 +84,7 @@ export const createPreloadArray = (
     return scheduleData;
 };
 
-export const cleanUpUserAvailability = (
+export const removeInvalidDatesFromUserAvailability = (
     userAvailability: Array<Date>
 ): Array<Date> => {
     for (let i = 0; i < userAvailability.length; i += 1) {
@@ -213,4 +95,157 @@ export const cleanUpUserAvailability = (
     }
 
     return userAvailability;
+};
+
+export const createScheduleSelectorData = (
+    userAvailability: number[],
+    is24Hour: boolean
+): ScheduleSelectorData => {
+    const scheduleSelectorData: ScheduleSelectorData = {
+        scheduleData: createCalendarAvailabilityDataArray(userAvailability),
+        yTimesScheduleSelectorLabelsArray: [],
+        xDaysFormattedToSlicedDateString: [],
+        xDaysScheduleSelectorLabelsArray: [],
+        yTimesFormattedTo12Or24Hour: [],
+        is24Hour: is24Hour,
+    };
+
+    return scheduleSelectorData;
+};
+
+export const createHeatMapDataAndScheduleSelectorData = (
+    eventAvailability: EventDataAvailability,
+    userAvailability: number[],
+    is24Hour: boolean
+): [HeatMapData, ScheduleSelectorData] => {
+    const sortedYTimesLabelsArray =
+        sortObjectByKeys<EventDataAvailability>(eventAvailability);
+    const formattedYTimesTo12Or24Hour = formatYTimesTo12Or24Hour(
+        is24Hour,
+        sortedYTimesLabelsArray
+    );
+    const sortedXDaysLabelsArray = sortObjectByKeys<{
+        [date: string]: string[];
+    }>(eventAvailability[sortedYTimesLabelsArray[0]]);
+    const formattedXDaysToSlicedDateString = formatXDaysToSlicedDateString(
+        sortedXDaysLabelsArray
+    );
+
+    const heatMapData: HeatMapData = {
+        yTimesHeatMapLabelsArray: formattedYTimesTo12Or24Hour,
+        xDaysHeatMapLabelsArray: sortedXDaysLabelsArray,
+        xDaysFormattedToSlicedDateString: formattedXDaysToSlicedDateString,
+        heatMap2dArray: createHeatMapAvailabilityDataArray(
+            sortedYTimesLabelsArray,
+            sortedXDaysLabelsArray,
+            eventAvailability
+        ),
+    };
+
+    const scheduleSelectorData: ScheduleSelectorData = {
+        scheduleData: createScheduleSelectorPreloadDataArray(
+            sortedYTimesLabelsArray,
+            formattedXDaysToSlicedDateString,
+            userAvailability
+        ),
+        yTimesScheduleSelectorLabelsArray: sortedXDaysLabelsArray,
+        xDaysFormattedToSlicedDateString: formattedXDaysToSlicedDateString,
+        xDaysScheduleSelectorLabelsArray: sortedYTimesLabelsArray,
+        yTimesFormattedTo12Or24Hour: formattedYTimesTo12Or24Hour,
+        is24Hour: is24Hour,
+    };
+
+    return [heatMapData, scheduleSelectorData];
+};
+
+export const appendUserAvailabilityToGroupEventAvailability = (
+    xDays: string[],
+    yTimes: string[],
+    eventAvailability: EventDataAvailability,
+    userAvailability: Array<Date>,
+    uid: string
+): EventDataAvailability => {
+    removeInvalidDatesFromUserAvailability(userAvailability);
+
+    // removes uid from each cell to start from scratch
+    for (let i = 0; i < yTimes.length; i += 1) {
+        for (let j = 0; j < xDays.length; j += 1) {
+            if (eventAvailability[yTimes[i]][xDays[j]].includes(uid)) {
+                const removeIndex = eventAvailability[yTimes[i]][
+                    xDays[j]
+                ].findIndex((item) => {
+                    return item === uid;
+                });
+                eventAvailability[yTimes[i]][xDays[j]].splice(removeIndex, 1);
+            }
+        }
+    }
+
+    // add uid to each appropriate cell
+    for (let i = 0; i < userAvailability.length; i += 1) {
+        const time = userAvailability[i].toTimeString().slice(0, 5);
+        const temp = new Date(userAvailability[i].toDateString().slice(0, 15));
+        const day = temp.getTime().toString();
+        if (eventAvailability[time][day].includes(uid)) {
+            // eslint-disable-next-line
+            console.log('User already HERE');
+        } else {
+            eventAvailability[time][day].push(uid);
+        }
+    }
+
+    return eventAvailability;
+};
+
+export const createEventAvailability = (
+    startDate: string,
+    endDate: string,
+    startTime: string,
+    endTime: string
+): EventDataAvailability => {
+    const endDateTimeStamp = moment(endDate);
+    const endTimeTimeStamp = moment(endTime, 'HH:mm');
+    const tempDateTimeStamp = moment(startDate);
+    const tempTimeTimeStamp = moment(startTime, 'HH:mm');
+    const days = {};
+    const AvailabilityHeatMap = {};
+
+    // creating days map
+    while (tempDateTimeStamp.isSameOrBefore(endDateTimeStamp)) {
+        const tempDays = {
+            [tempDateTimeStamp.valueOf()]: [],
+        };
+        Object.assign(days, tempDays);
+        tempDateTimeStamp.add(1, 'days');
+    }
+
+    // creating availability map
+    while (tempTimeTimeStamp.isSameOrBefore(endTimeTimeStamp)) {
+        const tempAvailabilityHeatMap = {
+            [tempTimeTimeStamp.format('HH:mm')]: days,
+        };
+        Object.assign(AvailabilityHeatMap, tempAvailabilityHeatMap);
+        tempTimeTimeStamp.add(15, 'minutes');
+    }
+
+    return AvailabilityHeatMap;
+};
+
+export const convertUserAvailabilityDateArrayToTimestampArray = (
+    userAvailabilityData: Date[]
+): number[] => {
+    return userAvailabilityData.map((value) => value.getTime());
+};
+
+export const createAndAppendAvailability = (
+    eventDataWithoutAvail: EventData
+): EventData => {
+    const availability = createEventAvailability(
+        eventDataWithoutAvail.startDate,
+        eventDataWithoutAvail.endDate,
+        eventDataWithoutAvail.startTime,
+        eventDataWithoutAvail.endTime
+    );
+
+    return { ...eventDataWithoutAvail, availability };
 };
