@@ -109,3 +109,6 @@ dist
 
 build/
 dist/
+
+# firebase service account
+kbbq-wya*.json

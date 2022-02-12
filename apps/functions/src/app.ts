@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { json as bodyParserJSON } from 'body-parser';
 import * as nodemailer from 'nodemailer';
-import { firestore, auth, functions } from './firebase';
+import { functions, auth, firestore } from './firebase';
 import registerRouter from './routes/register';
 import createEventRouter from './routes/createEvent';
 

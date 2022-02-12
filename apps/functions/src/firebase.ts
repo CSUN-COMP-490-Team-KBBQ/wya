@@ -1,8 +1,7 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+export * as functions from 'firebase-functions';
 
-const firebase = admin.initializeApp();
-const firestore = admin.firestore(firebase);
-const auth = admin.auth(firebase);
+import { makeFirebaseClient } from 'wya-api';
 
-export { firebase, firestore, auth, functions };
+export const firebase = makeFirebaseClient();
+export const auth = firebase.auth();
+export const firestore = firebase.firestore();
