@@ -1,5 +1,4 @@
 import assert from 'assert';
-import path from 'path';
 import { Command } from 'commander';
 
 import {
@@ -9,16 +8,12 @@ import {
   etlFirebaseDeleteUser,
   makeFirebaseClient,
 } from 'wya-api';
-
-const firebaseClient = makeFirebaseClient(
-  path.resolve(
-    __dirname,
-    '../../../',
-    'kbbq-wya-35414-firebase-adminsdk-aznz0-ad159e5865.json'
-  )
-);
+import { ServiceAccount } from 'firebase-admin';
 
 const firebase = new Command('firebase');
+
+// Options
+firebase.option('-P, --production', 'Execute in production environment');
 
 /** Create New User */
 firebase
@@ -34,6 +29,16 @@ firebase
     assert(password);
 
     try {
+      // Create firebase client
+      const { production } = firebase.opts();
+      const firebaseClient = makeFirebaseClient(
+        JSON.parse(
+          production
+            ? `${process.env.FIREBASE_PRODUCTION_SERVICE_ACCOUNT}`
+            : `${process.env.FIREBASE_DEVELOPMENT_SERVICE_ACCOUNT}`
+        ) as ServiceAccount
+      );
+
       // Create the user
       const {
         data: [uid],
@@ -68,6 +73,16 @@ firebase
     assert(uid);
 
     try {
+      // Create firebase client
+      const { production } = firebase.opts();
+      const firebaseClient = makeFirebaseClient(
+        JSON.stringify(
+          production
+            ? process.env.FIREBASE_PRODUCTION_SERVICE_ACCOUNT
+            : process.env.FIREBASE_DEVELOPMENT_SERVICE_ACCOUNT
+        )
+      );
+
       await etlFirebaseDeleteUser({ uid }, { firebase: firebaseClient });
 
       console.log(`Deleted user: ${uid}`);

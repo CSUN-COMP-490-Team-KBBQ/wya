@@ -4,7 +4,6 @@
     "indexes": "firestore.indexes.json"
   },
   "functions": {
-    "source": "apps/functions/dist",
-    "predeploy": "npm run build --workspace=functions"
+    "source": "apps/functions/dist"
   }
 }
