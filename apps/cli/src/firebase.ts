@@ -76,11 +76,11 @@ firebase
       // Create firebase client
       const { production } = firebase.opts();
       const firebaseClient = makeFirebaseClient(
-        JSON.stringify(
+        JSON.parse(
           production
-            ? process.env.FIREBASE_PRODUCTION_SERVICE_ACCOUNT
-            : process.env.FIREBASE_DEVELOPMENT_SERVICE_ACCOUNT
-        )
+            ? `${process.env.FIREBASE_PRODUCTION_SERVICE_ACCOUNT}`
+            : `${process.env.FIREBASE_DEVELOPMENT_SERVICE_ACCOUNT}`
+        ) as ServiceAccount
       );
 
       await etlFirebaseDeleteUser({ uid }, { firebase: firebaseClient });
