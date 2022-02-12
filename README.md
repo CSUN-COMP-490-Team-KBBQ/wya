@@ -38,10 +38,9 @@ We use [turborepo](https://turborepo.org/) as the tool to manage our monorepo.
 
 ## Setup
 
-1. Make sure your code editor has eslint and prettier installed. Each app and package has its own ts, eslint, and prettier config.
+1. Make sure your code editor has prettier installed. Each app and package has its own ts, eslint, and prettier config.
    - For vscode:
      - prettier - esbenp.prettier-vscode
-     - eslint - dbaeumer.vscode-eslint
 2. `npm install` at the root of this directory
 3. At the root of this directory run `npm run dev` to run the dev environments across all apps
 
