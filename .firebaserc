@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "kbbq-wya-35414"
-  }
+    "production": "kbbq-wya-35414",
+    "development": "wya-dev-d6622"
+  },
+  "targets": {}
 }
