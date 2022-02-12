@@ -1,6 +1,6 @@
 import React from 'react';
 import Page from '../../components/Page/Page';
-import EventData, { EventDataAvailability } from '../../interfaces/EventData';
+import EventData from '../../interfaces/EventData';
 import { getDocSnapshot$ } from '../../lib/firestore';
 import HeatMapData from '../../interfaces/HeatMapData';
 import { createHeatMapDataAndScheduleSelectorData } from '../../lib/availability';
