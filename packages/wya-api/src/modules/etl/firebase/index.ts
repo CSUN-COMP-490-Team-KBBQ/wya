@@ -1,5 +1,6 @@
 // firebase exports
 
+export * from './create-new-event-plan';
 export * from './create-new-user';
 export * from './create-new-user-record';
 export * from './delete-user';
