@@ -26,7 +26,7 @@ export const etlFirebaseDeleteUserRecord = async (
     const { firebase } = context;
     const firebaseFirestore = firebase.firestore();
 
-    const userRecordRef = firebaseFirestore.doc(`/users/${uid}`);
+    const userRecordRef = firebaseFirestore.doc(`/${process.env.USERS}/${uid}`);
     await firebaseFirestore.recursiveDelete(userRecordRef);
   } catch (err: any) {
     throw {

@@ -96,7 +96,9 @@ export const etlFirebaseCreateNewEventPlan = async (
     /** Load */
     await firebaseFirestore.runTransaction(async (transaction) => {
       // Create the event-plan doc
-      const eventPlanRef = firebaseFirestore.doc(`/event-plans/${eventPlanId}`);
+      const eventPlanRef = firebaseFirestore.doc(
+        `/${process.env.EVENT_PLANS}/${eventPlanId}`
+      );
       await transaction.create(eventPlanRef, {
         ...restOfParams,
         invitees: inviteesByUserIds,
@@ -105,7 +107,7 @@ export const etlFirebaseCreateNewEventPlan = async (
 
       // Create the event-plan/availabilites/heat-map
       const eventPlanAvailabilitiesHeatMapRef = firebaseFirestore.doc(
-        `/event-plans/${eventPlanId}/availabilities/heat-map`
+        `/${process.env.EVENT_PLANS}/${eventPlanId}/${process.env.EVENT_PLAN_AVAILABILITIES}/${process.env.EVENT_PLAN_HEAT_MAP_AVAILABILITY}`
       );
       await transaction.create(eventPlanAvailabilitiesHeatMapRef, {
         // TODO: Heat-map availability should be extracted
@@ -116,7 +118,7 @@ export const etlFirebaseCreateNewEventPlan = async (
       await Promise.all(
         inviteesByUserIds.map((userId) => {
           const eventPlanInviteeAvailabilityRef = firebaseFirestore.doc(
-            `/event-plans/${eventPlanId}/availabilities/${userId}`
+            `/${process.env.EVENT_PLANS}/${eventPlanId}/${process.env.EVENT_PLAN_AVAILABILITIES}/${userId}`
           );
           return transaction.create(eventPlanInviteeAvailabilityRef, {
             // TODO: Invitees' availabilities should be extracted
