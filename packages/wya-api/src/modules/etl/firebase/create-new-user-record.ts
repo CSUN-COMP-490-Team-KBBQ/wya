@@ -30,7 +30,7 @@ export const etlFirebaseCreateNewUserRecord = async (
     const { firebase } = context;
     const firebaseFirestore = firebase.firestore();
 
-    firebaseFirestore.runTransaction(async (transaction) => {
+    await firebaseFirestore.runTransaction(async (transaction) => {
       // Create user record
       const userRecordRef = firebaseFirestore.doc(`/users/${uid}`);
       await transaction.create(userRecordRef, {
@@ -43,9 +43,10 @@ export const etlFirebaseCreateNewUserRecord = async (
 
       // Create user availabilities sub collection
       const defaultUserAvailabilityRef = firebaseFirestore.doc(
-        `/users/${uid}/availabilities/default`
+        `/users/${uid}/availabilities/heat-map`
       );
       await transaction.create(defaultUserAvailabilityRef, {
+        // TODO: Heat-map availability should be extracted
         data: [],
       });
 
