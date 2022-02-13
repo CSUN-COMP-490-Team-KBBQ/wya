@@ -1,6 +1,7 @@
 import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
+import nodemailer from 'nodemailer';
 import { v4 as uuid } from 'uuid';
 
 import { etlFirebaseGetUserByEmail } from './get-user-by-email';
@@ -78,7 +79,7 @@ export const etlFirebaseCreateNewEventPlan = async (
 
     /** Extract */
     const eventPlanId = uuid();
-    const { invitees: inviteesByEmails, ...restOfParams } = params;
+    const { invitees: inviteesByEmails, name, ...restOfParams } = params;
 
     /** Transform */
 
@@ -101,6 +102,9 @@ export const etlFirebaseCreateNewEventPlan = async (
       );
       await transaction.create(eventPlanRef, {
         ...restOfParams,
+        // Readd name here -- was destructed earlier because its to be used
+        // when sending emails to invitees
+        name,
         invitees: inviteesByUserIds,
         eventPlanId,
       } as EventPlanDocumentData);
@@ -127,6 +131,51 @@ export const etlFirebaseCreateNewEventPlan = async (
         })
       );
     });
+
+    // Send emails to invitees
+    try {
+      const emailTransport = nodemailer.createTransport({
+        // NOTE: Using gmail as a sender because there is currently no domain for an email service
+        service: 'gmail',
+        auth: {
+          user: process.env.NODEMAILER_USERNAME,
+          pass: process.env.NODEMAILER_PASSWORD,
+        },
+      });
+
+      inviteesByEmails.forEach((email) => {
+        if (email) {
+          debug(`Sending invitation email to ${email}`);
+          const [domain] = (
+            process.env.DOMAINS ?? 'http://localhost:3000'
+          ).split(',');
+          const eventPlanUrl = `${domain}/event-plans/${eventPlanId}`;
+          const mailOptions = {
+            from: process.env.NODEMAILER_USERNAME,
+            to: email,
+            subject: `WYA?! You've been invited to an event!`,
+            html:
+              '<h1>WYA</h1>' +
+              `<p>You've been invited to :${name}</p>` +
+              `<p>Click here to view event: <a href="${eventPlanUrl}">${eventPlanUrl}</a></p>`,
+          };
+
+          emailTransport.sendMail(mailOptions, (err, info) => {
+            if (err) {
+              debug(`Error sending email to ${email}`);
+              debug(`${JSON.stringify(err ?? {}, null, 2)}`);
+            } else {
+              debug(`Send to ${email}`);
+              debug(`${JSON.stringify(info ?? {}, null, 2)}`);
+            }
+          });
+        }
+      });
+    } catch (err) {
+      /**
+       * We fail silently for now so that the rest of this etl can complete
+       */
+    }
 
     debug(`Event plan created: ${eventPlanId}`);
 

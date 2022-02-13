@@ -7,7 +7,11 @@ module.exports = {
   target: 'node',
   mode: 'production',
   entry: './src/index.ts',
-  plugins: [new DotenvPlugin()],
+  plugins: [
+    new DotenvPlugin({
+      path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`),
+    }),
+  ],
   module: {
     rules: [
       {

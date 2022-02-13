@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "webpack",
+    "build": "NODE_ENV=development webpack",
+    "build:prod": "NODE_ENV=production webpack",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "test": "echo testing wya-api",
     "deploy": "echo deploying wya-api",
@@ -15,6 +16,7 @@
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
     "@types/lodash": "^4.14.178",
+    "@types/nodemailer": "^6.4.4",
     "@types/uuid": "^8.3.4",
     "config": "*",
     "dotenv-webpack": "^7.1.0",
@@ -29,6 +31,7 @@
     "firebase-admin": "^10.0.2",
     "fs-extra": "^10.0.0",
     "lodash": "^4.17.21",
+    "nodemailer": "^6.7.2",
     "uuid": "^8.3.2"
   }
 }

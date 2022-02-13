@@ -57,7 +57,7 @@ export const etlFirebaseCreateNewUserRecord = async (
     });
 
     return {
-      data: [],
+      data: [uid],
     };
   } catch (err: any) {
     throw {
