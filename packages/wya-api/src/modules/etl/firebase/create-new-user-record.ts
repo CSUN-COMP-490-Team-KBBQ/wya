@@ -29,14 +29,28 @@ export const etlFirebaseCreateNewUserRecord = async (
   try {
     const { firebase } = context;
     const firebaseFirestore = firebase.firestore();
-    await firebaseFirestore.doc(`/users/${uid}`).create({
-      uid,
-      email,
-      firstName: firstName ?? 'Guest',
-      lastName: lastName ?? 'Guest',
-      timeFormat24Hr: false,
-      events: [],
-      availability: [],
+
+    firebaseFirestore.runTransaction(async (transaction) => {
+      // Create user record
+      const userRecordRef = firebaseFirestore.doc(`/users/${uid}`);
+      await transaction.create(userRecordRef, {
+        uid,
+        email,
+        firstName: firstName ?? 'Guest',
+        lastName: lastName ?? 'Guest',
+        hourlyTimeFormat: 'hh',
+      });
+
+      // Create user availabilities sub collection
+      const defaultUserAvailabilityRef = firebaseFirestore.doc(
+        `/users/${uid}/availabilities/default`
+      );
+      await transaction.create(defaultUserAvailabilityRef, {
+        data: [],
+      });
+
+      // Create user event plans sub collection -- can't actually have an empty collection
+      // Create user events sub collection -- can't actually have an empty collection
     });
 
     return {
