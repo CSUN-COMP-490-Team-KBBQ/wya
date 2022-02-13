@@ -1,7 +1,6 @@
 import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
-import fp from 'lodash/fp';
 import { v4 as uuid } from 'uuid';
 
 import { etlFirebaseGetUserByEmail } from './get-user-by-email';
@@ -31,7 +30,7 @@ type EtlFirebaseCreateNewEventPlanContext = {
   firebase: firebaseAdmin.app.App;
 };
 
-type EventPlanData = {
+export type EventPlanDocumentData = {
   /** RO3 */
   name: string;
   description: string;
@@ -102,7 +101,7 @@ export const etlFirebaseCreateNewEventPlan = async (
         ...restOfParams,
         invitees: inviteesByUserIds,
         eventPlanId,
-      } as EventPlanData);
+      } as EventPlanDocumentData);
 
       // Create the event-plan/availabilites/heat-map
       const eventPlanAvailabilitiesHeatMapRef = firebaseFirestore.doc(
@@ -126,6 +125,8 @@ export const etlFirebaseCreateNewEventPlan = async (
         })
       );
     });
+
+    debug(`Event plan created: ${eventPlanId}`);
 
     return {
       data: [eventPlanId],
