@@ -4,20 +4,20 @@ import firebaseAdmin from 'firebase-admin';
 
 const debug = Debug('wya-api:etl/firebase/create-new-user-record');
 
-type etlFirebaseCreateNewUserRecordParams = {
+type EtlFirebaseCreateNewUserRecordParams = {
   uid: string;
   email: string;
   firstName?: string;
   lastName?: string;
 };
 
-type etlFirebaseCreateNewUserRecordContext = {
+type EtlFirebaseCreateNewUserRecordContext = {
   firebase: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseCreateNewUserRecord = async (
-  params: etlFirebaseCreateNewUserRecordParams,
-  context: etlFirebaseCreateNewUserRecordContext
+  params: EtlFirebaseCreateNewUserRecordParams,
+  context: EtlFirebaseCreateNewUserRecordContext
 ) => {
   const { uid, email, firstName, lastName } = params;
 

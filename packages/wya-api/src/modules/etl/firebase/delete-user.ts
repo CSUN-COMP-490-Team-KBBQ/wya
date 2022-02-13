@@ -4,17 +4,17 @@ import firebaseAdmin from 'firebase-admin';
 
 const debug = Debug('wya-api:etl/firebase/delete-user');
 
-type etlFirebaseDeleteUserParams = {
+type EtlFirebaseDeleteUserParams = {
   uid: string;
 };
 
-type etlFirebaseDeleteUserContext = {
+type EtlFirebaseDeleteUserContext = {
   firebase: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseDeleteUser = async (
-  params: etlFirebaseDeleteUserParams,
-  context: etlFirebaseDeleteUserContext
+  params: EtlFirebaseDeleteUserParams,
+  context: EtlFirebaseDeleteUserContext
 ) => {
   const { uid } = params;
 
