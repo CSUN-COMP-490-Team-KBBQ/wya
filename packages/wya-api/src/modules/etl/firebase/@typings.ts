@@ -1,15 +1,13 @@
-export type Email = string;
-export type UserId = string;
-export type EventPlanId = string;
-export type EventId = string;
-export type HourlyTimeFormat = 'hh' | 'HH';
-
 /** users */
+export type UserId = string;
+export type Email = string;
+
 export type User = {
   uid: UserId;
   email: Email;
 };
 
+export type HourlyTimeFormat = 'hh' | 'HH';
 export type UserRecordDocument = {
   email: Email;
   firstName: string;
@@ -34,9 +32,39 @@ export type EventPlanInfo = {
   hourlyTimeFormat: HourlyTimeFormat;
 };
 
+export type EventPlanId = string;
 export type EventPlanDocument = EventPlanInfo & {
   invitees: UserId[];
   eventPlanId: EventPlanId;
 };
 
+export type EventPlanAvailabilityDocument = {
+  data: {
+    [time: string]: {
+      [date: string]: string[];
+    };
+  };
+};
+
 /** events */
+export type EventInfo = {
+  name: string;
+  description: string;
+  hostId: UserId;
+  // Date times
+  day: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+};
+
+export type EventId = string;
+export type EventDocument = EventInfo & {
+  eventId: EventId;
+};
+
+export type EventGuestStatus = 'ACCEPTED' | 'DECLINED' | 'PENDING';
+export type EventGuest = User & {
+  status: EventGuestStatus;
+};
