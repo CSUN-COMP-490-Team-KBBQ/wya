@@ -4,7 +4,13 @@ import firebaseAdmin from 'firebase-admin';
 import nodemailer from 'nodemailer';
 import { v4 as uuid } from 'uuid';
 
-import { UserId, Email, EventPlanDocument, EventPlanInfo } from './@typings';
+import {
+  UserId,
+  Email,
+  EventPlanDocument,
+  EventPlanInfo,
+  EventPlanAvailabilityDocument,
+} from './@typings';
 import { etlFirebaseGetUserByEmail } from './get-user-by-email';
 
 const debug = Debug('wya-api:etl/firebase/create-new-event-plan');
@@ -85,8 +91,8 @@ export const etlFirebaseCreateNewEventPlan = async (
       );
       await transaction.create(eventPlanAvailabilitiesHeatMapRef, {
         // TODO: Heat-map availability should be extracted
-        data: [],
-      });
+        data: {},
+      } as EventPlanAvailabilityDocument);
 
       // Create the event-plan/availabilites doc for each invitee
       await Promise.all(
@@ -96,8 +102,8 @@ export const etlFirebaseCreateNewEventPlan = async (
           );
           return transaction.create(eventPlanInviteeAvailabilityRef, {
             // TODO: Invitees' availabilities should be extracted
-            data: [],
-          });
+            data: {},
+          } as EventPlanAvailabilityDocument);
         })
       );
     });

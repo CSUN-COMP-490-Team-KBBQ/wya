@@ -2,6 +2,11 @@ import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
 
+import {
+  UserAvailabilityHeatMapDocument,
+  UserRecordDocument,
+} from './@typings';
+
 import { User } from './@typings';
 
 const debug = Debug('wya-api:etl/firebase/create-new-user-record');
@@ -41,7 +46,7 @@ export const etlFirebaseCreateNewUserRecord = async (
         firstName: firstName ?? 'Guest',
         lastName: lastName ?? 'Guest',
         hourlyTimeFormat: 'hh',
-      });
+      } as UserRecordDocument);
 
       // Create user availabilities sub collection
       const userHeatMapAvailabilityDocRef = firebaseFirestore.doc(
@@ -50,7 +55,7 @@ export const etlFirebaseCreateNewUserRecord = async (
       await transaction.create(userHeatMapAvailabilityDocRef, {
         // New availability
         data: [],
-      });
+      } as UserAvailabilityHeatMapDocument);
 
       // Create user event plans sub collection -- can't actually have an empty collection
       // Create user events sub collection -- can't actually have an empty collection
