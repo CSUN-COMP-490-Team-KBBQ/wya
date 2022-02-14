@@ -1,6 +1,5 @@
 const path = require('path');
 const GeneratePackageJsonWebpackPlugin = require('generate-package-json-webpack-plugin');
-const DotenvPlugin = require('dotenv-webpack');
 
 const { dependencies } = require('./package.json');
 
@@ -23,12 +22,7 @@ module.exports = {
   target: 'node',
   mode: 'production',
   entry: './src/index.ts',
-  plugins: [
-    new GeneratePackageJsonWebpackPlugin(distPackageJson),
-    new DotenvPlugin({
-      path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`),
-    }),
-  ],
+  plugins: [new GeneratePackageJsonWebpackPlugin(distPackageJson)],
   module: {
     rules: [
       {
