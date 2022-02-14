@@ -2,12 +2,12 @@ import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
 
-import { EventPlanDocumentData } from './create-new-event-plan';
+import { EventPlanDocument } from './@typings';
 
 const debug = Debug('wya-api:etl/firebase/delete-event-plan');
 
 type EtlFirebaseDeleteEventPlanParams = {
-  eventPlanId: EventPlanDocumentData['eventPlanId'];
+  eventPlanId: EventPlanDocument['eventPlanId'];
 };
 
 type EtlFirebaseDeleteEventPlanContext = {
@@ -35,7 +35,7 @@ export const etlFirebaseDeleteEventPlan = async (
       );
       const eventPlanDoc = await eventPlanDocRef.get();
       const eventPlanDocData = eventPlanDoc.data() as
-        | EventPlanDocumentData
+        | EventPlanDocument
         | undefined;
 
       const invitees = eventPlanDocData?.invitees ?? [];

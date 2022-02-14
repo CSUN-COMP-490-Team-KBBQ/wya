@@ -2,10 +2,12 @@ import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
 
+import { Email } from './@typings';
+
 const debug = Debug('wya-api:etl/firebase/get-user-by-email');
 
 type EtlFirebaseGetUserByEmailParams = {
-  email: string;
+  email: Email;
 };
 
 type EtlFirebaseGetUserByEmailContext = {

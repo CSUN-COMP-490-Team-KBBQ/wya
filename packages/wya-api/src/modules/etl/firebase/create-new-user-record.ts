@@ -2,11 +2,11 @@ import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
 
+import { User } from './@typings';
+
 const debug = Debug('wya-api:etl/firebase/create-new-user-record');
 
-type EtlFirebaseCreateNewUserRecordParams = {
-  uid: string;
-  email: string;
+type EtlFirebaseCreateNewUserRecordParams = User & {
   firstName?: string;
   lastName?: string;
 };

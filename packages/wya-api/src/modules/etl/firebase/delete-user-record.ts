@@ -2,10 +2,12 @@ import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
 
+import { UserId } from './@typings';
+
 const debug = Debug('wya-api:etl/firebase/delete-user-record');
 
 type EtlFirebaseDeleteUserRecordParams = {
-  uid: string;
+  uid: UserId;
 };
 
 type EtlFirebaseDeleteUserRecordContext = {

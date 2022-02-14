@@ -4,47 +4,17 @@ import firebaseAdmin from 'firebase-admin';
 import nodemailer from 'nodemailer';
 import { v4 as uuid } from 'uuid';
 
+import { UserId, Email, EventPlanDocument, EventPlanInfo } from './@typings';
 import { etlFirebaseGetUserByEmail } from './get-user-by-email';
 
 const debug = Debug('wya-api:etl/firebase/create-new-event-plan');
 
-type HourlyTimeFormat = 'hh' | 'HH';
-type Email = string;
-type UserId = string;
-
-type EtlFirebaseCreateNewEventPlanParams = {
-  /** RO3 copied from EventPlanData */
-  name: string;
-  description: string;
-  dailyStartTime: string;
-  dailyEndTime: string;
-  startDate: string;
-  endDate: string;
-  hostId: string;
-  hourlyTimeFormat: HourlyTimeFormat;
-  /** End of R03 */
-
+type EtlFirebaseCreateNewEventPlanParams = EventPlanInfo & {
   invitees: Email[];
 };
 
 type EtlFirebaseCreateNewEventPlanContext = {
   firebase: firebaseAdmin.app.App;
-};
-
-export type EventPlanDocumentData = {
-  /** RO3 */
-  name: string;
-  description: string;
-  dailyStartTime: string;
-  dailyEndTime: string;
-  startDate: string;
-  endDate: string;
-  hostId: string;
-  hourlyTimeFormat: HourlyTimeFormat;
-  /** End of R03 */
-
-  invitees: UserId[];
-  eventPlanId: string;
 };
 
 const _validateParams = (params: EtlFirebaseCreateNewEventPlanParams) => {
@@ -107,7 +77,7 @@ export const etlFirebaseCreateNewEventPlan = async (
         name,
         invitees: inviteesByUserIds,
         eventPlanId,
-      } as EventPlanDocumentData);
+      } as EventPlanDocument);
 
       // Create the event-plan/availabilites/heat-map
       const eventPlanAvailabilitiesHeatMapRef = firebaseFirestore.doc(
