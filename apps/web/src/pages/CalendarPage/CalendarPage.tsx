@@ -180,7 +180,8 @@ export default function CalendarPage(): JSX.Element {
             <Col sm={6} id="eventListCol">
               <EventList
                 elementId="calendar-event-list"
-                events={userRecord.events ?? []}
+                // TODO: List all user related events
+                events={[]}
               />
             </Col>
           </Row>

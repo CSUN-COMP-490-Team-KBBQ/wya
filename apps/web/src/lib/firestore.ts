@@ -11,6 +11,8 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import axios from 'axios';
+import { HourlyTimeFormat, UserId } from 'wya-api';
+
 import app from './firebase';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';
 import UserData from '../interfaces/User';
@@ -86,6 +88,14 @@ export const updateUserTimeFormatOption = (
 ): Promise<void> => {
   const userDocRef = getDocRef(`/users/${uid}`);
   return updateDoc(userDocRef, 'timeFormat24Hr', timeFormatOption);
+};
+
+export const updateUserRecordHourlyTimeFormat = (
+  uid: UserId,
+  hourlyTimeFormat: HourlyTimeFormat
+) => {
+  const userRecordDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${uid}`);
+  return updateDoc(userRecordDocRef, { hourlyTimeFormat });
 };
 
 export const updateEventAvailability = (
