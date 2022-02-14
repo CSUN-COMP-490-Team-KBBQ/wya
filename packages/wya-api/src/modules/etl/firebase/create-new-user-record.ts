@@ -44,11 +44,11 @@ export const etlFirebaseCreateNewUserRecord = async (
       });
 
       // Create user availabilities sub collection
-      const defaultUserAvailabilityRef = firebaseFirestore.doc(
+      const userHeatMapAvailabilityDocRef = firebaseFirestore.doc(
         `/${process.env.USERS}/${uid}/${process.env.USER_HEAT_MAP_AVAILABILITY}`
       );
-      await transaction.create(defaultUserAvailabilityRef, {
-        // TODO: Heat-map availability should be extracted
+      await transaction.create(userHeatMapAvailabilityDocRef, {
+        // New availability
         data: [],
       });
 
