@@ -20,7 +20,15 @@ export type UserAvailabilityHeatMapDocument = {
   data: number[];
 };
 
+export type UserEventPlanDocument = Exclude<
+  EventPlanInfo,
+  { hostId: UserId }
+> & {
+  role: EventPlanRole;
+};
+
 /** event-plans */
+export type EventPlanRole = 'INVITEE' | 'HOST';
 export type EventPlanInfo = {
   name: string;
   description: string;
@@ -41,7 +49,7 @@ export type EventPlanDocument = EventPlanInfo & {
 export type EventPlanAvailabilityDocument = {
   data: {
     [time: string]: {
-      [date: string]: string[];
+      [date: string]: UserId[];
     };
   };
 };

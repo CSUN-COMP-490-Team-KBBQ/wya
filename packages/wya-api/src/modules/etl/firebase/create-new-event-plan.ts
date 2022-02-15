@@ -4,6 +4,7 @@ import firebaseAdmin from 'firebase-admin';
 import nodemailer from 'nodemailer';
 import { v4 as uuid } from 'uuid';
 
+import { UserEventPlanDocument } from './@typings';
 import {
   UserId,
   Email,
@@ -26,7 +27,7 @@ type EtlFirebaseCreateNewEventPlanContext = {
 const _validateParams = (params: EtlFirebaseCreateNewEventPlanParams) => {
   const { invitees, ...restOfParams } = params;
   for (const [key, value] of Object.entries(restOfParams)) {
-    assert(value, `[${key}] is required`);
+    assert(value || value === '', `[${key}] is required`);
   }
 
   // If there are invitees check to make sure we have proper emails
@@ -55,7 +56,7 @@ export const etlFirebaseCreateNewEventPlan = async (
 
     /** Extract */
     const eventPlanId = uuid();
-    const { invitees: inviteesByEmails, name, ...restOfParams } = params;
+    const { invitees: inviteesByEmails, hostId, ...restOfParams } = params;
 
     /** Transform */
 
@@ -78,9 +79,8 @@ export const etlFirebaseCreateNewEventPlan = async (
       );
       await transaction.create(eventPlanRef, {
         ...restOfParams,
-        // Readd name here -- was destructed earlier because its to be used
-        // when sending emails to invitees
-        name,
+        // Re adding back hostId because it was destructed earlier
+        hostId,
         invitees: inviteesByUserIds,
         eventPlanId,
       } as EventPlanDocument);
@@ -106,6 +106,28 @@ export const etlFirebaseCreateNewEventPlan = async (
           } as EventPlanAvailabilityDocument);
         })
       );
+
+      // Associate event-plan doc to host
+      const hostEventPlanDocRef = firebaseFirestore.doc(
+        `/${process.env.USERS}/${hostId}/${process.env.USER_EVENT_PLANS}/${eventPlanId}`
+      );
+      await transaction.create(hostEventPlanDocRef, {
+        ...restOfParams,
+        role: 'HOST',
+      } as UserEventPlanDocument);
+
+      // Associate event-plan doc to each invitee
+      await Promise.all(
+        inviteesByUserIds.map((userId) => {
+          const inviteeEventPlanDocRef = firebaseFirestore.doc(
+            `/${process.env.USERS}/${userId}/${process.env.USER_EVENT_PLANS}/${eventPlanId}`
+          );
+          return transaction.create(inviteeEventPlanDocRef, {
+            ...restOfParams,
+            role: 'INVITEE',
+          } as UserEventPlanDocument);
+        })
+      );
     });
 
     // Send emails to invitees
@@ -126,6 +148,7 @@ export const etlFirebaseCreateNewEventPlan = async (
             process.env.DOMAINS ?? 'http://localhost:3000'
           ).split(',');
           const eventPlanUrl = `${domain}/event-plans/${eventPlanId}`;
+          const { name } = restOfParams;
           const mailOptions = {
             from: process.env.NODEMAILER_USERNAME,
             to: email,

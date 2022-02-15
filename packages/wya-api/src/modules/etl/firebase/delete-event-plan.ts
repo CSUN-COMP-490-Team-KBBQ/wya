@@ -39,9 +39,15 @@ export const etlFirebaseDeleteEventPlan = async (
         | undefined;
 
       const invitees = eventPlanDocData?.invitees ?? [];
+      const hostId = eventPlanDocData?.hostId;
 
       /** Transform */
       /** Load */
+      // Delete the event plan for host
+      const hostEventPlanDocRef = firebaseFirestore.doc(
+        `/${process.env.USERS}/${hostId}/${process.env.USER_EVENT_PLANS}/${eventPlanId}`
+      );
+      await transaction.delete(hostEventPlanDocRef);
 
       // Delete the event plan for all invitees
       await Promise.all(

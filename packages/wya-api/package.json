@@ -21,6 +21,7 @@
     "config": "*",
     "dotenv-webpack": "^7.1.0",
     "jest": "^27.4.7",
+    "moment-locales-webpack-plugin": "^1.2.0",
     "ts-loader": "^9.2.6",
     "tsconfig": "*",
     "typescript": "^4.5.4",
@@ -31,6 +32,7 @@
     "firebase-admin": "^10.0.2",
     "fs-extra": "^10.0.0",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "nodemailer": "^6.7.2",
     "uuid": "^8.3.2"
   }

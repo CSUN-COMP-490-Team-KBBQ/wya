@@ -1,5 +1,6 @@
 const path = require('path');
 const DotenvPlugin = require('dotenv-webpack');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 const root = path.resolve(__dirname, '../../');
 
@@ -11,6 +12,7 @@ module.exports = {
     new DotenvPlugin({
       path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`),
     }),
+    new MomentLocalesPlugin(),
   ],
   module: {
     rules: [

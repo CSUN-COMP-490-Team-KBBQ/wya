@@ -3,6 +3,7 @@ import { Command } from 'commander';
 
 import {
   generatePassword,
+  etlFirebaseCreateNewEventPlan,
   etlFirebaseCreateNewUser,
   etlFirebaseCreateNewUserRecord,
   etlFirebaseDeleteUser,
@@ -59,6 +60,38 @@ firebase
       console.log(
         `Generated new user ${uid} email: ${email} | password: ${password}`
       );
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+/** Create New Event Plan */
+firebase
+  .command('create-new-event-plan <json>')
+  .alias('cnep')
+  .description('Create a new event plan')
+  .action(async (json) => {
+    const data = JSON.parse(json);
+
+    try {
+      // Create firebase client
+      const { production } = firebase.opts();
+      const firebaseClient = makeFirebaseClient(
+        JSON.parse(
+          production
+            ? `${process.env.FIREBASE_PRODUCTION_SERVICE_ACCOUNT}`
+            : `${process.env.FIREBASE_DEVELOPMENT_SERVICE_ACCOUNT}`
+        ) as ServiceAccount
+      );
+
+      // Create event plan
+      const {
+        data: [eventPlanId],
+      } = await etlFirebaseCreateNewEventPlan(data, {
+        firebase: firebaseClient,
+      });
+
+      console.log(`Created new event plan: ${eventPlanId}`);
     } catch (err) {
       console.error(err);
     }
