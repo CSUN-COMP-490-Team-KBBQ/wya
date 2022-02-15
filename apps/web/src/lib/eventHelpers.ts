@@ -1,30 +1,8 @@
-import moment from 'moment';
 import { UserRecordDocument } from 'wya-api';
-import EventData from '../interfaces/EventData';
-import UserData from '../interfaces/User';
 
-export const isUserAHost = (
-  userRecord: UserRecordDocument | null,
-  id: string
-): boolean => {
+export const isUserAHost = (userRecord: UserRecordDocument | null): boolean => {
   if (!userRecord) return false;
   return true;
-};
-
-export const createEventDataWithoutAvailability = (
-  formData: FormData,
-  guests: string[]
-): EventData => {
-  const formValues = Object.fromEntries(
-    formData.entries()
-  ) as unknown as EventData;
-  formValues.startTime = moment(formValues.startTime, ['hh:mm A']).format(
-    'HH:mm'
-  );
-  formValues.endTime = moment(formValues.endTime, ['hh:mm A']).format('HH:mm');
-  const eventDataWithoutAvail = { ...formValues, guests };
-
-  return eventDataWithoutAvail;
 };
 
 /** 

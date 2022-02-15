@@ -11,7 +11,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import axios from 'axios';
-import { HourlyTimeFormat, UserId } from 'wya-api';
+import { Email, EventPlanInfo, HourlyTimeFormat, UserId } from 'wya-api';
 
 import app from './firebase';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';
@@ -22,6 +22,35 @@ const firestore = getFirestore(app);
 function getDocRef(path: string): DocumentReference<DocumentData> {
   return doc(firestore, path);
 }
+
+export const createEventPlan = (
+  data: EventPlanInfo & {
+    invitees: Email[];
+  }
+) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${process.env.REACT_APP_CLOUD_FUNCTIONS_URL}/api/event-plans/create`,
+        JSON.stringify(data),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        const {
+          data: {
+            data: [eventPlanId],
+          },
+        } = res;
+        resolve(eventPlanId);
+      })
+      .catch(reject);
+  });
+};
 
 export const createEvent = (eventData: EventData): Promise<string> => {
   return new Promise((resolve, reject) => {

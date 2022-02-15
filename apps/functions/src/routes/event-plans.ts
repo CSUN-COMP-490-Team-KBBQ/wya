@@ -10,12 +10,12 @@ const router = Router();
 
 router.post('/create', async (req, res) => {
   const logger = req.app.locals.functions.logger;
-  const params = req.body;
+  const { 'g-recaptcha-response': token, ...restOfReqBody } = req.body;
 
   try {
     res
       .status(200)
-      .json(await etlFirebaseCreateNewEventPlan(params, { firebase }));
+      .json(await etlFirebaseCreateNewEventPlan(restOfReqBody, { firebase }));
   } catch (err) {
     logger.error(err);
     res.status(500).json(err);

@@ -34,7 +34,7 @@ export default function EventPage({
   const [heatMapData, setHeatMapData] = React.useState<HeatMapData>();
   const [scheduleSelectorData, setScheduleSelectorData] =
     React.useState<ScheduleSelectorData>();
-  const isHost = isUserAHost(userRecord, match.params.id);
+  const isHost = isUserAHost(userRecord);
 
   React.useEffect(() => {
     if (userRecord) {

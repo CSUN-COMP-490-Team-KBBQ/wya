@@ -3,6 +3,11 @@
   "exclude": ["node_modules", "dist", "build"],
   "extends": "tsconfig/react-base.json",
   "compilerOptions": {
+    "outDir": "dist",
+    "target": "ES5",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "noEmit": false,
     "downlevelIteration": true,
     "importHelpers": true
   }
