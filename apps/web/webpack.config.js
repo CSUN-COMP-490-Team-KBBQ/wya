@@ -1,8 +1,12 @@
 const path = require('path');
 const DotenvPlugin = require('dotenv-webpack');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 
 const root = path.resolve(__dirname, '../../');
+const isProduction = process.env.NODE_ENV === 'production' ?? false;
 
 module.exports = {
   target: 'web',
@@ -17,13 +21,33 @@ module.exports = {
       path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`),
     }),
     new MomentLocalesPlugin(),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: 'public',
+          filter: async (resourcePath) => !resourcePath.endsWith('html'),
+          to: './',
+        },
+      ],
+    }),
+    new HtmlWebpackPlugin({
+      title: 'wya?',
+      publicPath: './',
+      scriptLoading: 'defer',
+      showErrors: !isProduction,
+      inject: true,
+      template: './public/index.html',
+      minify: isProduction,
+    }),
+    new InterpolateHtmlPlugin(HtmlWebpackPlugin, {
+      PUBLIC_URL: '.',
+    }),
   ],
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
+        loader: 'babel-loader',
       },
       {
         test: /\.css$/i,
@@ -41,7 +65,11 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json'],
-    modules: [path.resolve(root, 'node_modules'), 'node_modules'],
+    modules: [
+      path.resolve(root, 'node_modules'),
+      path.resolve(__dirname, 'node_modules'),
+    ],
+    // Polyfilling for native node modules
     fallback: {
       buffer: require.resolve('buffer/'),
       child_process: false,
@@ -63,5 +91,14 @@ module.exports = {
   },
   externals: {
     'firebase-admin': 'firebase-admin',
+  },
+  devServer: {
+    static: {
+      directory: path.resolve(__dirname, 'dist'),
+      watch: true,
+    },
+    port: 3000,
+    open: true,
+    hot: true,
   },
 };

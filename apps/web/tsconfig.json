@@ -6,7 +6,9 @@
     "outDir": "dist",
     "target": "ES5",
     "allowJs": true,
-    "moduleResolution": "node",
+    "jsx": "react",
+    "module": "ES6",
+    "moduleResolution": "Node",
     "noEmit": false,
     "downlevelIteration": true,
     "importHelpers": true

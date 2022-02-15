@@ -31,7 +31,7 @@ export const createEventPlan = (
   return new Promise((resolve, reject) => {
     axios
       .post(
-        `${process.env.REACT_APP_CLOUD_FUNCTIONS_URL}/api/event-plans/create`,
+        `${process.env.FIREBASE_CLOUD_FUNCTIONS_URL}/api/event-plans/create`,
         JSON.stringify(data),
         {
           headers: {
@@ -103,7 +103,7 @@ export const getDocSnapshot$ = (
 
 export const updateCalendarAvailability = (data: number[], uid: string) => {
   const userHeatMapAvailabilityDocRef = getDocRef(
-    `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_HEAT_MAP_AVAILABILITY}`
+    `/${process.env.USERS}/${uid}/${process.env.USER_HEAT_MAP_AVAILABILITY}`
   );
 
   return updateDoc(userHeatMapAvailabilityDocRef, {
@@ -123,7 +123,7 @@ export const updateUserRecordHourlyTimeFormat = (
   uid: UserId,
   hourlyTimeFormat: HourlyTimeFormat
 ) => {
-  const userRecordDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${uid}`);
+  const userRecordDocRef = getDocRef(`/${process.env.USERS}/${uid}`);
   return updateDoc(userRecordDocRef, { hourlyTimeFormat });
 };
 
