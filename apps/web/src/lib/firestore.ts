@@ -11,7 +11,11 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import axios from 'axios';
-import { Email, EventPlanInfo, HourlyTimeFormat, UserId } from 'wya-api';
+// import { Email, EventPlanInfo, HourlyTimeFormat, UserId } from 'wya-api';
+type EventPlanInfo = {};
+type Email = string;
+type HourlyTimeFormat = 'hh' | 'HH';
+type UserId = string;
 
 import app from './firebase';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';

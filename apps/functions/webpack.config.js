@@ -22,6 +22,11 @@ module.exports = {
   target: 'node',
   mode: 'production',
   entry: './src/index.ts',
+  output: {
+    filename: 'index.js',
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
+  },
   plugins: [new GeneratePackageJsonWebpackPlugin(distPackageJson)],
   module: {
     rules: [
@@ -30,7 +35,7 @@ module.exports = {
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
-          configFile: 'tsconfig.json',
+          configFile: '../tsconfig.json',
         },
       },
     ],
@@ -38,11 +43,6 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json'],
     modules: [path.resolve(root, 'node_modules'), 'node_modules'],
-  },
-  output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname, 'dist'),
-    libraryTarget: 'commonjs',
   },
   externals: {
     'firebase-admin': 'firebase-admin',

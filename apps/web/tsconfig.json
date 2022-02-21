@@ -1,16 +1,20 @@
 {
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "build"],
-  "extends": "tsconfig/react-base.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "ES5",
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "jsx": "react",
-    "module": "ES6",
-    "moduleResolution": "Node",
-    "noEmit": false,
-    "downlevelIteration": true,
-    "importHelpers": true
-  }
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src"]
 }

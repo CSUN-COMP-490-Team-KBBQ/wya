@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import TimePicker from 'rc-time-picker';
+// import TimePicker from 'rc-time-picker';
 import moment from 'moment';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { formatHourlyTimeString, HourlyTimeFormat } from 'wya-api';
@@ -18,7 +18,7 @@ import GuestList from '../GuestList/GuestList';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import './CreateEventForm.css';
-import 'rc-time-picker/assets/index.css';
+// import 'rc-time-picker/assets/index.css';
 
 export default function CreateEventForm(): JSX.Element {
   const { user } = useUserContext();
@@ -159,7 +159,7 @@ export default function CreateEventForm(): JSX.Element {
                   <Form.Label style={{ margin: 0 }}>
                     Daily Start Time
                   </Form.Label>
-                  <TimePicker
+                  {/* <TimePicker
                     className="time-picker-input"
                     placement="bottomRight"
                     placeholder="Daily start time"
@@ -170,11 +170,11 @@ export default function CreateEventForm(): JSX.Element {
                     name="dailyStartTime"
                     allowEmpty={false}
                     use12Hours={userRecord?.hourlyTimeFormat === 'hh' ?? false}
-                  />
+                  /> */}
                 </Col>
                 <Col>
                   <Form.Label style={{ margin: 0 }}>Daily End Time</Form.Label>
-                  <TimePicker
+                  {/* <TimePicker
                     className="time-picker-input"
                     placement="bottomRight"
                     placeholder="Daily end time"
@@ -185,7 +185,7 @@ export default function CreateEventForm(): JSX.Element {
                     name="dailyEndTime"
                     allowEmpty={false}
                     use12Hours={userRecord?.hourlyTimeFormat === 'hh' ?? false}
-                  />
+                  /> */}
                 </Col>
               </Row>
             </Col>

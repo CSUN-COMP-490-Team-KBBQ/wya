@@ -30,7 +30,7 @@ export const registerUser = (
   data: RegisterFormData
 ): Promise<AxiosResponse<User>> => {
   return axios.post(
-    `${process.env.REACT_APP_CLOUD_FUNCTIONS_URL}/api/users/create`,
+    `${process.env.FIREBASE_CLOUD_FUNCTIONS_URL}/api/users/create`,
     JSON.stringify(data),
     {
       headers: {
