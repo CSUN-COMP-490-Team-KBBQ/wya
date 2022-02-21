@@ -4,7 +4,7 @@ import Alert from 'react-bootstrap/Alert';
 import Toggle from 'react-toggle';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import { HourlyTimeFormat } from 'wya-api';
+// import { HourlyTimeFormat } from 'wya-api';
 
 import ChangePasswordForm from '../../components/ChangePasswordForm/ChangePasswordForm';
 import Page from '../../components/Page/Page';
@@ -14,6 +14,8 @@ import { updateUserRecordHourlyTimeFormat } from '../../lib/firestore';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import './ProfilePage.css';
 import 'react-toggle/style.css';
+
+type HourlyTimeFormat = 'hh' | 'HH';
 
 export default function ProfilePage(): JSX.Element {
   const { user } = useUserContext();
