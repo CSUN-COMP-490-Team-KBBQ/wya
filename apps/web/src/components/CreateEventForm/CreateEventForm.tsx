@@ -1,7 +1,7 @@
 import assert from 'assert';
 import React from 'react';
 import Form from 'react-bootstrap/Form';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -169,7 +169,7 @@ export default function CreateEventForm(): JSX.Element {
                   <Form.Label style={{ margin: 0 }}>
                     Daily Start Time
                   </Form.Label>
-                  {/* <TimePicker
+                  <TimePicker
                     className="time-picker-input"
                     placement="bottomRight"
                     placeholder="Daily start time"
@@ -180,11 +180,11 @@ export default function CreateEventForm(): JSX.Element {
                     name="dailyStartTime"
                     allowEmpty={false}
                     use12Hours={userRecord?.hourlyTimeFormat === 'hh' ?? false}
-                  /> */}
+                  />
                 </Col>
                 <Col>
                   <Form.Label style={{ margin: 0 }}>Daily End Time</Form.Label>
-                  {/* <TimePicker
+                  <TimePicker
                     className="time-picker-input"
                     placement="bottomRight"
                     placeholder="Daily end time"
@@ -195,7 +195,7 @@ export default function CreateEventForm(): JSX.Element {
                     name="dailyEndTime"
                     allowEmpty={false}
                     use12Hours={userRecord?.hourlyTimeFormat === 'hh' ?? false}
-                  /> */}
+                  />
                 </Col>
               </Row>
             </Col>
