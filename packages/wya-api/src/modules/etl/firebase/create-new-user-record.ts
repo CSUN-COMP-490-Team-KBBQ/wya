@@ -2,22 +2,27 @@ import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
 
+import {
+  UserAvailabilityHeatMapDocument,
+  UserRecordDocument,
+} from './@typings';
+
+import { User } from './@typings';
+
 const debug = Debug('wya-api:etl/firebase/create-new-user-record');
 
-type etlFirebaseCreateNewUserRecordParams = {
-  uid: string;
-  email: string;
+type EtlFirebaseCreateNewUserRecordParams = User & {
   firstName?: string;
   lastName?: string;
 };
 
-type etlFirebaseCreateNewUserRecordContext = {
+type EtlFirebaseCreateNewUserRecordContext = {
   firebase: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseCreateNewUserRecord = async (
-  params: etlFirebaseCreateNewUserRecordParams,
-  context: etlFirebaseCreateNewUserRecordContext
+  params: EtlFirebaseCreateNewUserRecordParams,
+  context: EtlFirebaseCreateNewUserRecordContext
 ) => {
   const { uid, email, firstName, lastName } = params;
 
@@ -29,18 +34,35 @@ export const etlFirebaseCreateNewUserRecord = async (
   try {
     const { firebase } = context;
     const firebaseFirestore = firebase.firestore();
-    await firebaseFirestore.doc(`/users/${uid}`).create({
-      uid,
-      email,
-      firstName: firstName ?? 'Guest',
-      lastName: lastName ?? 'Guest',
-      timeFormat24Hr: false,
-      events: [],
-      availability: [],
+
+    await firebaseFirestore.runTransaction(async (transaction) => {
+      // Create user record
+      const userRecordRef = firebaseFirestore.doc(
+        `/${process.env.USERS}/${uid}`
+      );
+      await transaction.create(userRecordRef, {
+        uid,
+        email,
+        firstName: firstName ?? 'Guest',
+        lastName: lastName ?? 'Guest',
+        hourlyTimeFormat: 'hh',
+      } as UserRecordDocument);
+
+      // Create user availabilities sub collection
+      const userHeatMapAvailabilityDocRef = firebaseFirestore.doc(
+        `/${process.env.USERS}/${uid}/${process.env.USER_HEAT_MAP_AVAILABILITY}`
+      );
+      await transaction.create(userHeatMapAvailabilityDocRef, {
+        // New availability
+        data: [],
+      } as UserAvailabilityHeatMapDocument);
+
+      // Create user event plans sub collection -- can't actually have an empty collection
+      // Create user events sub collection -- can't actually have an empty collection
     });
 
     return {
-      data: [],
+      data: [uid],
     };
   } catch (err: any) {
     throw {

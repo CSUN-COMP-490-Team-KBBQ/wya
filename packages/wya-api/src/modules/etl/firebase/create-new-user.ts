@@ -2,20 +2,22 @@ import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
 
+import { Email } from './@typings';
+
 const debug = Debug('wya-api:etl/firebase/create-new-user');
 
-type etlFirebaseCreateNewUserParams = {
-  email: string;
+type EtlFirebaseCreateNewUserParams = {
+  email: Email;
   password: string;
 };
 
-type etlFirebaseCreateNewUserContext = {
+type EtlFirebaseCreateNewUserContext = {
   firebase: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseCreateNewUser = async (
-  params: etlFirebaseCreateNewUserParams,
-  context: etlFirebaseCreateNewUserContext
+  params: EtlFirebaseCreateNewUserParams,
+  context: EtlFirebaseCreateNewUserContext
 ) => {
   const { email, password } = params;
 

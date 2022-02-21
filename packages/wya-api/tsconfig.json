@@ -5,6 +5,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "target": "ES5",
-    "lib": ["ES2021"]
+    "lib": ["ES2021"],
+    "importHelpers": true
   }
 }

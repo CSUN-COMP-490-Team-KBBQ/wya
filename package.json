@@ -23,25 +23,16 @@
   },
   "homepage": "https://github.com/CSUN-COMP-490-Team-KBBQ/wya#readme",
   "devDependencies": {
-    "@babel/core": "^7.17.0",
-    "@babel/preset-env": "^7.16.11",
-    "@testing-library/jest-dom": "^5.16.2",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/react-hooks": "^7.0.2",
     "@types/assert": "^1.5.6",
     "@types/debug": "^4.1.7",
     "@types/jest": "^27.4.0",
-    "@types/react-toggle": "^4.0.3",
-    "babel-loader": "^8.2.3",
     "eslint": "^8.6.0",
-    "generate-package-json-webpack-plugin": "^2.6.0",
     "husky": "^7.0.4",
     "jest": "^27.4.7",
     "lint-staged": "^12.1.7",
     "prettier": "^2.5.1",
     "tsup": "^5.11.13",
-    "turbo": "^1.1.2",
-    "webpack-node-externals": "^3.0.0"
+    "turbo": "^1.1.2"
   },
   "workspaces": [
     "apps/*",

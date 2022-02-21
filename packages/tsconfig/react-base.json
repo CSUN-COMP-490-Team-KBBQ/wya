@@ -4,18 +4,20 @@
   "extends": "./base.json",
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2021", "ESNext"],
-    "target": "ES6",
+    "target": "ES5",
+    "allowJs": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "downlevelIteration": true,
-    "importHelpers": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
+    "noEmit": false,
+    "jsx": "react",
+    "sourceMap": true,
     "typeRoots": ["../../types", "../../node_modules/@types"]
   }
 }

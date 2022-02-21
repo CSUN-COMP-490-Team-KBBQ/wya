@@ -6,7 +6,6 @@ import HeatMapData from '../../interfaces/HeatMapData';
 import { createHeatMapDataAndScheduleSelectorData } from '../../lib/availability';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
-import EventFinalized from './EventFinalized/EventFinalized';
 import EventPlanning from './EventPlanning/EventPlanning';
 
 import './EventPage.css';
@@ -22,79 +21,73 @@ import { isUserAHost } from '../../lib/eventHelpers';
  *
  */
 export default function EventPage({
-    match,
+  match,
 }: {
-    match: {
-        params: {
-            id: string;
-        };
+  match: {
+    params: {
+      id: string;
     };
+  };
 }): JSX.Element {
-    const { userRecord } = useUserRecordContext();
-    const eventInfo = React.useRef<EventData>();
-    const [heatMapData, setHeatMapData] = React.useState<HeatMapData>();
-    const [scheduleSelectorData, setScheduleSelectorData] =
-        React.useState<ScheduleSelectorData>();
-    const isHost = isUserAHost(userRecord, match.params.id);
+  const { userRecord } = useUserRecordContext();
+  const eventInfo = React.useRef<EventData>();
+  const [heatMapData, setHeatMapData] = React.useState<HeatMapData>();
+  const [scheduleSelectorData, setScheduleSelectorData] =
+    React.useState<ScheduleSelectorData>();
+  const isHost = isUserAHost(userRecord);
 
-    React.useEffect(() => {
-        if (userRecord) {
-            getDocSnapshot$(`/events/${match.params.id}`, {
-                next: (eventSnapshot) => {
-                    const event = eventSnapshot.data() as EventData;
-                    eventInfo.current = event;
-                    const [createdHeatMapData, createdScheduleSelectorData] =
-                        createHeatMapDataAndScheduleSelectorData(
-                            event.availability,
-                            userRecord.availability,
-                            userRecord.timeFormat24Hr
-                        );
+  React.useEffect(() => {
+    if (userRecord) {
+      getDocSnapshot$(`/${process.env.REACT_APP_EVENTS}/${match.params.id}`, {
+        next: (eventSnapshot) => {
+          const event = eventSnapshot.data() as EventData;
+          eventInfo.current = event;
+          const [createdHeatMapData, createdScheduleSelectorData] =
+            createHeatMapDataAndScheduleSelectorData(
+              event.availability,
+              // TODO: Extract user availability
+              [],
+              // TODO: Use hourlyTimeFormat
+              false
+            );
 
-                    setHeatMapData(createdHeatMapData);
-                    setScheduleSelectorData(createdScheduleSelectorData);
-                },
-            });
-        }
-    }, [userRecord, match.params.id]);
-
-    /**
-     * Renders an event in the planning stage
-     * Needs to be updated once a proper solution
-     *  is developed
-     *
-     */
-
-    if (
-        heatMapData &&
-        eventInfo.current &&
-        userRecord &&
-        scheduleSelectorData !== undefined
-    ) {
-        return (
-            <Page>
-                {eventInfo.current.isFinalized ? (
-                    <EventFinalized
-                        event={eventInfo.current}
-                        user={userRecord}
-                        isHost={isHost}
-                    />
-                ) : (
-                    <EventPlanning
-                        userId={userRecord.uid}
-                        eventData={eventInfo.current}
-                        heatMapData={heatMapData}
-                        scheduleSelector={scheduleSelectorData}
-                        isHost={isHost}
-                    />
-                )}
-            </Page>
-        );
+          setHeatMapData(createdHeatMapData);
+          setScheduleSelectorData(createdScheduleSelectorData);
+        },
+      });
     }
+  }, [userRecord, match.params.id]);
 
-    // default render
+  /**
+   * Renders an event in the planning stage
+   * Needs to be updated once a proper solution
+   *  is developed
+   *
+   */
+
+  if (
+    heatMapData &&
+    eventInfo.current &&
+    userRecord &&
+    scheduleSelectorData !== undefined
+  ) {
     return (
-        <Page>
-            <></>
-        </Page>
+      <Page>
+        <EventPlanning
+          userId={userRecord.uid}
+          eventData={eventInfo.current}
+          heatMapData={heatMapData}
+          scheduleSelector={scheduleSelectorData}
+          isHost={isHost}
+        />
+      </Page>
     );
+  }
+
+  // default render
+  return (
+    <Page>
+      <></>
+    </Page>
+  );
 }

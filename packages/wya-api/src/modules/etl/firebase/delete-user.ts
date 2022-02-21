@@ -2,19 +2,22 @@ import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
 
+import { UserId } from './@typings';
+import { etlFirebaseDeleteUserRecord } from './delete-user-record';
+
 const debug = Debug('wya-api:etl/firebase/delete-user');
 
-type etlFirebaseDeleteUserParams = {
-  uid: string;
+type EtlFirebaseDeleteUserParams = {
+  uid: UserId;
 };
 
-type etlFirebaseDeleteUserContext = {
+type EtlFirebaseDeleteUserContext = {
   firebase: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseDeleteUser = async (
-  params: etlFirebaseDeleteUserParams,
-  context: etlFirebaseDeleteUserContext
+  params: EtlFirebaseDeleteUserParams,
+  context: EtlFirebaseDeleteUserContext
 ) => {
   const { uid } = params;
 
@@ -27,6 +30,8 @@ export const etlFirebaseDeleteUser = async (
     const firebaseAuth = firebase.auth();
 
     await firebaseAuth.deleteUser(uid);
+
+    await etlFirebaseDeleteUserRecord({ uid }, { firebase });
 
     return {
       data: [],

@@ -2,19 +2,21 @@ import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
 
+import { Email } from './@typings';
+
 const debug = Debug('wya-api:etl/firebase/get-user-by-email');
 
-type etlFirebaseGetUserByEmailParams = {
-  email: string;
+type EtlFirebaseGetUserByEmailParams = {
+  email: Email;
 };
 
-type etlFirebaseGetUserByEmailContext = {
+type EtlFirebaseGetUserByEmailContext = {
   firebase: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseGetUserByEmail = async (
-  params: etlFirebaseGetUserByEmailParams,
-  context: etlFirebaseGetUserByEmailContext
+  params: EtlFirebaseGetUserByEmailParams,
+  context: EtlFirebaseGetUserByEmailContext
 ) => {
   const { email } = params;
 
