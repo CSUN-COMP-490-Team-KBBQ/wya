@@ -10,7 +10,7 @@
     "lint": "eslint src --fix",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
-    "dev": "npm run shell"
+    "dev": "echo dev functions"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
