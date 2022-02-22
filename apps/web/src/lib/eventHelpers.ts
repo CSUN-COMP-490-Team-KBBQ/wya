@@ -1,6 +1,4 @@
-// import { UserRecordDocument } from 'wya-api';
-
-type UserRecordDocument = {};
+import { UserRecordDocument } from 'wya-api/dist/interfaces';
 
 export const isUserAHost = (userRecord: UserRecordDocument | null): boolean => {
   if (!userRecord) return false;

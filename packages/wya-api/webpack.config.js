@@ -10,6 +10,9 @@ module.exports = {
   mode: 'production',
   entry: {
     index: './src/index.ts',
+    lib: './src/lib/index.ts',
+    'modules/cli': './src/modules/cli/index.ts',
+    'modules/etl': './src/modules/etl/index.ts',
   },
   output: {
     filename: '[name].js',
@@ -30,7 +33,7 @@ module.exports = {
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
-          configFile: '../tsconfig.json',
+          configFile: path.resolve(__dirname, 'tsconfig.json'),
         },
       },
     ],

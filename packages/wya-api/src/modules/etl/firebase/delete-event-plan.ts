@@ -2,7 +2,7 @@ import assert from 'assert';
 import Debug from 'debug';
 import firebaseAdmin from 'firebase-admin';
 
-import { EventPlanDocument } from './@typings';
+import { EventPlanDocument } from '../../../interfaces';
 
 const debug = Debug('wya-api:etl/firebase/delete-event-plan');
 
