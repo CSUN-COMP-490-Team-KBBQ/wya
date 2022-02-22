@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { HourlyTimeFormat } from '../modules/etl/firebase/@typings';
+import { HourlyTimeFormat } from '../interfaces';
 
 export function formatHourlyTimeString(
   hourlyTimeString: string,

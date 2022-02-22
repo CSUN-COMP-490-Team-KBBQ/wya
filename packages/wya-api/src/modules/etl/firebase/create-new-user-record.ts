@@ -5,9 +5,8 @@ import firebaseAdmin from 'firebase-admin';
 import {
   UserAvailabilityHeatMapDocument,
   UserRecordDocument,
-} from './@typings';
-
-import { User } from './@typings';
+  User,
+} from '../../../interfaces';
 
 const debug = Debug('wya-api:etl/firebase/create-new-user-record');
 

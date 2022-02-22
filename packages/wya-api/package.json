@@ -37,5 +37,12 @@
     "nodemailer": "^6.7.2",
     "tslib": "^2.3.1",
     "uuid": "^8.3.2"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./interfaces": "./dist/interfaces/index.d.ts",
+    "./lib": "./dist/lib.js",
+    "./modules/cli": "./dist/modules/cli.js",
+    "./modules/etl": "./dist/modules/etl.js"
   }
 }

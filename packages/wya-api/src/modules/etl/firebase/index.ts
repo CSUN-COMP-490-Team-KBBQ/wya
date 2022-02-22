@@ -1,5 +1,5 @@
 // firebase exports
-export * from './@typings';
+export * from '../../../interfaces';
 export * from './create-new-event-plan';
 export * from './create-new-user';
 export * from './create-new-user-record';

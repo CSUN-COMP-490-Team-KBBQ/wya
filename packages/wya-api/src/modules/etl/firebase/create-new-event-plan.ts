@@ -4,14 +4,14 @@ import firebaseAdmin from 'firebase-admin';
 import nodemailer from 'nodemailer';
 import { v4 as uuid } from 'uuid';
 
-import { UserEventPlanDocument } from './@typings';
 import {
   UserId,
   Email,
   EventPlanDocument,
   EventPlanInfo,
   EventPlanAvailabilityDocument,
-} from './@typings';
+  UserEventPlanDocument,
+} from '../../../interfaces';
 import { etlFirebaseGetUserByEmail } from './get-user-by-email';
 
 const debug = Debug('wya-api:etl/firebase/create-new-event-plan');
