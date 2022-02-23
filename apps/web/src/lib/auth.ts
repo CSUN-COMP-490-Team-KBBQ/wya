@@ -7,8 +7,9 @@ import {
   updatePassword,
 } from 'firebase/auth';
 import axios, { AxiosResponse } from 'axios';
+import { UserId } from 'wya-api/dist/interfaces';
+
 import app from './firebase';
-import RegisterFormData from '../interfaces/RegisterFormData';
 
 const auth = getAuth(app);
 
@@ -26,9 +27,12 @@ export const logOut = (): Promise<void> => {
   return signOut(auth);
 };
 
-export const registerUser = (
-  data: RegisterFormData
-): Promise<AxiosResponse<User>> => {
+export const registerUser = (data: {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}): Promise<AxiosResponse<{ data: UserId[] }>> => {
   return axios.post(
     `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/users/create`,
     JSON.stringify(data),

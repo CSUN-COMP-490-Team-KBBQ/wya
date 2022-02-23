@@ -9,7 +9,6 @@ import { useHistory, Link } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 import Recaptcha from '../Recaptcha/Recaptcha';
-import RegisterFormData from '../../interfaces/RegisterFormData';
 import { registerUser, logIn } from '../../lib/auth';
 import { useUserContext } from '../../contexts/UserContext';
 
@@ -32,7 +31,7 @@ export default function RegisterForm(): JSX.Element {
   const registerUserHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    const formValue: RegisterFormData = Object.fromEntries(
+    const formValue = Object.fromEntries(
       formData.entries()
       // eslint-disable-next-line
     ) as any;
@@ -43,9 +42,7 @@ export default function RegisterForm(): JSX.Element {
 
     assert(token, 'Missing ReCAPTCHA token');
 
-    const { data } = await registerUser(formValue);
-    // eslint-disable-next-line
-    console.log(`User successfully created!`, data);
+    await registerUser(formValue);
     await logIn(email, password);
     history.push('/calendar');
   };
