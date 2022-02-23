@@ -9,7 +9,8 @@ import Button from 'react-bootstrap/Button';
 import TimePicker from 'rc-time-picker';
 import moment from 'moment';
 import ReCAPTCHA from 'react-google-recaptcha';
-// import { formatHourlyTimeString, HourlyTimeFormat } from 'wya-api';
+import { formatHourlyTimeString } from 'wya-api/dist/lib';
+import { HourlyTimeFormat } from 'wya-api/dist/interfaces';
 
 import Recaptcha from '../Recaptcha/Recaptcha';
 import { createEventPlan } from '../../lib/firestore';
@@ -19,16 +20,6 @@ import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import './CreateEventForm.css';
 import 'rc-time-picker/assets/index.css';
-
-type HourlyTimeFormat = 'hh' | 'HH';
-function formatHourlyTimeString(
-  hourlyTimeString: string,
-  hourlyTimeFormat: HourlyTimeFormat
-) {
-  return moment(hourlyTimeString, [`h:mm a`, `h:mm A`, `HH:mm`], true).format(
-    `${hourlyTimeFormat}:mm`
-  );
-}
 
 export default function CreateEventForm(): JSX.Element {
   const { user } = useUserContext();
