@@ -26,6 +26,7 @@
     "@types/assert": "^1.5.6",
     "@types/debug": "^4.1.7",
     "@types/jest": "^27.4.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.6.0",
     "husky": "^7.0.4",
     "jest": "^27.4.7",

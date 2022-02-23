@@ -13,7 +13,7 @@ export default function Recaptcha({
   return (
     <ReCAPTCHA
       data-testid="recaptcha"
-      sitekey={(process.env.RECAPTCHA_SITEKEY as string) || ''}
+      sitekey={(process.env.REACT_APP_RECAPTCHA_SITEKEY as string) || ''}
       ref={recaptchaRef}
       size="invisible"
     />
