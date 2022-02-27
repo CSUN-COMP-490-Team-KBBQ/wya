@@ -1,0 +1,59 @@
+#eventPlanningContainer {
+    text-align: center;
+}
+
+#eventDetails {
+    text-align: center;
+    margin-top: 3em;
+}
+
+#containerCol {
+    margin: auto;
+    width: 75%;
+}
+
+#buttonsRow {
+    margin-top: 5px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#eventFinalizedContent h1,
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#eventFinalizedPs {
+    width: fit-content;
+    margin: auto;
+}
+
+#eventFinalizedContent p {
+    font-size: large;
+}
+
+#eventFinalizedButtons {
+    width: fit-content;
+    margin: auto;
+}
+
+#eventFinalizedButtons Button {
+    margin: 10px;
+}
+
+.attending-list {
+    width: 30%;
+    margin: auto;
+    margin-top: 30px;
+}
+
+.eventAddAvailabilityButton {
+    background-color: #0081d9 !important;
+    border: solid 2px #0081d9 !important;
+}
+
+.eventAddAvailabilityButton:hover {
+    background-color: #3895d3 !important;
+}

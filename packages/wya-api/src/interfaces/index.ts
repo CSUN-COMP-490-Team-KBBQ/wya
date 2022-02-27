@@ -37,7 +37,6 @@ export type EventPlanInfo = {
   startDate: string;
   endDate: string;
   hostId: UserId;
-  hourlyTimeFormat: HourlyTimeFormat;
 };
 
 export type EventPlanId = string;

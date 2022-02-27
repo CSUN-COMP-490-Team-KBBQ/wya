@@ -1,21 +1,22 @@
 import {
-  doc,
-  getFirestore,
-  getDoc,
-  DocumentData,
-  DocumentReference,
-  onSnapshot,
-  DocumentSnapshot,
-  FirestoreError,
-  Unsubscribe,
-  updateDoc,
+    doc,
+    getFirestore,
+    getDoc,
+    DocumentData,
+    DocumentReference,
+    onSnapshot,
+    DocumentSnapshot,
+    FirestoreError,
+    Unsubscribe,
+    updateDoc,
+    collection,
 } from 'firebase/firestore';
 import axios from 'axios';
 import {
-  Email,
-  EventPlanInfo,
-  HourlyTimeFormat,
-  UserId,
+    Email,
+    EventPlanInfo,
+    HourlyTimeFormat,
+    UserId,
 } from 'wya-api/dist/interfaces';
 
 import app from './firebase';
@@ -25,121 +26,138 @@ import UserData from '../interfaces/User';
 const firestore = getFirestore(app);
 
 function getDocRef(path: string): DocumentReference<DocumentData> {
-  return doc(firestore, path);
+    return doc(firestore, path);
 }
 
 export const createEventPlan = (
-  data: EventPlanInfo & {
-    invitees: Email[];
-  }
+    data: EventPlanInfo & {
+        invitees: Email[];
+        'g-recaptcha-response': string;
+    }
 ) => {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(
-        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/${process.env.REACT_APP_USER_EVENT_PLANS}/create`,
-        JSON.stringify(data),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-        const {
-          data: {
-            data: [eventPlanId],
-          },
-        } = res;
-        resolve(eventPlanId);
-      })
-      .catch(reject);
-  });
+    return new Promise((resolve, reject) => {
+        axios
+            .post(
+                `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/${process.env.REACT_APP_USER_EVENT_PLANS}/create`,
+                JSON.stringify(data),
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            )
+            .then((res) => {
+                console.log(res);
+                const {
+                    data: {
+                        data: [eventPlanId],
+                    },
+                } = res;
+                resolve(eventPlanId);
+            })
+            .catch(reject);
+    });
 };
 
 export const createEvent = (eventData: EventData): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    // rather than handling this on the client side we will POST the form data to the cloud function api
-    axios
-      .post(
-        'https://us-central1-kbbq-wya-35414.cloudfunctions.net/api/create-event',
-        JSON.stringify(eventData),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((res) => {
-        // eslint-disable-next-line
-        console.log(res.data);
-        resolve(eventData.eventId);
-      })
-      .catch(reject);
-  });
+    return new Promise((resolve, reject) => {
+        // rather than handling this on the client side we will POST the form data to the cloud function api
+        axios
+            .post(
+                'https://us-central1-kbbq-wya-35414.cloudfunctions.net/api/create-event',
+                JSON.stringify(eventData),
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            )
+            .then((res) => {
+                // eslint-disable-next-line
+                console.log(res.data);
+                resolve(eventData.eventId);
+            })
+            .catch(reject);
+    });
 };
 
 export const getEventData = async (eventId: string): Promise<EventData> => {
-  const eventDocRef = getDocRef(`/${process.env.REACT_APP_EVENTS}/${eventId}`);
-  return (await getDoc(eventDocRef)).data() as EventData;
+    const eventDocRef = getDocRef(
+        `/${process.env.REACT_APP_EVENTS}/${eventId}`
+    );
+    return (await getDoc(eventDocRef)).data() as EventData;
 };
 
 export const updateEvent = async (event: EventData): Promise<void> => {
-  const eventDocRef = getDocRef(
-    `/${process.env.REACT_APP_EVENTS}/${event.eventId}`
-  );
-  return updateDoc(eventDocRef, { ...event });
+    const eventDocRef = getDocRef(
+        `/${process.env.REACT_APP_EVENTS}/${event.eventId}`
+    );
+    return updateDoc(eventDocRef, { ...event });
 };
 
 export const updateUserRecord = async (user: UserData): Promise<void> => {
-  const userDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${user.uid}`);
-  return updateDoc(userDocRef, { ...user });
+    const userDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${user.uid}`);
+    return updateDoc(userDocRef, { ...user });
 };
 
 export const getDocSnapshot$ = (
-  path: string,
-  observer: {
-    next?: ((snapshot: DocumentSnapshot<DocumentData>) => void) | undefined;
-    error?: ((error: FirestoreError) => void) | undefined;
-    complete?: (() => void) | undefined;
-  }
+    path: string,
+    observer: {
+        next?: ((snapshot: DocumentSnapshot<DocumentData>) => void) | undefined;
+        error?: ((error: FirestoreError) => void) | undefined;
+        complete?: (() => void) | undefined;
+    }
 ): Unsubscribe => {
-  const docRef = getDocRef(path);
-  return onSnapshot(docRef, observer);
+    const docRef = getDocRef(path);
+    return onSnapshot(docRef, observer);
 };
 
 export const updateCalendarAvailability = (data: number[], uid: string) => {
-  const userHeatMapAvailabilityDocRef = getDocRef(
-    `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_HEAT_MAP_AVAILABILITY}`
-  );
+    const userHeatMapAvailabilityDocRef = getDocRef(
+        `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_HEAT_MAP_AVAILABILITY}`
+    );
 
-  return updateDoc(userHeatMapAvailabilityDocRef, {
-    data,
-  });
+    return updateDoc(userHeatMapAvailabilityDocRef, {
+        data,
+    });
 };
 
 export const updateUserTimeFormatOption = (
-  timeFormatOption: boolean,
-  uid: string
+    timeFormatOption: boolean,
+    uid: string
 ): Promise<void> => {
-  const userDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${uid}`);
-  return updateDoc(userDocRef, 'timeFormat24Hr', timeFormatOption);
+    const userDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${uid}`);
+    return updateDoc(userDocRef, 'timeFormat24Hr', timeFormatOption);
 };
 
 export const updateUserRecordHourlyTimeFormat = (
-  uid: UserId,
-  hourlyTimeFormat: HourlyTimeFormat
+    uid: UserId,
+    hourlyTimeFormat: HourlyTimeFormat
 ) => {
-  const userRecordDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${uid}`);
-  return updateDoc(userRecordDocRef, { hourlyTimeFormat });
+    const userRecordDocRef = getDocRef(
+        `/${process.env.REACT_APP_USERS}/${uid}`
+    );
+    return updateDoc(userRecordDocRef, { hourlyTimeFormat });
 };
 
 export const updateEventAvailability = (
-  data: EventDataAvailability,
-  eventId: string
+    data: EventDataAvailability,
+    eventPlanId: string,
+    userId: string
 ): Promise<void> => {
-  const eventDocRef = getDocRef(`/${process.env.REACT_APP_EVENTS}/${eventId}`);
-  return updateDoc(eventDocRef, 'availability', data);
+    const eventDocRef = getDocRef(
+        `/${process.env.REACT_APP_EVENT_PLANS}/${eventPlanId}/`
+    );
+    const docRef = doc(
+        firestore,
+        `/${process.env.REACT_APP_EVENT_PLANS}/${eventPlanId}/`
+    );
+
+    const colRef = collection(docRef, '/availabilities/');
+
+    const ref = doc(colRef, userId);
+
+    return updateDoc(ref, data);
 };
 
 export default firestore;
