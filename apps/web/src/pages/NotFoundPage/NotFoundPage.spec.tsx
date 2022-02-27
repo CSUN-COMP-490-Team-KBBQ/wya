@@ -7,6 +7,6 @@ jest.mock('firebase/auth');
 jest.mock('firebase/firestore');
 
 it('renders component', () => {
-    const { queryByText } = render(<NotFoundPage />);
-    expect(queryByText('404 Page Not Found')).toBeTruthy();
+  const { queryByText } = render(<NotFoundPage />);
+  expect(queryByText('404 Page Not Found')).toBeTruthy();
 });

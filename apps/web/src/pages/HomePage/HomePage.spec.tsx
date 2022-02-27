@@ -8,10 +8,10 @@ jest.mock('firebase/auth');
 jest.mock('firebase/firestore');
 
 it('renders component', () => {
-    const { queryAllByText } = render(
-        <BrowserRouter>
-            <HomePage />
-        </BrowserRouter>
-    );
-    expect(queryAllByText('Home Page')).toBeTruthy();
+  const { queryAllByText } = render(
+    <BrowserRouter>
+      <HomePage />
+    </BrowserRouter>
+  );
+  expect(queryAllByText('Home Page')).toBeTruthy();
 });

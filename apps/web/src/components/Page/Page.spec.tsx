@@ -7,6 +7,6 @@ jest.mock('firebase/auth');
 jest.mock('firebase/firestore');
 
 it('renders component', () => {
-    render(<Page />);
-    expect(true).toBeTruthy();
+  render(<Page />);
+  expect(true).toBeTruthy();
 });

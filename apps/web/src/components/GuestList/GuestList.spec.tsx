@@ -8,8 +8,8 @@ const updateGuests = jest.fn();
 afterEach(updateGuests.mockClear);
 
 it('renders component', () => {
-    const { queryByTestId } = render(
-        <GuestList guests={[]} updateGuests={updateGuests} />
-    );
-    expect(queryByTestId('guests-list')).toBeTruthy();
+  const { queryByTestId } = render(
+    <GuestList guests={[]} updateGuests={updateGuests} />
+  );
+  expect(queryByTestId('guests-list')).toBeTruthy();
 });

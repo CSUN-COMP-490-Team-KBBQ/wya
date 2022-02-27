@@ -5,12 +5,12 @@ import Page from '../../components/Page/Page';
 import './LoginPage.css';
 
 export default function LoginPage(): JSX.Element {
-    return (
-        <Page>
-            <Container id="loginPageContainer" fluid>
-                <h1>Log In</h1>
-                <LoginForm />
-            </Container>
-        </Page>
-    );
+  return (
+    <Page>
+      <Container id="loginPageContainer" fluid>
+        <h1>Log In</h1>
+        <LoginForm />
+      </Container>
+    </Page>
+  );
 }

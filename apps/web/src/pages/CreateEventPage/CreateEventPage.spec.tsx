@@ -8,10 +8,10 @@ jest.mock('firebase/auth');
 jest.mock('firebase/firestore');
 
 it('renders page', () => {
-    const { queryByText } = render(
-        <BrowserRouter>
-            <CreateEventPage />
-        </BrowserRouter>
-    );
-    expect(queryByText('Name')).toBeTruthy();
+  const { queryByText } = render(
+    <BrowserRouter>
+      <CreateEventPage />
+    </BrowserRouter>
+  );
+  expect(queryByText('Name')).toBeTruthy();
 });

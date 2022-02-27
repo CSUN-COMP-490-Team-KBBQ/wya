@@ -5,6 +5,6 @@ import PasswordResetPage from './PasswordResetPage';
 jest.mock('firebase/auth');
 
 it('renders component', () => {
-    const { queryByText } = render(<PasswordResetPage />);
-    expect(queryByText('Password Reset')).toBeTruthy();
+  const { queryByText } = render(<PasswordResetPage />);
+  expect(queryByText('Password Reset')).toBeTruthy();
 });
