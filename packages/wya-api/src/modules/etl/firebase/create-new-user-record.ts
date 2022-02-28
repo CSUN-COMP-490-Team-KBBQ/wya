@@ -7,6 +7,7 @@ import {
   UserRecordDocument,
   User,
 } from '../../../interfaces';
+import { TimeFormat } from '../../../lib/time-format';
 
 const debug = Debug('wya-api:etl/firebase/create-new-user-record');
 
@@ -44,7 +45,7 @@ export const etlFirebaseCreateNewUserRecord = async (
         email,
         firstName: firstName ?? 'Guest',
         lastName: lastName ?? 'Guest',
-        hourlyTimeFormat: 'hh',
+        timeFormat: TimeFormat.TWELVE_HOURS,
       } as UserRecordDocument);
 
       // Create user availabilities sub collection

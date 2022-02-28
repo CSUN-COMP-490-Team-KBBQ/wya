@@ -1,3 +1,5 @@
+import { TimeFormat } from '../lib/time-format';
+
 /** users */
 export type UserId = string;
 export type Email = string;
@@ -7,12 +9,11 @@ export type User = {
   email: Email;
 };
 
-export type HourlyTimeFormat = 'hh' | 'HH';
 export type UserRecordDocument = {
   email: Email;
   firstName: string;
   lastName: string;
-  hourlyTimeFormat: HourlyTimeFormat;
+  timeFormat: TimeFormat;
   uid: UserId;
 };
 
