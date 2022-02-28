@@ -14,7 +14,6 @@ import {
 } from 'firebase/firestore';
 import { Email, EventPlanInfo, UserId } from 'wya-api/dist/interfaces';
 import { TimeFormat } from 'wya-api/dist/lib';
-
 import app from './firebase';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';
 import UserData from '../interfaces/User';
@@ -105,6 +104,17 @@ export const getDocSnapshot$ = (
   const docRef = getDocRef(path);
   return onSnapshot(docRef, observer);
 };
+export const getSubCollDocSnapshot$ = (
+  path: string,
+  observer: {
+    next?: ((snapshot: DocumentSnapshot<DocumentData>) => void) | undefined;
+    error?: ((error: FirestoreError) => void) | undefined;
+    complete?: (() => void) | undefined;
+  }
+): Unsubscribe => {
+  const eventPlanAvailabilityDocRef = getDocRef(path);
+  return onSnapshot(eventPlanAvailabilityDocRef, observer);
+};
 
 export const updateCalendarAvailability = (data: number[], uid: string) => {
   const userHeatMapAvailabilityDocRef = getDocRef(
@@ -137,19 +147,12 @@ export const updateEventAvailability = (
   eventPlanId: string,
   userId: string
 ): Promise<void> => {
-  const eventDocRef = getDocRef(
-    `/${process.env.REACT_APP_EVENT_PLANS}/${eventPlanId}/`
+  const eventPlanAvailabilityDocRef = getDocRef(
+    `/${process.env.REACT_APP_EVENT_PLANS}/${eventPlanId}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${process.env.REACT_APP_EVENT_PLAN_HEAT_MAP_AVAILABILITY}`
   );
-  const docRef = doc(
-    firestore,
-    `/${process.env.REACT_APP_EVENT_PLANS}/${eventPlanId}/`
-  );
-
-  const colRef = collection(docRef, '/availabilities/');
-
-  const ref = doc(colRef, userId);
-
-  return updateDoc(ref, data);
+  return updateDoc(eventPlanAvailabilityDocRef, {
+    data,
+  });
 };
 
 export default firestore;

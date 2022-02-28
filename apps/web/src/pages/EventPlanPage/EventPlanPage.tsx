@@ -1,12 +1,12 @@
 import React from 'react';
 import Page from '../../components/Page/Page';
 import EventData, { EventDataAvailability } from '../../interfaces/EventData';
-import { getDocSnapshot$ } from '../../lib/firestore';
+import { getDocSnapshot$, getSubCollDocSnapshot$ } from '../../lib/firestore';
 import HeatMapData from '../../interfaces/HeatMapData';
 import { createHeatMapDataAndScheduleSelectorData } from '../../lib/availability';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
-import EventPlanning from '../EventPage/EventPlanning/EventPlanning';
+import EventPlanning from './EventPlanning';
 
 import './EventPlanPage.css';
 import { isUserAHost } from '../../lib/eventHelpers';
@@ -22,87 +22,103 @@ import { EventPlanDocument } from 'wya-api/dist/interfaces';
  *
  */
 export default function EventPlanPage({
-    match,
+  match,
 }: {
-    match: {
-        params: {
-            id: string;
-        };
+  match: {
+    params: {
+      id: string;
     };
+  };
 }): JSX.Element {
-    const { userRecord } = useUserRecordContext();
-    const eventPlanData = React.useRef<EventPlanDocument>();
-    const [eventAvailability, setEventAvailability] =
-        React.useState<EventDataAvailability>();
-    const [heatMapData, setHeatMapData] = React.useState<HeatMapData>();
-    const [scheduleSelectorData, setScheduleSelectorData] =
-        React.useState<ScheduleSelectorData>();
-    const isHost = isUserAHost(userRecord);
+  const { userRecord } = useUserRecordContext();
+  const eventPlanData = React.useRef<EventPlanDocument>();
+  const [eventAvailability, setEventAvailability] =
+    React.useState<EventDataAvailability>();
+  const [heatMapData, setHeatMapData] = React.useState<HeatMapData>();
+  const [scheduleSelectorData, setScheduleSelectorData] =
+    React.useState<ScheduleSelectorData>();
+  const isHost = isUserAHost(userRecord);
 
-    React.useEffect(() => {
-        if (userRecord) {
-            getDocSnapshot$(
-                `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}`,
-                {
-                    next: (eventSnapshot) => {
-                        const eventPlan =
-                            eventSnapshot.data() as EventPlanDocument;
-                        eventPlanData.current = eventPlan;
-                        const [
-                            createdEventAvailability,
-                            createdHeatMapData,
-                            createdScheduleSelectorData,
-                        ] = createHeatMapDataAndScheduleSelectorData(
-                            eventPlan,
-                            // TODO: Extract event availabilities
-                            {},
-                            // TODO: Extract user availability
-                            [],
-                            // TODO: Use hourlyTimeFormat
-                            false
-                        );
-                        setEventAvailability(createdEventAvailability);
-                        setHeatMapData(createdHeatMapData);
-                        setScheduleSelectorData(createdScheduleSelectorData);
-                    },
-                }
+  React.useEffect(() => {
+    if (userRecord) {
+      getDocSnapshot$(
+        `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}`,
+        {
+          next: (eventPlanSnapshot) => {
+            const eventPlan = eventPlanSnapshot.data() as EventPlanDocument;
+
+            getSubCollDocSnapshot$(
+              `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${process.env.REACT_APP_EVENT_PLAN_HEAT_MAP_AVAILABILITY}`,
+              {
+                next: (eventPlanAvailabilitiesSnapshot) => {
+                  const eventPlanAvailabilities =
+                    eventPlanAvailabilitiesSnapshot.data() as {
+                      data: EventDataAvailability;
+                    };
+
+                  console.log(eventPlanAvailabilities.data);
+
+                  eventPlanData.current = eventPlan;
+
+                  const [
+                    createdEventAvailability,
+                    createdHeatMapData,
+                    createdScheduleSelectorData,
+                  ] = createHeatMapDataAndScheduleSelectorData(
+                    eventPlan,
+                    // TODO: Extract event availabilities
+                    eventPlanAvailabilities.data,
+                    // TODO: Extract user availability
+                    [],
+                    // TODO: Use hourlyTimeFormat
+                    false
+                  );
+
+                  setEventAvailability(createdEventAvailability);
+                  setHeatMapData(createdHeatMapData);
+                  setScheduleSelectorData(createdScheduleSelectorData);
+                },
+              }
             );
+          },
         }
-    }, [userRecord, match.params.id]);
-    /**
-     * Renders an event in the planning stage
-     * Needs to be updated once a proper solution
-     *  is developed
-     *
-     */
-
-    if (
-        heatMapData &&
-        eventPlanData.current &&
-        userRecord &&
-        eventAvailability !== undefined &&
-        scheduleSelectorData !== undefined
-    ) {
-        return (
-            <Page>
-                <EventPlanning
-                    userId={userRecord.uid}
-                    eventPlanData={eventPlanData.current}
-                    eventPlanAvailability={eventAvailability}
-                    heatMapData={heatMapData}
-                    scheduleSelector={scheduleSelectorData}
-                    isHost={isHost}
-                />
-            </Page>
-        );
+      );
     }
+  }, [userRecord, match.params.id]);
+  /**
+   * Renders an event in the planning stage
+   * Needs to be updated once a proper solution
+   *  is developed
+   *
+   */
 
-    // default render
+  if (
+    heatMapData &&
+    eventPlanData.current &&
+    userRecord &&
+    eventAvailability !== undefined &&
+    scheduleSelectorData !== undefined
+  ) {
     return (
-        <Page>
-            <>
-                <div>TEST</div>
-            </>
-        </Page>
+      <Page>
+        <EventPlanning
+          userId={userRecord.uid}
+          eventPlanData={eventPlanData.current}
+          eventPlanAvailability={eventAvailability}
+          heatMapData={heatMapData}
+          scheduleSelector={scheduleSelectorData}
+          isHost={isHost}
+        />
+      </Page>
     );
+  }
+
+  // default render
+  return (
+    <Page>
+      <>
+        <div>TEST</div>
+      </>
+    </Page>
+  );
 }
