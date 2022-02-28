@@ -1,20 +1,17 @@
 import React from 'react';
 import { Row, Col, Container, Modal, Button } from 'react-bootstrap';
-import AvailabilityHeatMap from '../../../components/AvailabilityHeatMap/AvailabilityHeatMap';
-import HeatMapData from '../../../interfaces/HeatMapData';
-import ScheduleSelectorData from '../../../interfaces/ScheduleSelectorData';
-import ConfirmEventModal from '../../../components/ConfirmEventModal/ConfirmEventModal';
-import { appendUserAvailabilityToGroupEventPlanAvailability } from '../../../lib/availability';
-import { updateEventAvailability } from '../../../lib/firestore';
-import AvailabilityScheduleSelector from '../../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
+import AvailabilityHeatMap from '../../components/AvailabilityHeatMap/AvailabilityHeatMap';
+import HeatMapData from '../../interfaces/HeatMapData';
+import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
+import ConfirmEventModal from '../../components/ConfirmEventModal/ConfirmEventModal';
+import { appendUserAvailabilityToGroupEventPlanAvailability } from '../../lib/availability';
+import { updateEventAvailability } from '../../lib/firestore';
+import AvailabilityScheduleSelector from '../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
 
-import '../EventPage.css';
-import {
-    transformStartTime,
-    transformEndTime,
-} from '../../../lib/eventHelpers';
+import './EventPlanPage.css';
+import { transformStartTime, transformEndTime } from '../../lib/eventHelpers';
 import { EventPlanDocument } from 'wya-api/dist/interfaces';
-import { EventDataAvailability } from '../../../interfaces/EventData';
+import { EventDataAvailability } from '../../interfaces/EventData';
 
 type AddAvailabilityModalProps = {
     scheduleSelectorData: ScheduleSelectorData;
@@ -35,9 +32,9 @@ function AddAvailabilityModal({
 }: AddAvailabilityModalProps): JSX.Element {
     const {
         scheduleData,
-        yTimesScheduleSelectorLabelsArray: sortedXData,
+        xDaysScheduleSelectorLabelsArray: sortedXData,
         xDaysFormattedToSlicedDateString: formattedXData,
-        xDaysScheduleSelectorLabelsArray: sortedYData,
+        yTimesScheduleSelectorLabelsArray: sortedYData,
         hourlyTimeFormat: hourlyTimeFormat,
     } = scheduleSelectorData;
 
