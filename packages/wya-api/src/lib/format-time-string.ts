@@ -2,7 +2,7 @@ import moment from 'moment';
 
 import { TimeFormat } from '../lib/time-format';
 
-/** RO3: copied in CreateEventPlanForm */
+/** RO3: copied in CreateEventPlanForm and in availability.ts*/
 const SUPPORTED_TIME_FORMATS = [
   'h:mm a',
   'h:mm A',

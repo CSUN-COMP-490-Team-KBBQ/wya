@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Toggle from 'react-toggle';
-import { TimeFormat } from 'wya-api/dist/lib';
+// import { TimeFormat } from 'wya-api/dist/lib';
 
 import ChangePasswordForm from '../../components/ChangePasswordForm/ChangePasswordForm';
 import Page from '../../components/Page/Page';
@@ -15,6 +15,11 @@ import { updateUserRecordTimeFormat } from '../../lib/firestore';
 
 import './ProfilePage.css';
 import 'react-toggle/style.css';
+
+enum TimeFormat {
+  TWELVE_HOURS = 'hh:mm a',
+  TWENTY_FOUR_HOURS = 'HH:mm',
+}
 
 export default function ProfilePage(): JSX.Element {
   const { user } = useUserContext();

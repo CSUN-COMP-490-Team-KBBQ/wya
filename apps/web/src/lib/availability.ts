@@ -4,26 +4,27 @@ import EventData, { EventDataAvailability } from '../interfaces/EventData';
 import HeatMapData from '../interfaces/HeatMapData';
 import ScheduleSelectorData from '../interfaces/ScheduleSelectorData';
 
+/** RO3: copied from wya-api/lib/format-time-string */
+const SUPPORTED_TIME_FORMATS = [
+  'h:mm a',
+  'h:mm A',
+  'hh:mm a',
+  'hh:mm A',
+  'HH:mm',
+];
+/** End of RO3 */
+
 export const sortObjectByKeys = <T>(item: T): string[] => {
   return Object.keys(item).sort();
 };
 
 export const formatYTimesTo12Or24Hour = (
-  hourlyTimeFormat: boolean,
+  hourlyTimeFormat: string,
   yTimes: string[]
 ): string[] => {
-  return hourlyTimeFormat
-    ? yTimes
-    : yTimes.map((value) => {
-        const temp =
-          (((Number(value.slice(0, 2)) + 11) % 12) + 1).toString() +
-          value.slice(2, 5);
-
-        if (value.slice(0, 2) < '12') {
-          return `${temp} am`;
-        }
-        return `${temp} pm`;
-      });
+  return yTimes.map((value) =>
+    moment(value, SUPPORTED_TIME_FORMATS).format(hourlyTimeFormat)
+  );
 };
 
 /**
@@ -94,7 +95,7 @@ export const removeInvalidDatesFromUserAvailability = (
 
 export const createScheduleSelectorData = (
   userAvailability: number[],
-  hourlyTimeFormat: boolean
+  hourlyTimeFormat: string
 ): ScheduleSelectorData => {
   const scheduleSelectorData: ScheduleSelectorData = {
     scheduleData: createCalendarAvailabilityDataArray(userAvailability),
@@ -112,9 +113,9 @@ export const createHeatMapDataAndScheduleSelectorData = (
   eventPlanData: EventPlanDocument,
   eventPlanAvailability: EventDataAvailability,
   userAvailability: number[],
-  hourlyTimeFormat: boolean
+  hourlyTimeFormat: string
 ): [EventDataAvailability, HeatMapData, ScheduleSelectorData] => {
-  if (Object.keys(eventPlanAvailability).length == 0) {
+  if (Object.keys(eventPlanAvailability).length === 0) {
     eventPlanAvailability = createEventPlanAvailability(
       eventPlanData.startDate,
       eventPlanData.endDate,

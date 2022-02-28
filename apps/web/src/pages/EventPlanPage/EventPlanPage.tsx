@@ -1,6 +1,8 @@
 import React from 'react';
 import Page from '../../components/Page/Page';
-import EventData, { EventDataAvailability } from '../../interfaces/EventData';
+import {
+  /*EventData,*/ EventDataAvailability,
+} from '../../interfaces/EventData';
 import { getDocSnapshot$, getSubCollDocSnapshot$ } from '../../lib/firestore';
 import HeatMapData from '../../interfaces/HeatMapData';
 import { createHeatMapDataAndScheduleSelectorData } from '../../lib/availability';
@@ -56,8 +58,6 @@ export default function EventPlanPage({
                       data: EventDataAvailability;
                     };
 
-                  console.log(eventPlanAvailabilities.data);
-
                   eventPlanData.current = eventPlan;
 
                   const [
@@ -70,8 +70,7 @@ export default function EventPlanPage({
                     eventPlanAvailabilities.data,
                     // TODO: Extract user availability
                     [],
-                    // TODO: Use hourlyTimeFormat
-                    false
+                    userRecord.timeFormat
                   );
 
                   setEventAvailability(createdEventAvailability);
@@ -116,9 +115,7 @@ export default function EventPlanPage({
   // default render
   return (
     <Page>
-      <>
-        <div>TEST</div>
-      </>
+      <></>
     </Page>
   );
 }
