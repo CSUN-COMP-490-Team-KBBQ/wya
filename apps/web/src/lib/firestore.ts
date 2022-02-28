@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   doc,
   getFirestore,
@@ -11,14 +12,8 @@ import {
   updateDoc,
   collection,
 } from 'firebase/firestore';
-import axios from 'axios';
-import {
-  Email,
-  EventPlanInfo,
-  HourlyTimeFormat,
-  UserId,
-} from 'wya-api/dist/interfaces';
-
+import { Email, EventPlanInfo, UserId } from 'wya-api/dist/interfaces';
+import { TimeFormat } from 'wya-api/dist/lib';
 import app from './firebase';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';
 import UserData from '../interfaces/User';
@@ -139,12 +134,12 @@ export const updateUserTimeFormatOption = (
   return updateDoc(userDocRef, 'timeFormat24Hr', timeFormatOption);
 };
 
-export const updateUserRecordHourlyTimeFormat = (
+export const updateUserRecordTimeFormat = (
   uid: UserId,
-  hourlyTimeFormat: HourlyTimeFormat
+  timeFormat: TimeFormat
 ) => {
   const userRecordDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${uid}`);
-  return updateDoc(userRecordDocRef, { hourlyTimeFormat });
+  return updateDoc(userRecordDocRef, { timeFormat });
 };
 
 export const updateEventAvailability = (
@@ -155,7 +150,6 @@ export const updateEventAvailability = (
   const eventPlanAvailabilityDocRef = getDocRef(
     `/${process.env.REACT_APP_EVENT_PLANS}/${eventPlanId}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${process.env.REACT_APP_EVENT_PLAN_HEAT_MAP_AVAILABILITY}`
   );
-
   return updateDoc(eventPlanAvailabilityDocRef, {
     data,
   });

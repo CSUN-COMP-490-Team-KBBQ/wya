@@ -1,19 +1,8 @@
 import React from 'react';
-// import { UserRecordDocument } from 'wya-api';
+import { UserRecordDocument } from 'wya-api/dist/interfaces';
 
 import { getDocSnapshot$ } from '../lib/firestore';
 import { useUserContext } from './UserContext';
-
-type UserId = string;
-type Email = string;
-type HourlyTimeFormat = 'hh' | 'HH';
-type UserRecordDocument = {
-  email: Email;
-  firstName: string;
-  lastName: string;
-  hourlyTimeFormat: HourlyTimeFormat;
-  uid: UserId;
-};
 
 type UserRecordState = {
   pending: boolean;

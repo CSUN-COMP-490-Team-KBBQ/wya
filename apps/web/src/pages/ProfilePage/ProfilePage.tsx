@@ -1,21 +1,20 @@
 import React from 'react';
-import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
-import Toggle from 'react-toggle';
 import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-// import { HourlyTimeFormat } from 'wya-api';
+import Toggle from 'react-toggle';
+import { TimeFormat } from 'wya-api/dist/lib';
 
 import ChangePasswordForm from '../../components/ChangePasswordForm/ChangePasswordForm';
 import Page from '../../components/Page/Page';
 import { useUserContext } from '../../contexts/UserContext';
-import { logIn, changePassword } from '../../lib/auth';
-import { updateUserRecordHourlyTimeFormat } from '../../lib/firestore';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
+import { logIn, changePassword } from '../../lib/auth';
+import { updateUserRecordTimeFormat } from '../../lib/firestore';
+
 import './ProfilePage.css';
 import 'react-toggle/style.css';
-
-type HourlyTimeFormat = 'hh' | 'HH';
 
 export default function ProfilePage(): JSX.Element {
   const { user } = useUserContext();
@@ -23,12 +22,13 @@ export default function ProfilePage(): JSX.Element {
   const [displaySuccess, setDisplaySuccess] = React.useState<string>('');
   const [displayError, setDisplayError] = React.useState<string>('');
 
-  const [hourlyTimeFormat, setHourlyTimeFormat] =
-    React.useState<HourlyTimeFormat>('hh');
+  const [timeFormat, setTimeFormat] = React.useState<TimeFormat>(
+    TimeFormat.TWELVE_HOURS
+  );
 
   React.useEffect(() => {
     if (userRecord) {
-      setHourlyTimeFormat(userRecord.hourlyTimeFormat);
+      setTimeFormat(userRecord.timeFormat);
     }
   }, [userRecord]);
 
@@ -58,13 +58,16 @@ export default function ProfilePage(): JSX.Element {
     return <ChangePasswordForm />;
   };
 
-  const handleToggleChange = () => {
+  const handleTimeFormatToggle = () => {
     if (userRecord) {
-      const { uid, hourlyTimeFormat } = userRecord;
-      const intendedHourlyTimeFormat = hourlyTimeFormat === 'hh' ? 'HH' : 'hh';
-      updateUserRecordHourlyTimeFormat(uid, intendedHourlyTimeFormat)
+      const { uid, timeFormat } = userRecord;
+      const intendedTimeFormat =
+        timeFormat === TimeFormat.TWELVE_HOURS
+          ? TimeFormat.TWENTY_FOUR_HOURS
+          : TimeFormat.TWELVE_HOURS;
+      updateUserRecordTimeFormat(uid, intendedTimeFormat)
         .then(() => {
-          setHourlyTimeFormat(intendedHourlyTimeFormat);
+          setTimeFormat(intendedTimeFormat);
         })
         .catch(console.error);
     }
@@ -74,9 +77,9 @@ export default function ProfilePage(): JSX.Element {
     return (
       <div id="toggleContent">
         <Toggle
-          defaultChecked={hourlyTimeFormat === 'HH'}
+          defaultChecked={timeFormat === TimeFormat.TWELVE_HOURS}
           icons={false}
-          onChange={handleToggleChange}
+          onChange={handleTimeFormatToggle}
         />
         <p>Use 24-Hour Clock</p>
       </div>
