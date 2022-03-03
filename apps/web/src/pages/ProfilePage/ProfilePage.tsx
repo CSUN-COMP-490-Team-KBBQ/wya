@@ -82,7 +82,7 @@ export default function ProfilePage(): JSX.Element {
     return (
       <div id="toggleContent">
         <Toggle
-          defaultChecked={timeFormat === TimeFormat.TWELVE_HOURS}
+          defaultChecked={timeFormat === TimeFormat.TWENTY_FOUR_HOURS}
           icons={false}
           onChange={handleTimeFormatToggle}
         />
