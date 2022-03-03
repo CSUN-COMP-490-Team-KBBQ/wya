@@ -10,13 +10,19 @@ import {
   FirestoreError,
   Unsubscribe,
   updateDoc,
-  collection,
 } from 'firebase/firestore';
 import { Email, EventPlanInfo, UserId } from 'wya-api/dist/interfaces';
-import { TimeFormat } from 'wya-api/dist/lib';
+// import { TimeFormat } from 'wya-api/dist/lib';
 import app from './firebase';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';
 import UserData from '../interfaces/User';
+
+/** RO3: copied from wya-api/lib/time-format */
+enum TimeFormat {
+  TWELVE_HOURS = 'hh:mm a',
+  TWENTY_FOUR_HOURS = 'HH:mm',
+}
+/** End of RO3 */
 
 const firestore = getFirestore(app);
 
@@ -118,7 +124,7 @@ export const getSubCollDocSnapshot$ = (
 
 export const updateCalendarAvailability = (data: number[], uid: string) => {
   const userHeatMapAvailabilityDocRef = getDocRef(
-    `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_HEAT_MAP_AVAILABILITY}`
+    `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_SCHEDULE_SELECTOR_AVAILABILITY}/`
   );
 
   return updateDoc(userHeatMapAvailabilityDocRef, {
@@ -148,7 +154,7 @@ export const updateEventAvailability = (
   userId: string
 ): Promise<void> => {
   const eventPlanAvailabilityDocRef = getDocRef(
-    `/${process.env.REACT_APP_EVENT_PLANS}/${eventPlanId}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${process.env.REACT_APP_EVENT_PLAN_HEAT_MAP_AVAILABILITY}`
+    `/${process.env.REACT_APP_EVENT_PLANS}/${eventPlanId}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${userId}`
   );
   return updateDoc(eventPlanAvailabilityDocRef, {
     data,

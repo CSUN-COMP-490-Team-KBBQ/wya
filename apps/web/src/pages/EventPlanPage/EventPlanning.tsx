@@ -35,7 +35,7 @@ function AddAvailabilityModal({
     xDaysScheduleSelectorLabelsArray: sortedXData,
     xDaysFormattedToSlicedDateString: formattedXData,
     yTimesScheduleSelectorLabelsArray: sortedYData,
-    hourlyTimeFormat,
+    timeFormat,
   } = scheduleSelectorData;
 
   const [userAvailabilityData, setUserAvailabilityData] =
@@ -54,7 +54,7 @@ function AddAvailabilityModal({
   };
 
   const onSubmitHandler = () => {
-    const newEventPlanAvailability =
+    const newEventPlanAvailability: EventDataAvailability =
       appendUserAvailabilityToGroupEventPlanAvailability(
         sortedXData,
         sortedYData,
@@ -90,7 +90,7 @@ function AddAvailabilityModal({
           days={formattedXData.length}
           startDate={new Date(formattedXData[0])}
           handleChange={onClickScheduleSelectorHandle}
-          hourlyTimeFormat={hourlyTimeFormat}
+          timeFormat={timeFormat}
         />
       </Modal.Body>
       <Modal.Footer>

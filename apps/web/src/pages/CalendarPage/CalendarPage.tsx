@@ -33,7 +33,7 @@ function UpdateAvailabilityModal({
   show,
   onHide,
 }: UpdateAvailabilityModalProps): JSX.Element {
-  const { scheduleData, hourlyTimeFormat: is24Hour } = scheduleSelectorData;
+  const { scheduleData, timeFormat: is24Hour } = scheduleSelectorData;
 
   const [userAvailabilityData, setUserAvailabilityData] =
     React.useState<Array<Date>>(scheduleData);
@@ -91,7 +91,7 @@ function UpdateAvailabilityModal({
           days={7}
           startDate={new Date('January 04, 1970')}
           handleChange={onClickScheduleSelectorHandle}
-          hourlyTimeFormat={is24Hour}
+          timeFormat={is24Hour}
         />
       </Modal.Body>
       <Modal.Footer>
@@ -125,15 +125,15 @@ export default function CalendarPage(): JSX.Element {
     if (userRecord) {
       const { uid } = userRecord;
       return getDocSnapshot$(
-        `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_HEAT_MAP_AVAILABILITY}`,
+        `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_SCHEDULE_SELECTOR_AVAILABILITY}`,
         {
           next: (snapshot) => {
             if (snapshot.exists()) {
-              const { data: heatMapAvailability } = snapshot.data();
+              const { data: scheduleSelectorAvailability } = snapshot.data();
 
               setScheduleSelectorData(
                 createScheduleSelectorData(
-                  heatMapAvailability ?? [],
+                  scheduleSelectorAvailability ?? [],
                   // TODO: Use new hourlyTimeFormat
                   userRecord.timeFormat
                 )

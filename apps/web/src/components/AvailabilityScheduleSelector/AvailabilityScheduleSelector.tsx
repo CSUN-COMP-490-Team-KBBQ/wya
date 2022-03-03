@@ -12,7 +12,7 @@ type AvailabilityScheduleSelectorProps = {
   days: number;
   startDate: Date;
   handleChange: (newSchedule: Date[]) => void;
-  hourlyTimeFormat: string;
+  timeFormat: string;
 };
 
 function AvailabilityScheduleSelector(
@@ -26,7 +26,7 @@ function AvailabilityScheduleSelector(
     days,
     startDate,
     handleChange,
-    hourlyTimeFormat,
+    timeFormat,
   } = props;
 
   const handleRenderDateCell = (
@@ -51,7 +51,7 @@ function AvailabilityScheduleSelector(
   };
 
   const handleRenderTimeLabel = (time: Date) => {
-    const timeLabel = moment(time).format(hourlyTimeFormat);
+    const timeLabel = moment(time).format(timeFormat);
     const currentTime = time.getHours() + time.getMinutes() / 60;
 
     // if with-in timespan

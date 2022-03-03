@@ -31,7 +31,6 @@ const SUPPORTED_TIME_FORMATS = [
 /** End of RO3 */
 
 /** RO3: copied from wya-api/lib/time-format */
-
 enum TimeFormat {
   TWELVE_HOURS = 'hh:mm a',
   TWENTY_FOUR_HOURS = 'HH:mm',

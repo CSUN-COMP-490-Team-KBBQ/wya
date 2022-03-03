@@ -19,11 +19,11 @@ export const sortObjectByKeys = <T>(item: T): string[] => {
 };
 
 export const formatYTimesTo12Or24Hour = (
-  hourlyTimeFormat: string,
+  timeFormat: string,
   yTimes: string[]
 ): string[] => {
   return yTimes.map((value) =>
-    moment(value, SUPPORTED_TIME_FORMATS).format(hourlyTimeFormat)
+    moment(value, SUPPORTED_TIME_FORMATS).format(timeFormat)
   );
 };
 
@@ -95,7 +95,7 @@ export const removeInvalidDatesFromUserAvailability = (
 
 export const createScheduleSelectorData = (
   userAvailability: number[],
-  hourlyTimeFormat: string
+  timeFormat: string
 ): ScheduleSelectorData => {
   const scheduleSelectorData: ScheduleSelectorData = {
     scheduleData: createCalendarAvailabilityDataArray(userAvailability),
@@ -103,7 +103,7 @@ export const createScheduleSelectorData = (
     xDaysFormattedToSlicedDateString: [],
     yTimesScheduleSelectorLabelsArray: [],
     yTimesFormattedTo12Or24Hour: [],
-    hourlyTimeFormat: hourlyTimeFormat,
+    timeFormat: timeFormat,
   };
 
   return scheduleSelectorData;
@@ -113,28 +113,28 @@ export const createHeatMapDataAndScheduleSelectorData = (
   eventPlanData: EventPlanDocument,
   eventPlanAvailability: EventDataAvailability,
   userAvailability: number[],
-  hourlyTimeFormat: string
+  timeFormat: string
 ): [EventDataAvailability, HeatMapData, ScheduleSelectorData] => {
-  if (Object.keys(eventPlanAvailability).length === 0) {
-    eventPlanAvailability = createEventPlanAvailability(
-      eventPlanData.startDate,
-      eventPlanData.endDate,
-      eventPlanData.dailyStartTime,
-      eventPlanData.dailyEndTime
-    );
-  } else {
-  }
+  const createdEventPlanAvailability: EventDataAvailability =
+    Object.keys(eventPlanAvailability).length === 0
+      ? createEventPlanAvailability(
+          eventPlanData.startDate,
+          eventPlanData.endDate,
+          eventPlanData.dailyStartTime,
+          eventPlanData.dailyEndTime
+        )
+      : { ...eventPlanAvailability };
 
-  const sortedYTimesLabelsArray = sortObjectByKeys<EventDataAvailability>(
-    eventPlanAvailability
-  );
+  const sortedYTimesLabelsArray = sortObjectByKeys<EventDataAvailability>({
+    ...createdEventPlanAvailability,
+  });
   const formattedYTimesTo12Or24Hour = formatYTimesTo12Or24Hour(
-    hourlyTimeFormat,
+    timeFormat,
     sortedYTimesLabelsArray
   );
   const sortedXDaysLabelsArray = sortObjectByKeys<{
     [date: string]: string[];
-  }>(eventPlanAvailability[sortedYTimesLabelsArray[0]]);
+  }>({ ...createdEventPlanAvailability[sortedYTimesLabelsArray[0]] });
   const formattedXDaysToSlicedDateString = formatXDaysToSlicedDateString(
     sortedXDaysLabelsArray
   );
@@ -146,7 +146,7 @@ export const createHeatMapDataAndScheduleSelectorData = (
     heatMap2dArray: createHeatMapAvailabilityDataArray(
       sortedYTimesLabelsArray,
       sortedXDaysLabelsArray,
-      eventPlanAvailability
+      { ...createdEventPlanAvailability }
     ),
   };
 
@@ -160,10 +160,10 @@ export const createHeatMapDataAndScheduleSelectorData = (
     xDaysFormattedToSlicedDateString: formattedXDaysToSlicedDateString,
     yTimesScheduleSelectorLabelsArray: sortedYTimesLabelsArray,
     yTimesFormattedTo12Or24Hour: formattedYTimesTo12Or24Hour,
-    hourlyTimeFormat: hourlyTimeFormat,
+    timeFormat: timeFormat,
   };
 
-  return [eventPlanAvailability, heatMapData, scheduleSelectorData];
+  return [createdEventPlanAvailability, heatMapData, scheduleSelectorData];
 };
 
 export const appendUserAvailabilityToGroupEventPlanAvailability = (
@@ -192,9 +192,11 @@ export const appendUserAvailabilityToGroupEventPlanAvailability = (
 
   // add uid to each appropriate cell
   for (let i = 0; i < userAvailability.length; i += 1) {
-    const time = userAvailability[i].toTimeString().slice(0, 5);
-    const temp = new Date(userAvailability[i].toDateString().slice(0, 15));
-    const day = temp.getTime().toString();
+    const time: string = userAvailability[i].toTimeString().slice(0, 5);
+    const temp: Date = new Date(
+      userAvailability[i].toDateString().slice(0, 15)
+    );
+    const day: string = temp.getTime().toString();
     if (eventPlanAvailability[time][day].includes(uid)) {
       // eslint-disable-next-line
       console.log('User already HERE');
@@ -216,13 +218,17 @@ export const createEventPlanAvailability = (
   const endTimeTimeStamp = moment(endTime, 'HH:mm');
   const tempDateTimeStamp = moment(startDate);
   const tempTimeTimeStamp = moment(startTime, 'HH:mm');
-  const days = {};
-  const AvailabilityHeatMap = {};
+  const days: {
+    [date: string]: string[];
+  } = {};
+  const AvailabilityHeatMap: EventDataAvailability = {};
 
   // creating days map
   while (tempDateTimeStamp.isSameOrBefore(endDateTimeStamp)) {
-    const tempDays = {
-      [tempDateTimeStamp.valueOf()]: [],
+    const tempDays: {
+      [days: string]: string[];
+    } = {
+      [tempDateTimeStamp.valueOf().toString()]: [],
     };
     Object.assign(days, tempDays);
     tempDateTimeStamp.add(1, 'days');
@@ -230,7 +236,7 @@ export const createEventPlanAvailability = (
 
   // creating availability map
   while (tempTimeTimeStamp.isSameOrBefore(endTimeTimeStamp)) {
-    const tempAvailabilityHeatMap = {
+    const tempAvailabilityHeatMap: EventDataAvailability = {
       [tempTimeTimeStamp.format('HH:mm')]: days,
     };
     Object.assign(AvailabilityHeatMap, tempAvailabilityHeatMap);

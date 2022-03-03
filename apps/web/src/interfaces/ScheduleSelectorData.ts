@@ -4,5 +4,5 @@ export default interface ScheduleSelectorData {
   xDaysFormattedToSlicedDateString: string[];
   yTimesScheduleSelectorLabelsArray: string[];
   yTimesFormattedTo12Or24Hour: string[];
-  hourlyTimeFormat: string;
+  timeFormat: string;
 }

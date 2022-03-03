@@ -50,7 +50,7 @@ export default function EventPlanPage({
             const eventPlan = eventPlanSnapshot.data() as EventPlanDocument;
 
             getSubCollDocSnapshot$(
-              `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${process.env.REACT_APP_EVENT_PLAN_HEAT_MAP_AVAILABILITY}`,
+              `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${userRecord.uid}`,
               {
                 next: (eventPlanAvailabilitiesSnapshot) => {
                   const eventPlanAvailabilities =
@@ -72,6 +72,8 @@ export default function EventPlanPage({
                     [],
                     userRecord.timeFormat
                   );
+
+                  console.log(createdEventAvailability);
 
                   setEventAvailability(createdEventAvailability);
                   setHeatMapData(createdHeatMapData);

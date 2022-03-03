@@ -7,7 +7,14 @@ import {
   UserRecordDocument,
   User,
 } from '../../../interfaces';
-import { TimeFormat } from '../../../lib/time-format';
+// import { TimeFormat } from '../../../lib/time-format';
+
+/** RO3: copied from wya-api/lib/time-format */
+enum TimeFormat {
+  TWELVE_HOURS = 'hh:mm a',
+  TWENTY_FOUR_HOURS = 'HH:mm',
+}
+/** End of RO3 */
 
 const debug = Debug('wya-api:etl/firebase/create-new-user-record');
 

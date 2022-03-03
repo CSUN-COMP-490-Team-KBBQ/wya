@@ -1,4 +1,11 @@
-import { TimeFormat } from '../lib/time-format';
+// import { TimeFormat } from '../lib/time-format';
+
+/** RO3: copied from wya-api/lib/time-format */
+enum TimeFormat {
+  TWELVE_HOURS = 'hh:mm a',
+  TWENTY_FOUR_HOURS = 'HH:mm',
+}
+/** End of RO3 */
 
 /** users */
 export type UserId = string;
