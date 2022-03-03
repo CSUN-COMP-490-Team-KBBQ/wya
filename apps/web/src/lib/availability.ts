@@ -218,30 +218,32 @@ export const createEventPlanAvailability = (
   const endTimeTimeStamp = moment(endTime, 'HH:mm');
   const tempDateTimeStamp = moment(startDate);
   const tempTimeTimeStamp = moment(startTime, 'HH:mm');
-  const days: {
+  let days: {
     [date: string]: string[];
   } = {};
-  const AvailabilityHeatMap: EventDataAvailability = {};
+  let AvailabilityHeatMap: EventDataAvailability = {};
 
   // creating days map
   while (tempDateTimeStamp.isSameOrBefore(endDateTimeStamp)) {
-    const tempDays: {
-      [days: string]: string[];
-    } = {
-      [tempDateTimeStamp.valueOf().toString()]: [],
-    };
-    Object.assign(days, tempDays);
+    days = { ...days, [`${tempDateTimeStamp.valueOf()}`]: [] };
     tempDateTimeStamp.add(1, 'days');
   }
+  days = JSON.parse(JSON.stringify(days));
+
+  console.log(days);
 
   // creating availability map
   while (tempTimeTimeStamp.isSameOrBefore(endTimeTimeStamp)) {
-    const tempAvailabilityHeatMap: EventDataAvailability = {
-      [tempTimeTimeStamp.format('HH:mm')]: days,
+    AvailabilityHeatMap = {
+      ...AvailabilityHeatMap,
+      [tempTimeTimeStamp.format('HH:mm')]: { ...days },
     };
-    Object.assign(AvailabilityHeatMap, tempAvailabilityHeatMap);
     tempTimeTimeStamp.add(15, 'minutes');
   }
+
+  // This is create a true copy of AvailabilityHeatMap
+  // The spread operator (...) and Object.assign() only go one level deep when making a copy
+  AvailabilityHeatMap = JSON.parse(JSON.stringify(AvailabilityHeatMap));
 
   return AvailabilityHeatMap;
 };
