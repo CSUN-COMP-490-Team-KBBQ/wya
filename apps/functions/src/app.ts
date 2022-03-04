@@ -5,6 +5,7 @@ import { json as bodyParserJSON } from 'body-parser';
 import { functions } from './firebase';
 import usersRouter from './routes/users';
 import eventPlansRouter from './routes/event-plans';
+import eventsFinalizedRouter from './routes/events';
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.use(bodyParserJSON());
 
 app.use('/users', usersRouter);
 app.use('/event-plans', eventPlansRouter);
+app.use('/events', eventsFinalizedRouter);
 
 export default app;

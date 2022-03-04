@@ -11,7 +11,13 @@ import {
   Unsubscribe,
   updateDoc,
 } from 'firebase/firestore';
-import { Email, EventPlanInfo, UserId } from 'wya-api/dist/interfaces';
+import {
+  Email,
+  EventPlanInfo,
+  EventInfo,
+  UserId,
+  EventGuest,
+} from 'wya-api/dist/interfaces';
 // import { TimeFormat } from 'wya-api/dist/lib';
 import app from './firebase';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';
@@ -55,6 +61,36 @@ export const createEventPlan = (
           },
         } = res;
         resolve(eventPlanId);
+      })
+      .catch(reject);
+  });
+};
+
+export const createEventFinalized = (
+  data: EventInfo & {
+    guests: EventGuest[];
+    'g-recaptcha-response': string;
+  }
+) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/${process.env.REACT_APP_USER_EVENTS}/create`,
+        JSON.stringify(data),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        const {
+          data: {
+            data: [eventFinalizedId],
+          },
+        } = res;
+        resolve(eventFinalizedId);
       })
       .catch(reject);
   });

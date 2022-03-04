@@ -40,7 +40,7 @@ const _validateParams = (params: EtlFirebaseCreateNewEventFinalizedParams) => {
   }
 };
 
-export const etlFirebaseCreateNewEventPlan = async (
+export const etlFirebaseCreateNewEventFinalized = async (
   params: EtlFirebaseCreateNewEventFinalizedParams,
   context: EtlFirebaseCreateNewEventFinalizedContext
 ) => {
