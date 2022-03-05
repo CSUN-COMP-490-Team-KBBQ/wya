@@ -7,14 +7,16 @@ import { v4 as uuid } from 'uuid';
 import {
   EventDocument,
   EventInfo,
-  EventGuest,
   UserEventDocument,
+  UserId,
+  Email,
 } from '../../../interfaces';
+import { etlFirebaseGetEmailByUserId } from './get-email-by-userId';
 
 const debug = Debug('wya-api:etl/firebase/create-new-event-finalized');
 
 type EtlFirebaseCreateNewEventFinalizedParams = EventInfo & {
-  guests: EventGuest[];
+  invitees: UserId[];
 };
 
 type EtlFirebaseCreateNewEventFinalizedContext = {
@@ -22,22 +24,24 @@ type EtlFirebaseCreateNewEventFinalizedContext = {
 };
 
 const _validateParams = (params: EtlFirebaseCreateNewEventFinalizedParams) => {
-  const { guests, ...restOfParams } = params;
+  const { invitees, ...restOfParams } = params;
   for (const [key, value] of Object.entries(restOfParams)) {
     assert(value || value === '', `[${key}] is required`);
   }
 
-  // If there are invitees check to make sure we have proper emails
-  if (guests.length) {
-    /**
-     * Regex copied from : https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression
-     */
-    const EMAIL_REGEX =
-      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-    guests.forEach((guest) => {
-      assert(EMAIL_REGEX.test(guest.email), 'Invalid email provided');
-    });
-  }
+  // Do we need to validate at this point?
+
+  // // If there are invitees check to make sure we have proper emails
+  // if (invitees.length) {
+  //   /**
+  //    * Regex copied from : https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression
+  //    */
+  //   const EMAIL_REGEX =
+  //     /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+  //   guests.forEach((guest) => {
+  //     assert(EMAIL_REGEX.test(guest.email), 'Invalid email provided');
+  //   });
+  // }
 };
 
 export const etlFirebaseCreateNewEventFinalized = async (
@@ -53,20 +57,20 @@ export const etlFirebaseCreateNewEventFinalized = async (
 
     /** Extract */
     const eventFinalizedId = uuid();
-    const { guests, hostId, ...restOfParams } = params;
+    const { invitees: guestsByUserIds, hostId, ...restOfParams } = params;
 
     /** Transform */
 
-    // // Map and reduce the array of invitees' emails into an array of invitees' userIds
-    // const guestsByUserIds: UserId[] = await (
-    //   await Promise.all(
-    //     guests.map((guest) => {
-    //       etlFirebaseGetUserByEmail({ email: guest.email }, { firebase });
-    //     })
-    //   )
-    // ).reduce((acc: UserId[], { data: [userId] }) => {
-    //   return [...acc, userId];
-    // }, []);
+    // Map and reduce the array of guests' userIds into an array of guests' emails
+    const guestsByEmail: Email[] = await (
+      await Promise.all(
+        guestsByUserIds.map((userId) =>
+          etlFirebaseGetEmailByUserId({ userId }, { firebase })
+        )
+      )
+    ).reduce((acc: Email[], { data: [email] }) => {
+      return [...acc, email];
+    }, []);
 
     /** Load */
     await firebaseFirestore.runTransaction(async (transaction) => {
@@ -81,13 +85,11 @@ export const etlFirebaseCreateNewEventFinalized = async (
         eventId: eventFinalizedId,
       } as EventDocument);
 
-      // Create the events/guests/userId for each invitee
-      const guestsAndHostByUserId = [hostId];
-      guests.forEach((guest) => guestsAndHostByUserId.push(guest.uid));
+      // Create the events/guests/email for each guest
       await Promise.all(
-        guestsAndHostByUserId.map((userId) => {
+        guestsByEmail.map((email) => {
           const eventFinalizedGuestsRef = firebaseFirestore.doc(
-            `/${process.env.EVENTS}/${eventFinalizedId}/${process.env.EVENT_GUESTS}/${userId}`
+            `/${process.env.EVENTS}/${eventFinalizedId}/${process.env.EVENT_GUESTS}/${email}`
           );
           return transaction.create(eventFinalizedGuestsRef, {
             status: 'PENDING',
@@ -104,13 +106,13 @@ export const etlFirebaseCreateNewEventFinalized = async (
         role: 'HOST',
       } as UserEventDocument);
 
-      // Associate event doc to each invitee
+      // Associate event doc to each guest
       await Promise.all(
-        guests.map((guest) => {
-          const inviteeEventPlanDocRef = firebaseFirestore.doc(
-            `/${process.env.USERS}/${guest.uid}/${process.env.USER_EVENTS}/${eventFinalizedId}`
+        guestsByUserIds.map((userId) => {
+          const guestEventFinalizedDocRef = firebaseFirestore.doc(
+            `/${process.env.USERS}/${userId}/${process.env.USER_EVENTS}/${eventFinalizedId}`
           );
-          return transaction.create(inviteeEventPlanDocRef, {
+          return transaction.create(guestEventFinalizedDocRef, {
             ...restOfParams,
             role: 'GUEST',
           } as UserEventDocument);
@@ -118,7 +120,7 @@ export const etlFirebaseCreateNewEventFinalized = async (
       );
     });
 
-    // Send emails to invitees
+    // Send emails to guests
     try {
       const emailTransport = nodemailer.createTransport({
         // NOTE: Using gmail as a sender because there is currently no domain for an email service
@@ -129,9 +131,9 @@ export const etlFirebaseCreateNewEventFinalized = async (
         },
       });
 
-      guests.forEach((guest) => {
-        if (guest.email) {
-          debug(`Sending invitation email to ${guest.email}`);
+      guestsByEmail.forEach((email) => {
+        if (email) {
+          debug(`Sending invitation email to ${email}`);
           const [domain] = (
             process.env.DOMAINS ?? 'http://localhost:3000'
           ).split(',');
@@ -139,7 +141,7 @@ export const etlFirebaseCreateNewEventFinalized = async (
           const { name } = restOfParams;
           const mailOptions = {
             from: process.env.NODEMAILER_USERNAME,
-            to: guest.email,
+            to: email,
             subject: `WYA?! An event has been finalized!`,
             html:
               '<h1>WYA</h1>' +
@@ -149,10 +151,10 @@ export const etlFirebaseCreateNewEventFinalized = async (
 
           emailTransport.sendMail(mailOptions, (err, info) => {
             if (err) {
-              debug(`Error sending email to ${guest.email}`);
+              debug(`Error sending email to ${email}`);
               debug(`${JSON.stringify(err ?? {}, null, 2)}`);
             } else {
-              debug(`Send to ${guest.email}`);
+              debug(`Send to ${email}`);
               debug(`${JSON.stringify(info ?? {}, null, 2)}`);
             }
           });
