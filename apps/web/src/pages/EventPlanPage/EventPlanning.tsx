@@ -3,7 +3,7 @@ import { Row, Col, Container, Modal, Button } from 'react-bootstrap';
 import AvailabilityHeatMap from '../../components/AvailabilityHeatMap/AvailabilityHeatMap';
 import HeatMapData from '../../interfaces/HeatMapData';
 import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
-// import ConfirmEventModal from '../../components/ConfirmEventModal/ConfirmEventModal';
+import ConfirmEventModal from '../../components/ConfirmEventModal/ConfirmEventModal';
 import { appendUserAvailabilityToGroupEventPlanAvailability } from '../../lib/availability';
 import { updateEventAvailability } from '../../lib/firestore';
 import AvailabilityScheduleSelector from '../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
@@ -160,12 +160,12 @@ export default function EventPlanning({
               eventPlanId={eventPlanData.eventPlanId}
               uid={userId}
             />
-            {/* {isHost && !eventPlanData.isFinalized && (
-                            <ConfirmEventModal
-                                event={eventPlanData}
-                                heatMapData={heatMapData}
-                            />
-                        )} */}
+            {isHost && (
+              <ConfirmEventModal
+                eventPlanDocument={eventPlanData}
+                heatMapData={heatMapData}
+              />
+            )}
           </div>
         </Row>
       </Col>

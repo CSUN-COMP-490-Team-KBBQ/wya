@@ -4,15 +4,15 @@ import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
 
-import EventData from '../../interfaces/EventData';
 import HeatMapData from '../../interfaces/HeatMapData';
-import { updateEvent } from '../../lib/firestore';
+import { createEventFinalized } from '../../lib/firestore';
 
 import './ConfirmEventModal.css';
 import { convertStringArrayToObjectWithValueAndLabel } from '../../lib/eventHelpers';
+import { EventInfo, EventPlanDocument, UserId } from 'wya-api/dist/interfaces';
 
 interface ConfirmEventModalProps {
-  event: EventData;
+  eventPlanDocument: EventPlanDocument;
   heatMapData: HeatMapData;
 }
 
@@ -21,7 +21,7 @@ export default function ConfirmEventModal(
 ): JSX.Element {
   const [show, setShow] = React.useState<boolean>(false);
   const [displayError, setDisplayError] = React.useState<string>('');
-  const { event, heatMapData } = props;
+  const { eventPlanDocument, heatMapData } = props;
   const {
     yTimesHeatMapLabelsArray: yTimesHeatMapLabelArray,
     xDaysFormattedToSlicedDateString,
@@ -60,15 +60,23 @@ export default function ConfirmEventModal(
       if (startTime >= endTime) {
         setDisplayError('The start time must be less than the end time!');
       } else {
-        const newEventData = {
-          ...event,
-          isFinalized: true,
-          day,
+        const {
+          eventPlanId,
+          dailyStartTime: startTime,
+          dailyEndTime: endTime,
+          ...restOfParams
+        } = eventPlanDocument;
+
+        const newEventData: EventInfo & {
+          invitees: UserId[];
+        } = {
           startTime,
           endTime,
+          day,
+          ...restOfParams,
         };
 
-        updateEvent(newEventData);
+        createEventFinalized(newEventData);
       }
     } else {
       setDisplayError('All values need to be entered to update event!');
@@ -95,9 +103,9 @@ export default function ConfirmEventModal(
         </Modal.Header>
         <Modal.Body>
           <div>
-            <h2>{event.name.toUpperCase()}</h2>
+            <h2>{eventPlanDocument.name.toUpperCase()}</h2>
             <h5>Description</h5>
-            <p>{event.description}</p>
+            <p>{eventPlanDocument.description}</p>
             {/* <h5>Guests</h5>
                         <p>guest list</p> */}
             <h5>Date</h5>
@@ -138,7 +146,7 @@ export default function ConfirmEventModal(
             onClick={onSubmitHandler}
             variant="outline-success"
           >
-            Update Event
+            Finalize Event
           </Button>
         </Modal.Footer>
       </Modal>

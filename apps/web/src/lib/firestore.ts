@@ -68,8 +68,7 @@ export const createEventPlan = (
 
 export const createEventFinalized = (
   data: EventInfo & {
-    guests: EventGuest[];
-    'g-recaptcha-response': string;
+    invitees: UserId[];
   }
 ) => {
   return new Promise((resolve, reject) => {
