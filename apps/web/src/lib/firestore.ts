@@ -10,6 +10,12 @@ import {
   FirestoreError,
   Unsubscribe,
   updateDoc,
+  collection,
+  CollectionReference,
+  QuerySnapshot,
+  query,
+  where,
+  documentId,
 } from 'firebase/firestore';
 import {
   Email,
@@ -34,6 +40,10 @@ const firestore = getFirestore(app);
 
 function getDocRef(path: string): DocumentReference<DocumentData> {
   return doc(firestore, path);
+}
+
+function getCollRef(path: string): CollectionReference<DocumentData> {
+  return collection(firestore, path);
 }
 
 export const createEventPlan = (
@@ -153,8 +163,20 @@ export const getSubCollDocSnapshot$ = (
     complete?: (() => void) | undefined;
   }
 ): Unsubscribe => {
-  const eventPlanAvailabilityDocRef = getDocRef(path);
-  return onSnapshot(eventPlanAvailabilityDocRef, observer);
+  const subCollDocRef = getDocRef(path);
+  return onSnapshot(subCollDocRef, observer);
+};
+
+export const getAllSubCollDocsSnapshot$ = (
+  path: string,
+  observer: {
+    next?: ((snapshot: QuerySnapshot<DocumentData>) => void) | undefined;
+    error?: ((error: FirestoreError) => void) | undefined;
+    complete?: (() => void) | undefined;
+  }
+): Unsubscribe => {
+  const subCollRef = getCollRef(path);
+  return onSnapshot(subCollRef, observer);
 };
 
 export const updateCalendarAvailability = (data: number[], uid: string) => {
