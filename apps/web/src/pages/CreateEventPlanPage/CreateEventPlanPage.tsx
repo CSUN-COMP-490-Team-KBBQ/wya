@@ -5,11 +5,11 @@ import Page from '../../components/Page/Page';
 import './CreateEventPlanPage.css';
 
 export default function CreateEventPlanPage(): JSX.Element {
-    return (
-        <Page>
-            <Container fluid>
-                <CreateEventPlanForm />
-            </Container>
-        </Page>
-    );
+  return (
+    <Page>
+      <Container fluid>
+        <CreateEventPlanForm />
+      </Container>
+    </Page>
+  );
 }

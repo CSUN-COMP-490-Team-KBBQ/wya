@@ -17,6 +17,7 @@ import { UserRecordProvider } from '../../contexts/UserRecordContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LandingPage from '../../pages/LandingPage/LandingPage';
 import EventPlanPage from '../../pages/EventPlanPage/EventPlanPage';
+import EventFinalizedPage from '../../pages/EventFinalizedPage/EventFinalizedPage';
 
 export default function App(): JSX.Element {
   return (
@@ -36,6 +37,10 @@ export default function App(): JSX.Element {
             />
             <PrivateRoute path="/event/:id" component={EventPage} />
             <PrivateRoute path="/event-plans/:id" component={EventPlanPage} />
+            <PrivateRoute
+              path="/events-finalized/:id"
+              component={EventFinalizedPage}
+            />
             <PrivateRoute path="/calendar" component={CalendarPage} />
             <PrivateRoute path="/profile" component={ProfilePage} />
             <Route path="*" exact component={NotFoundPage} />

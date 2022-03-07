@@ -24,6 +24,7 @@ import {
   EventPlanDocument,
   Email,
   UserId,
+  EventGuest,
 } from '../interfaces';
 
 const firestore = getFirestore(app);
@@ -115,6 +116,15 @@ export const updateUserDocument = async (userDocument: UserDocument) => {
 export const updateUserRecord = async (user: UserDocument): Promise<void> => {
   const userDocRef = getDocRef(`/users/${user.uid}`);
   return updateDoc(userDocRef, { ...user });
+};
+export const updateGuest = async (
+  eventId: String,
+  guest: EventGuest
+): Promise<void> => {
+  const eventDocRef = getDocRef(
+    `/${process.env.REACT_APP_EVENTS}/${eventId}/${process.env.REACT_APP_EVENT_GUESTS}/${guest.uid}`
+  );
+  return updateDoc(eventDocRef, { ...guest });
 };
 
 export const getDocSnapshot$ = (
