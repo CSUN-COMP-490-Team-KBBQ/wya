@@ -11,7 +11,7 @@ type EtlFirebaseDeleteEventPlanParams = {
 };
 
 type EtlFirebaseDeleteEventPlanContext = {
-  firebase: firebaseAdmin.app.App;
+  firebaseClientInjection: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseDeleteEventPlan = async (
@@ -25,8 +25,8 @@ export const etlFirebaseDeleteEventPlan = async (
   debug(`Deleting event plan: ${eventPlanId}`);
 
   try {
-    const { firebase } = context;
-    const firebaseFirestore = firebase.firestore();
+    const { firebaseClientInjection } = context;
+    const firebaseFirestore = firebaseClientInjection.firestore();
 
     await firebaseFirestore.runTransaction(async (transaction) => {
       /** Extract */

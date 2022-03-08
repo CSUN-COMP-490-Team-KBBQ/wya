@@ -20,7 +20,7 @@ type EtlFirebaseCreateNewEventFinalizedParams = EventInfo & {
 };
 
 type EtlFirebaseCreateNewEventFinalizedContext = {
-  firebase: firebaseAdmin.app.App;
+  firebaseClientInjection: firebaseAdmin.app.App;
 };
 
 const _validateParams = (params: EtlFirebaseCreateNewEventFinalizedParams) => {
@@ -52,8 +52,8 @@ export const etlFirebaseCreateNewEventFinalized = async (
   _validateParams(params);
 
   try {
-    const { firebase } = context;
-    const firebaseFirestore = firebase.firestore();
+    const { firebaseClientInjection } = context;
+    const firebaseFirestore = firebaseClientInjection.firestore();
 
     /** Extract */
     const eventFinalizedId = uuid();
@@ -65,7 +65,7 @@ export const etlFirebaseCreateNewEventFinalized = async (
     const guestsByEmail: Email[] = await (
       await Promise.all(
         guestsByUserIds.map((userId) =>
-          etlFirebaseGetEmailByUserId({ userId }, { firebase })
+          etlFirebaseGetEmailByUserId({ userId }, { firebaseClientInjection })
         )
       )
     ).reduce((acc: Email[], { data: [email] }) => {

@@ -24,7 +24,7 @@ type EtlFirebaseCreateNewUserRecordParams = User & {
 };
 
 type EtlFirebaseCreateNewUserRecordContext = {
-  firebase: firebaseAdmin.app.App;
+  firebaseClientInjection: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseCreateNewUserRecord = async (
@@ -39,8 +39,8 @@ export const etlFirebaseCreateNewUserRecord = async (
   debug(`Creating a new user record: ${uid} ${email}`);
 
   try {
-    const { firebase } = context;
-    const firebaseFirestore = firebase.firestore();
+    const { firebaseClientInjection } = context;
+    const firebaseFirestore = firebaseClientInjection.firestore();
 
     await firebaseFirestore.runTransaction(async (transaction) => {
       // Create user record

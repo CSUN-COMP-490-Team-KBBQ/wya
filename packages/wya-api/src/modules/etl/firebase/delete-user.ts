@@ -12,7 +12,7 @@ type EtlFirebaseDeleteUserParams = {
 };
 
 type EtlFirebaseDeleteUserContext = {
-  firebase: firebaseAdmin.app.App;
+  firebaseClientInjection: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseDeleteUser = async (
@@ -26,12 +26,12 @@ export const etlFirebaseDeleteUser = async (
   debug(`Deleting user: ${uid}`);
 
   try {
-    const { firebase } = context;
-    const firebaseAuth = firebase.auth();
+    const { firebaseClientInjection } = context;
+    const firebaseAuth = firebaseClientInjection.auth();
 
     await firebaseAuth.deleteUser(uid);
 
-    await etlFirebaseDeleteUserRecord({ uid }, { firebase });
+    await etlFirebaseDeleteUserRecord({ uid }, { firebaseClientInjection });
 
     return {
       data: [],

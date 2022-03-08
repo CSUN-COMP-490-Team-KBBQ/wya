@@ -12,7 +12,7 @@ type EtlFirebaseCreateNewUserParams = {
 };
 
 type EtlFirebaseCreateNewUserContext = {
-  firebase: firebaseAdmin.app.App;
+  firebaseClientInjection: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseCreateNewUser = async (
@@ -27,8 +27,8 @@ export const etlFirebaseCreateNewUser = async (
   debug(`Creating a new user: ${email}`);
 
   try {
-    const { firebase } = context;
-    const firebaseAuth = firebase.auth();
+    const { firebaseClientInjection } = context;
+    const firebaseAuth = firebaseClientInjection.auth();
     const { uid } = await firebaseAuth.createUser({ email, password });
     assert(uid);
 

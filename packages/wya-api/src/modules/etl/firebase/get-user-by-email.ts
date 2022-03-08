@@ -11,7 +11,7 @@ type EtlFirebaseGetUserByEmailParams = {
 };
 
 type EtlFirebaseGetUserByEmailContext = {
-  firebase: firebaseAdmin.app.App;
+  firebaseClientInjection: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseGetUserByEmail = async (
@@ -25,8 +25,8 @@ export const etlFirebaseGetUserByEmail = async (
   debug(`Getting user by email: ${email}`);
 
   try {
-    const { firebase } = context;
-    const firebaseAuth = firebase.auth();
+    const { firebaseClientInjection } = context;
+    const firebaseAuth = firebaseClientInjection.auth();
 
     const { uid } = await firebaseAuth.getUserByEmail(email);
     return {

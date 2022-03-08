@@ -11,7 +11,7 @@ type EtlFirebaseDeleteUserRecordParams = {
 };
 
 type EtlFirebaseDeleteUserRecordContext = {
-  firebase: firebaseAdmin.app.App;
+  firebaseClientInjection: firebaseAdmin.app.App;
 };
 
 export const etlFirebaseDeleteUserRecord = async (
@@ -25,8 +25,8 @@ export const etlFirebaseDeleteUserRecord = async (
   debug(`Deleting user record: ${uid}`);
 
   try {
-    const { firebase } = context;
-    const firebaseFirestore = firebase.firestore();
+    const { firebaseClientInjection } = context;
+    const firebaseFirestore = firebaseClientInjection.firestore();
 
     const userRecordRef = firebaseFirestore.doc(`/${process.env.USERS}/${uid}`);
     await firebaseFirestore.recursiveDelete(userRecordRef);

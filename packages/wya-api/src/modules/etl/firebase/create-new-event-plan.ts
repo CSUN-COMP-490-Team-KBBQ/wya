@@ -21,7 +21,7 @@ type EtlFirebaseCreateNewEventPlanParams = EventPlanInfo & {
 };
 
 type EtlFirebaseCreateNewEventPlanContext = {
-  firebase: firebaseAdmin.app.App;
+  firebaseClientInjection: firebaseAdmin.app.App;
 };
 
 const _validateParams = (params: EtlFirebaseCreateNewEventPlanParams) => {
@@ -51,8 +51,8 @@ export const etlFirebaseCreateNewEventPlan = async (
   _validateParams(params);
 
   try {
-    const { firebase } = context;
-    const firebaseFirestore = firebase.firestore();
+    const { firebaseClientInjection } = context;
+    const firebaseFirestore = firebaseClientInjection.firestore();
 
     /** Extract */
     const eventPlanId = uuid();
@@ -64,7 +64,7 @@ export const etlFirebaseCreateNewEventPlan = async (
     const inviteesByUserIds: UserId[] = await (
       await Promise.all(
         inviteesByEmails.map((email) =>
-          etlFirebaseGetUserByEmail({ email }, { firebase })
+          etlFirebaseGetUserByEmail({ email }, { firebaseClientInjection })
         )
       )
     ).reduce((acc: UserId[], { data: [userId] }) => {
