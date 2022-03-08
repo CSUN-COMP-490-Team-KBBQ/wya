@@ -5,7 +5,7 @@ import firebase from './firebase';
 
 const program = new Command();
 
-program.version('1.0.1');
+program.version('1.0.2');
 
 program.addCommand(add);
 program.addCommand(firebase);
