@@ -2,9 +2,9 @@ import { Router } from 'express';
 import {
   etlFirebaseDeleteEventPlan,
   etlFirebaseCreateNewEventPlan,
-} from 'wya-api';
+} from 'wya-api/src/modules/etl/firebase';
 
-import { firebase } from '../firebase';
+import { firebaseClient } from '../firebase';
 
 const router = Router();
 
@@ -13,9 +13,11 @@ router.post('/create', async (req, res) => {
   const { 'g-recaptcha-response': token, ...restOfReqBody } = req.body;
 
   try {
-    res
-      .status(200)
-      .json(await etlFirebaseCreateNewEventPlan(restOfReqBody, { firebase }));
+    res.status(200).json(
+      await etlFirebaseCreateNewEventPlan(restOfReqBody, {
+        firebaseClientInjection: firebaseClient,
+      })
+    );
   } catch (err) {
     logger.error(err);
     res.status(500).json(err);
@@ -27,7 +29,10 @@ router.delete('/', async (req, res) => {
   const { eventPlanId } = req.body;
 
   try {
-    await etlFirebaseDeleteEventPlan({ eventPlanId }, { firebase });
+    await etlFirebaseDeleteEventPlan(
+      { eventPlanId },
+      { firebaseClientInjection: firebaseClient }
+    );
     res.sendStatus(200);
   } catch (err) {
     logger.error(err);

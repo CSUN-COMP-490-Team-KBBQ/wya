@@ -11,6 +11,8 @@
     "sourceMap": true,
     "strict": true,
     "esModuleInterop": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "module": "CommonJS",
+    "moduleResolution": "Node"
   }
 }

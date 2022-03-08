@@ -4,9 +4,9 @@ import {
   etlFirebaseDeleteUser,
   etlFirebaseCreateNewUser,
   etlFirebaseCreateNewUserRecord,
-} from 'wya-api';
+} from 'wya-api/src/modules/etl/firebase';
 
-import { firebase } from '../firebase';
+import { firebaseClient } from '../firebase';
 
 const router = Router();
 
@@ -17,7 +17,10 @@ router.post('/create', async (req, res) => {
   try {
     const {
       data: [uid],
-    } = await etlFirebaseCreateNewUser({ email, password }, { firebase });
+    } = await etlFirebaseCreateNewUser(
+      { email, password },
+      { firebaseClientInjection: firebaseClient }
+    );
     assert(uid);
 
     res.status(200).json(
@@ -28,7 +31,7 @@ router.post('/create', async (req, res) => {
           firstName,
           lastName,
         },
-        { firebase }
+        { firebaseClientInjection: firebaseClient }
       )
     );
   } catch (err) {
@@ -42,7 +45,10 @@ router.delete('/', async (req, res) => {
   const { userId: uid } = req.body;
 
   try {
-    await etlFirebaseDeleteUser({ uid }, { firebase });
+    await etlFirebaseDeleteUser(
+      { uid },
+      { firebaseClientInjection: firebaseClient }
+    );
     res.sendStatus(200);
   } catch (err) {
     logger.error(err);

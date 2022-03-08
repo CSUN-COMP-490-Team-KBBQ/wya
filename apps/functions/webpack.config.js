@@ -1,10 +1,8 @@
 const path = require('path');
+const DotenvPlugin = require('dotenv-webpack');
 const GeneratePackageJsonWebpackPlugin = require('generate-package-json-webpack-plugin');
 
 const { dependencies } = require('./package.json');
-
-// We remove our module from the dependencies because this will be bundled in
-delete dependencies['wya-api'];
 
 const distPackageJson = {
   name: 'functions',
@@ -27,7 +25,12 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     clean: true,
   },
-  plugins: [new GeneratePackageJsonWebpackPlugin(distPackageJson)],
+  plugins: [
+    new DotenvPlugin({
+      path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`),
+    }),
+    new GeneratePackageJsonWebpackPlugin(distPackageJson),
+  ],
   module: {
     rules: [
       {
@@ -43,10 +46,5 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json'],
     modules: [path.resolve(root, 'node_modules'), 'node_modules'],
-  },
-  externals: {
-    'firebase-admin': 'firebase-admin',
-    'firebase-functions': 'firebase-functions',
-    express: 'express',
   },
 };
