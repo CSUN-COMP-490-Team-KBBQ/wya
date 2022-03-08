@@ -8,7 +8,7 @@ import {
   etlFirebaseCreateNewUserRecord,
   etlFirebaseDeleteUser,
   makeFirebaseClient,
-} from 'wya-api';
+} from 'wya-api/src';
 import { ServiceAccount } from 'firebase-admin';
 
 const firebase = new Command('firebase');
@@ -45,7 +45,7 @@ firebase
         data: [uid],
       } = await etlFirebaseCreateNewUser(
         { email, password },
-        { firebase: firebaseClient }
+        { firebaseClientInjection: firebaseClient }
       );
 
       // Create the user record
@@ -54,7 +54,7 @@ firebase
           uid,
           email,
         },
-        { firebase: firebaseClient }
+        { firebaseClientInjection: firebaseClient }
       );
 
       console.log(
@@ -88,7 +88,7 @@ firebase
       const {
         data: [eventPlanId],
       } = await etlFirebaseCreateNewEventPlan(data, {
-        firebase: firebaseClient,
+        firebaseClientInjection: firebaseClient,
       });
 
       console.log(`Created new event plan: ${eventPlanId}`);
@@ -116,7 +116,10 @@ firebase
         ) as ServiceAccount
       );
 
-      await etlFirebaseDeleteUser({ uid }, { firebase: firebaseClient });
+      await etlFirebaseDeleteUser(
+        { uid },
+        { firebaseClientInjection: firebaseClient }
+      );
 
       console.log(`Deleted user: ${uid}`);
     } catch (err) {

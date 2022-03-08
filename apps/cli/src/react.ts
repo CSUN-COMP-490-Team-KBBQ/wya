@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { addReactComponent } from 'wya-api';
+import { addReactComponent } from 'wya-api/src';
 
 const react = new Command('react');
 
