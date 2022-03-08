@@ -1,13 +1,11 @@
 import React from 'react';
 import Page from '../../components/Page/Page';
-import {
-  /*EventData,*/ EventDataAvailability,
-} from '../../interfaces/EventData';
+import { EventDataAvailability } from '../../interfaces/EventData';
 import { getDocSnapshot$, getSubCollDocSnapshot$ } from '../../lib/firestore';
 import HeatMapData from '../../interfaces/HeatMapData';
+import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
 import { createHeatMapDataAndScheduleSelectorData } from '../../lib/availability';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
-import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
 import EventPlanning from './EventPlanning';
 
 import './EventPlanPage.css';
@@ -43,6 +41,8 @@ export default function EventPlanPage({
 
   React.useEffect(() => {
     if (userRecord) {
+      const { uid, timeFormat } = userRecord;
+
       getDocSnapshot$(
         `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}`,
         {
@@ -50,34 +50,43 @@ export default function EventPlanPage({
             const eventPlan = eventPlanSnapshot.data() as EventPlanDocument;
 
             getSubCollDocSnapshot$(
-              `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${userRecord.uid}`,
+              `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${uid}`,
               {
                 next: (eventPlanAvailabilitiesSnapshot) => {
-                  const eventPlanAvailabilities =
-                    eventPlanAvailabilitiesSnapshot.data() as {
-                      data: EventDataAvailability;
-                    };
+                  getDocSnapshot$(
+                    `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_SCHEDULE_SELECTOR_AVAILABILITY}`,
+                    {
+                      next: (scheduleSelectorDocSnapshot) => {
+                        const { data: scheduleSelectorData } =
+                          scheduleSelectorDocSnapshot.data() as {
+                            data: number[];
+                          };
 
-                  eventPlanData.current = eventPlan;
+                        const { data: eventPlanAvailabilities } =
+                          eventPlanAvailabilitiesSnapshot.data() as {
+                            data: EventDataAvailability;
+                          };
 
-                  const [
-                    createdEventAvailability,
-                    createdHeatMapData,
-                    createdScheduleSelectorData,
-                  ] = createHeatMapDataAndScheduleSelectorData(
-                    eventPlan,
-                    // TODO: Extract event availabilities
-                    eventPlanAvailabilities.data,
-                    // TODO: Extract user availability
-                    [],
-                    userRecord.timeFormat
+                        eventPlanData.current = eventPlan;
+
+                        const [
+                          createdEventAvailability,
+                          createdHeatMapData,
+                          createdScheduleSelectorData,
+                        ] = createHeatMapDataAndScheduleSelectorData(
+                          eventPlan,
+                          // TODO: Extract event availabilities from every user
+                          eventPlanAvailabilities,
+                          scheduleSelectorData ?? [],
+                          timeFormat
+                        );
+
+                        setEventAvailability(createdEventAvailability);
+                        setHeatMapData(createdHeatMapData);
+                        setScheduleSelectorData(createdScheduleSelectorData);
+                      },
+                    }
                   );
-
-                  console.log(createdEventAvailability);
-
-                  setEventAvailability(createdEventAvailability);
-                  setHeatMapData(createdHeatMapData);
-                  setScheduleSelectorData(createdScheduleSelectorData);
                 },
               }
             );
