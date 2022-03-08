@@ -13,16 +13,12 @@ import {
   collection,
   CollectionReference,
   QuerySnapshot,
-  query,
-  where,
-  documentId,
 } from 'firebase/firestore';
 import {
   Email,
   EventPlanInfo,
   EventInfo,
   UserId,
-  EventGuest,
 } from 'wya-api/dist/interfaces';
 // import { TimeFormat } from 'wya-api/dist/lib';
 import app from './firebase';

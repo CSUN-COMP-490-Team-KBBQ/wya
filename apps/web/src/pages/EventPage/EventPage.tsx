@@ -1,15 +1,15 @@
 import React from 'react';
 import Page from '../../components/Page/Page';
-import EventData from '../../interfaces/EventData';
-import { getDocSnapshot$ } from '../../lib/firestore';
-import HeatMapData from '../../interfaces/HeatMapData';
-import { createHeatMapDataAndScheduleSelectorData } from '../../lib/availability';
-import { useUserRecordContext } from '../../contexts/UserRecordContext';
-import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
+// import EventData from '../../interfaces/EventData';
+// import { getDocSnapshot$ } from '../../lib/firestore';
+// import HeatMapData from '../../interfaces/HeatMapData';
+// import { createHeatMapDataAndScheduleSelectorData } from '../../lib/availability';
+// import { useUserRecordContext } from '../../contexts/UserRecordContext';
+// import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
 // import EventPlanning from '../EventPlanPage/EventPlanning';
 
 import './EventPage.css';
-import { isUserAHost } from '../../lib/eventHelpers';
+// import { isUserAHost } from '../../lib/eventHelpers';
 
 /**
  *
