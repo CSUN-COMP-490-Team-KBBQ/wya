@@ -177,20 +177,24 @@ export default function CalendarPage(): JSX.Element {
                           eventPlanId: doc.id,
                           ...eventPlanInfo,
                         });
+
+                        if (
+                          eventPlanInfoAndEventPlanId.length ===
+                          eventPlansSnapshot.size
+                        ) {
+                          setEventPlans(eventPlanInfoAndEventPlanId);
+                        }
                       }
                     },
                   }
                 );
               });
-              setEventPlans(eventPlanInfoAndEventPlanId);
             }
           },
         }
       );
     }
   }, [userRecord]);
-
-  console.log(eventPlans);
 
   // Observe user events
 
