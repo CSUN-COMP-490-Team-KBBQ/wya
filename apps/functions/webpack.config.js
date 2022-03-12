@@ -30,7 +30,7 @@ module.exports = {
   },
   plugins: [
     new DotenvPlugin({
-      path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`),
+      path: path.resolve(root, `.env.${process.env.NODE_ENV}`),
     }),
     new GeneratePackageJsonWebpackPlugin(distPackageJson),
   ],

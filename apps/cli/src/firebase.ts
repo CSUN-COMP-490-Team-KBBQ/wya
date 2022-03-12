@@ -35,8 +35,8 @@ firebase
       const firebaseClient = makeFirebaseClient(
         JSON.parse(
           production
-            ? `${process.env.FIREBASE_PRODUCTION_SERVICE_ACCOUNT}`
-            : `${process.env.FIREBASE_DEVELOPMENT_SERVICE_ACCOUNT}`
+            ? `${process.env.PRODUCTION_FIREBASE_SERVICE_ACCOUNT}`
+            : `${process.env.DEVELOPMENT_FIREBASE_SERVICE_ACCOUNT}`
         ) as ServiceAccount
       );
 
@@ -79,8 +79,8 @@ firebase
       const firebaseClient = makeFirebaseClient(
         JSON.parse(
           production
-            ? `${process.env.FIREBASE_PRODUCTION_SERVICE_ACCOUNT}`
-            : `${process.env.FIREBASE_DEVELOPMENT_SERVICE_ACCOUNT}`
+            ? `${process.env.PRODUCTION_FIREBASE_SERVICE_ACCOUNT}`
+            : `${process.env.DEVELOPMENT_FIREBASE_SERVICE_ACCOUNT}`
         ) as ServiceAccount
       );
 
@@ -111,8 +111,8 @@ firebase
       const firebaseClient = makeFirebaseClient(
         JSON.parse(
           production
-            ? `${process.env.FIREBASE_PRODUCTION_SERVICE_ACCOUNT}`
-            : `${process.env.FIREBASE_DEVELOPMENT_SERVICE_ACCOUNT}`
+            ? `${process.env.PRODUCTION_FIREBASE_SERVICE_ACCOUNT}`
+            : `${process.env.DEVELOPMENT_FIREBASE_SERVICE_ACCOUNT}`
         ) as ServiceAccount
       );
 
