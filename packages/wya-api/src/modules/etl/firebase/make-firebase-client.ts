@@ -1,12 +1,12 @@
-import firebaseAdmin from 'firebase-admin';
+import { initializeApp, ServiceAccount, cert, App } from 'firebase-admin/app';
 
 export const makeFirebaseClient = (
-  serviceAccountPathOrObject?: string | firebaseAdmin.ServiceAccount
-) => {
+  serviceAccountPathOrObject?: string | ServiceAccount
+): App => {
   if (serviceAccountPathOrObject) {
-    return firebaseAdmin.initializeApp({
-      credential: firebaseAdmin.credential.cert(serviceAccountPathOrObject),
+    return initializeApp({
+      credential: cert(serviceAccountPathOrObject),
     });
   }
-  return firebaseAdmin.initializeApp();
+  return initializeApp();
 };

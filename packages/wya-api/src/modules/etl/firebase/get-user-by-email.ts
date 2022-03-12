@@ -1,6 +1,7 @@
 import assert from 'assert';
 import Debug from 'debug';
-import firebaseAdmin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 
 import { Email } from '../../../interfaces';
 
@@ -11,7 +12,7 @@ type EtlFirebaseGetUserByEmailParams = {
 };
 
 type EtlFirebaseGetUserByEmailContext = {
-  firebaseClientInjection: firebaseAdmin.app.App;
+  firebaseClientInjection: App;
 };
 
 export const etlFirebaseGetUserByEmail = async (
@@ -26,7 +27,7 @@ export const etlFirebaseGetUserByEmail = async (
 
   try {
     const { firebaseClientInjection } = context;
-    const firebaseAuth = firebaseClientInjection.auth();
+    const firebaseAuth = getFirebaseAuth(firebaseClientInjection);
 
     const { uid } = await firebaseAuth.getUserByEmail(email);
     return {

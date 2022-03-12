@@ -1,6 +1,7 @@
 import assert from 'assert';
 import Debug from 'debug';
-import firebaseAdmin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 
 import { UserId } from '../../../interfaces';
 import { etlFirebaseDeleteUserRecord } from './delete-user-record';
@@ -12,7 +13,7 @@ type EtlFirebaseDeleteUserParams = {
 };
 
 type EtlFirebaseDeleteUserContext = {
-  firebaseClientInjection: firebaseAdmin.app.App;
+  firebaseClientInjection: App;
 };
 
 export const etlFirebaseDeleteUser = async (
@@ -27,7 +28,7 @@ export const etlFirebaseDeleteUser = async (
 
   try {
     const { firebaseClientInjection } = context;
-    const firebaseAuth = firebaseClientInjection.auth();
+    const firebaseAuth = getFirebaseAuth(firebaseClientInjection);
 
     await firebaseAuth.deleteUser(uid);
 

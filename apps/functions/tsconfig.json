@@ -4,7 +4,7 @@
   "extends": "tsconfig/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "target": "ES2017",
+    "target": "ES6",
     "lib": ["ES2021"],
     "noImplicitReturns": true,
     "noUnusedLocals": true,
@@ -12,7 +12,6 @@
     "strict": true,
     "esModuleInterop": true,
     "importHelpers": true,
-    "module": "CommonJS",
-    "moduleResolution": "Node"
+    "module": "CommonJS"
   }
 }

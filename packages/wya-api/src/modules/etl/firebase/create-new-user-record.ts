@@ -1,20 +1,15 @@
 import assert from 'assert';
 import Debug from 'debug';
-import firebaseAdmin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
 import {
+  FirestorePath,
+  TimeFormat,
+  User,
   UserAvailabilityHeatMapDocument,
   UserRecordDocument,
-  User,
 } from '../../../interfaces';
-// import { TimeFormat } from '../../../lib/time-format';
-
-/** RO3: copied from wya-api/lib/time-format */
-enum TimeFormat {
-  TWELVE_HOURS = 'hh:mm a',
-  TWENTY_FOUR_HOURS = 'HH:mm',
-}
-/** End of RO3 */
 
 const debug = Debug('wya-api:etl/firebase/create-new-user-record');
 
@@ -24,7 +19,7 @@ type EtlFirebaseCreateNewUserRecordParams = User & {
 };
 
 type EtlFirebaseCreateNewUserRecordContext = {
-  firebaseClientInjection: firebaseAdmin.app.App;
+  firebaseClientInjection: App;
 };
 
 export const etlFirebaseCreateNewUserRecord = async (
@@ -40,12 +35,12 @@ export const etlFirebaseCreateNewUserRecord = async (
 
   try {
     const { firebaseClientInjection } = context;
-    const firebaseFirestore = firebaseClientInjection.firestore();
+    const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
 
     await firebaseFirestore.runTransaction(async (transaction) => {
       // Create user record
       const userRecordRef = firebaseFirestore.doc(
-        `/${process.env.USERS}/${uid}`
+        `/${FirestorePath.USERS}/${uid}`
       );
       await transaction.create(userRecordRef, {
         uid,
@@ -57,10 +52,11 @@ export const etlFirebaseCreateNewUserRecord = async (
 
       // Create user availabilities sub collection
       const userHeatMapAvailabilityDocRef = firebaseFirestore.doc(
-        `/${process.env.USERS}/${uid}/${process.env.USER_HEAT_MAP_AVAILABILITY}`
+        `/${FirestorePath.USERS}/${uid}/${FirestorePath.USER_HEAT_MAP_AVAILABILITY}`
       );
       await transaction.create(userHeatMapAvailabilityDocRef, {
-        // New availability
+        //TODO: Create empty user availability heat map here
+        // This is the default heatmap that represents a user's weekly availability
         data: [],
       } as UserAvailabilityHeatMapDocument);
 
@@ -78,6 +74,7 @@ export const etlFirebaseCreateNewUserRecord = async (
           status: 500,
           code: `etlFirebaseCreateNewUserRecord:${err?.errorInfo?.code}`,
           message: err?.errorInfo?.message,
+          raw_error: err,
         },
       ],
     };

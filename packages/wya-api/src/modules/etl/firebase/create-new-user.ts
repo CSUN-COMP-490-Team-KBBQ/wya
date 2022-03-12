@@ -1,6 +1,7 @@
 import assert from 'assert';
 import Debug from 'debug';
-import firebaseAdmin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 
 import { Email } from '../../../interfaces';
 
@@ -12,7 +13,7 @@ type EtlFirebaseCreateNewUserParams = {
 };
 
 type EtlFirebaseCreateNewUserContext = {
-  firebaseClientInjection: firebaseAdmin.app.App;
+  firebaseClientInjection: App;
 };
 
 export const etlFirebaseCreateNewUser = async (
@@ -28,7 +29,7 @@ export const etlFirebaseCreateNewUser = async (
 
   try {
     const { firebaseClientInjection } = context;
-    const firebaseAuth = firebaseClientInjection.auth();
+    const firebaseAuth = getFirebaseAuth(firebaseClientInjection);
     const { uid } = await firebaseAuth.createUser({ email, password });
     assert(uid);
 

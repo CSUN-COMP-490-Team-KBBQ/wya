@@ -1,15 +1,17 @@
 import assert from 'assert';
 import Debug from 'debug';
-import firebaseAdmin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 import nodemailer from 'nodemailer';
 import { v4 as uuid } from 'uuid';
 
 import {
+  Email,
   EventDocument,
   EventInfo,
+  FirestorePath,
   UserEventDocument,
   UserId,
-  Email,
 } from '../../../interfaces';
 import { etlFirebaseGetEmailByUserId } from './get-email-by-userId';
 
@@ -20,7 +22,7 @@ type EtlFirebaseCreateNewEventFinalizedParams = EventInfo & {
 };
 
 type EtlFirebaseCreateNewEventFinalizedContext = {
-  firebaseClientInjection: firebaseAdmin.app.App;
+  firebaseClientInjection: App;
 };
 
 const _validateParams = (params: EtlFirebaseCreateNewEventFinalizedParams) => {
@@ -53,7 +55,7 @@ export const etlFirebaseCreateNewEventFinalized = async (
 
   try {
     const { firebaseClientInjection } = context;
-    const firebaseFirestore = firebaseClientInjection.firestore();
+    const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
 
     /** Extract */
     const eventFinalizedId = uuid();
@@ -62,21 +64,24 @@ export const etlFirebaseCreateNewEventFinalized = async (
     /** Transform */
 
     // Map and reduce the array of guests' userIds into an array of guests' emails
-    const guestsByEmail: Email[] = await (
+    const guestsByEmail = (await (
       await Promise.all(
         guestsByUserIds.map((userId) =>
           etlFirebaseGetEmailByUserId({ userId }, { firebaseClientInjection })
         )
       )
-    ).reduce((acc: Email[], { data: [email] }) => {
-      return [...acc, email];
-    }, []);
+    )
+      .reduce((acc: (Email | undefined)[], { data: [email] }) => {
+        return [...acc, email];
+      }, [])
+      // Cheeky way to filter out falsey elements in array.
+      .filter((email) => !!email)) as Email[];
 
     /** Load */
     await firebaseFirestore.runTransaction(async (transaction) => {
       // Create the event doc
       const eventFinalizedRef = firebaseFirestore.doc(
-        `/${process.env.EVENTS}/${eventFinalizedId}`
+        `/${FirestorePath.EVENTS}/${eventFinalizedId}`
       );
       await transaction.create(eventFinalizedRef, {
         ...restOfParams,
@@ -89,7 +94,7 @@ export const etlFirebaseCreateNewEventFinalized = async (
       await Promise.all(
         guestsByEmail.map((email) => {
           const eventFinalizedGuestsRef = firebaseFirestore.doc(
-            `/${process.env.EVENTS}/${eventFinalizedId}/${process.env.EVENT_GUESTS}/${email}`
+            `/${FirestorePath.EVENTS}/${eventFinalizedId}/${FirestorePath.GUESTS}/${email}`
           );
           return transaction.create(eventFinalizedGuestsRef, {
             status: 'PENDING',
@@ -99,7 +104,7 @@ export const etlFirebaseCreateNewEventFinalized = async (
 
       // Associate event doc to host
       const hostEventFinalizedDocRef = firebaseFirestore.doc(
-        `/${process.env.USERS}/${hostId}/${process.env.USER_EVENTS}/${eventFinalizedId}`
+        `/${FirestorePath.USERS}/${hostId}/${FirestorePath.EVENTS}/${eventFinalizedId}`
       );
       await transaction.create(hostEventFinalizedDocRef, {
         ...restOfParams,
@@ -110,7 +115,7 @@ export const etlFirebaseCreateNewEventFinalized = async (
       await Promise.all(
         guestsByUserIds.map((userId) => {
           const guestEventFinalizedDocRef = firebaseFirestore.doc(
-            `/${process.env.USERS}/${userId}/${process.env.USER_EVENTS}/${eventFinalizedId}`
+            `/${FirestorePath.USERS}/${userId}/${FirestorePath.EVENTS}/${eventFinalizedId}`
           );
           return transaction.create(guestEventFinalizedDocRef, {
             ...restOfParams,

@@ -1,8 +1,9 @@
 import assert from 'assert';
 import Debug from 'debug';
-import firebaseAdmin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
-import { UserId } from '../../../interfaces';
+import { FirestorePath, UserId } from '../../../interfaces';
 
 const debug = Debug('wya-api:etl/firebase/delete-user-record');
 
@@ -11,7 +12,7 @@ type EtlFirebaseDeleteUserRecordParams = {
 };
 
 type EtlFirebaseDeleteUserRecordContext = {
-  firebaseClientInjection: firebaseAdmin.app.App;
+  firebaseClientInjection: App;
 };
 
 export const etlFirebaseDeleteUserRecord = async (
@@ -26,9 +27,11 @@ export const etlFirebaseDeleteUserRecord = async (
 
   try {
     const { firebaseClientInjection } = context;
-    const firebaseFirestore = firebaseClientInjection.firestore();
+    const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
 
-    const userRecordRef = firebaseFirestore.doc(`/${process.env.USERS}/${uid}`);
+    const userRecordRef = firebaseFirestore.doc(
+      `/${FirestorePath.USERS}/${uid}`
+    );
     await firebaseFirestore.recursiveDelete(userRecordRef);
   } catch (err: any) {
     throw {

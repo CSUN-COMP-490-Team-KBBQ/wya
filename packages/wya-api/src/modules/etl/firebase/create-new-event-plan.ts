@@ -1,16 +1,18 @@
 import assert from 'assert';
 import Debug from 'debug';
-import firebaseAdmin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 import nodemailer from 'nodemailer';
 import { v4 as uuid } from 'uuid';
 
 import {
-  UserId,
   Email,
   EventPlanDocument,
   EventPlanInfo,
   EventPlanAvailabilityDocument,
+  FirestorePath,
   UserEventPlanDocument,
+  UserId,
 } from '../../../interfaces';
 import { etlFirebaseGetUserByEmail } from './get-user-by-email';
 
@@ -21,7 +23,7 @@ type EtlFirebaseCreateNewEventPlanParams = EventPlanInfo & {
 };
 
 type EtlFirebaseCreateNewEventPlanContext = {
-  firebaseClientInjection: firebaseAdmin.app.App;
+  firebaseClientInjection: App;
 };
 
 const _validateParams = (params: EtlFirebaseCreateNewEventPlanParams) => {
@@ -52,7 +54,7 @@ export const etlFirebaseCreateNewEventPlan = async (
 
   try {
     const { firebaseClientInjection } = context;
-    const firebaseFirestore = firebaseClientInjection.firestore();
+    const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
 
     /** Extract */
     const eventPlanId = uuid();
@@ -75,7 +77,7 @@ export const etlFirebaseCreateNewEventPlan = async (
     await firebaseFirestore.runTransaction(async (transaction) => {
       // Create the event-plan doc
       const eventPlanRef = firebaseFirestore.doc(
-        `/${process.env.EVENT_PLANS}/${eventPlanId}`
+        `/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
       );
       await transaction.create(eventPlanRef, {
         ...restOfParams,
@@ -90,7 +92,7 @@ export const etlFirebaseCreateNewEventPlan = async (
       await Promise.all(
         inviteesAndHostByUserId.map((userId) => {
           const eventPlanAvailabilitiesHeatMapRef = firebaseFirestore.doc(
-            `/${process.env.EVENT_PLANS}/${eventPlanId}/${process.env.EVENT_PLAN_AVAILABILITIES}/${userId}`
+            `/${FirestorePath.EVENT_PLANS}/${eventPlanId}/${FirestorePath.AVAILABILITIES}/${userId}`
           );
           return transaction.create(eventPlanAvailabilitiesHeatMapRef, {
             data: {},
@@ -100,7 +102,7 @@ export const etlFirebaseCreateNewEventPlan = async (
 
       // Associate event-plan doc to host
       const hostEventPlanDocRef = firebaseFirestore.doc(
-        `/${process.env.USERS}/${hostId}/${process.env.USER_EVENT_PLANS}/${eventPlanId}`
+        `/${FirestorePath.USERS}/${hostId}/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
       );
       await transaction.create(hostEventPlanDocRef, {
         ...restOfParams,
@@ -111,7 +113,7 @@ export const etlFirebaseCreateNewEventPlan = async (
       await Promise.all(
         inviteesByUserIds.map((userId) => {
           const inviteeEventPlanDocRef = firebaseFirestore.doc(
-            `/${process.env.USERS}/${userId}/${process.env.USER_EVENT_PLANS}/${eventPlanId}`
+            `/${FirestorePath.USERS}/${userId}/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
           );
           return transaction.create(inviteeEventPlanDocRef, {
             ...restOfParams,

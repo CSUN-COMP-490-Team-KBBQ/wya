@@ -1,8 +1,9 @@
 import assert from 'assert';
 import Debug from 'debug';
-import firebaseAdmin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
-import { EventPlanDocument } from '../../../interfaces';
+import { EventPlanDocument, FirestorePath } from '../../../interfaces';
 
 const debug = Debug('wya-api:etl/firebase/delete-event-plan');
 
@@ -11,7 +12,7 @@ type EtlFirebaseDeleteEventPlanParams = {
 };
 
 type EtlFirebaseDeleteEventPlanContext = {
-  firebaseClientInjection: firebaseAdmin.app.App;
+  firebaseClientInjection: App;
 };
 
 export const etlFirebaseDeleteEventPlan = async (
@@ -26,12 +27,12 @@ export const etlFirebaseDeleteEventPlan = async (
 
   try {
     const { firebaseClientInjection } = context;
-    const firebaseFirestore = firebaseClientInjection.firestore();
+    const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
 
     await firebaseFirestore.runTransaction(async (transaction) => {
       /** Extract */
       const eventPlanDocRef = firebaseFirestore.doc(
-        `/${process.env.EVENT_PLANS}/${eventPlanId}`
+        `/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
       );
       const eventPlanDoc = await eventPlanDocRef.get();
       const eventPlanDocData = eventPlanDoc.data() as
@@ -45,7 +46,7 @@ export const etlFirebaseDeleteEventPlan = async (
       /** Load */
       // Delete the event plan for host
       const hostEventPlanDocRef = firebaseFirestore.doc(
-        `/${process.env.USERS}/${hostId}/${process.env.USER_EVENT_PLANS}/${eventPlanId}`
+        `/${FirestorePath.USERS}/${hostId}/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
       );
       await transaction.delete(hostEventPlanDocRef);
 
@@ -53,7 +54,7 @@ export const etlFirebaseDeleteEventPlan = async (
       await Promise.all(
         invitees.map((userId) => {
           const inviteeEventPlanDocRef = firebaseFirestore.doc(
-            `/${process.env.USERS}/${userId}/${process.env.USER_EVENT_PLANS}/${eventPlanId}`
+            `/${FirestorePath.USERS}/${userId}/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
           );
           return transaction.delete(inviteeEventPlanDocRef);
         })
