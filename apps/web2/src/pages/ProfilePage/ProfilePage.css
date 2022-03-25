@@ -1,0 +1,45 @@
+#toggleContent {
+    display: inline-flex;
+}
+
+#toggleContent p {
+    margin-left: 10px;
+}
+
+#profilePageContainer {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 30%;
+}
+
+#profilePageContainer h1 {
+    text-align: center;
+}
+
+#profilePageContainer h2 {
+    text-align: center;
+    margin: auto;
+}
+
+.change-password-form {
+    padding-top: 15px;
+}
+
+.change-password-form .form-label {
+    color: black;
+    font-size: medium;
+}
+
+#changeDisplayRow {
+    margin-top: 50px;
+}
+
+.change-display-form {
+    text-align: center;
+}
+
+.change-display-form .form-label {
+    color: black;
+    font-size: medium;
+}

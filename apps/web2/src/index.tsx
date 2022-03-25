@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import './index.css';
+import './index.css'; // to be removed?
 import './tailwind.output.css';
 import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';

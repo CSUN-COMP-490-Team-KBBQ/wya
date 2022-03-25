@@ -1,0 +1,56 @@
+.btn-links {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 20em !important;
+    color: white !important;
+    background-color: #0081d9 !important;
+    border: solid 2px #0081d9 !important;
+}
+
+.btn-links:hover {
+    background-color: #3895d3 !important;
+}
+
+/* investigate what header is doing */
+header {
+    background-color: #aaaaaa;
+    text-align: right;
+    margin-bottom: 1em;
+}
+
+.s-header {
+    text-align: center;
+    font-size: 2em;
+}
+
+.home-page-content {
+    margin: 10% 0;
+}
+
+.home-page-content h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.home-page-content h2 {
+    text-align: left;
+    margin-left: 100px;
+}
+
+.loginLink {
+    color: #0081d9;
+}
+
+.loginLink:hover {
+    color: darkblue;
+}
+
+/* investigate what header is doing */
+img {
+    height: 200px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

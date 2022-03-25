@@ -1,0 +1,33 @@
+#scheduleSelectorWrapper {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+/*this makes the unused/unwanted cells go away*/
+#scheduleSelectorWrapper > div > div {
+    grid-template-rows: unset;
+}
+
+#selectedCell {
+    width: 100%;
+    height: 100%;
+    background: #0081d9;
+    border: solid 1px black;
+}
+#selectedCell:hover {
+    background-color: #dbedff;
+}
+
+#unSelectedCell {
+    width: 100%;
+    height: 100%;
+    border: solid 1px black;
+}
+
+#unSelectedCell:hover {
+    background-color: #dbedff;
+}
+
+#yLabel {
+    text-align: right;
+}
