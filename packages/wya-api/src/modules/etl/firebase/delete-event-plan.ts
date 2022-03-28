@@ -3,7 +3,7 @@ import Debug from 'debug';
 import { App } from 'firebase-admin/app';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
-import { EventPlanDocument, FirestorePath } from '../../../interfaces';
+import { EventPlanDocument } from '../../../interfaces';
 
 const debug = Debug('wya-api:etl/firebase/delete-event-plan');
 
@@ -32,7 +32,7 @@ export const etlFirebaseDeleteEventPlan = async (
     await firebaseFirestore.runTransaction(async (transaction) => {
       /** Extract */
       const eventPlanDocRef = firebaseFirestore.doc(
-        `/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
+        `/event-plans/${eventPlanId}`
       );
       const eventPlanDoc = await eventPlanDocRef.get();
       const eventPlanDocData = eventPlanDoc.data() as
@@ -46,7 +46,7 @@ export const etlFirebaseDeleteEventPlan = async (
       /** Load */
       // Delete the event plan for host
       const hostEventPlanDocRef = firebaseFirestore.doc(
-        `/${FirestorePath.USERS}/${hostId}/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
+        `/users/${hostId}/event-plans/${eventPlanId}`
       );
       await transaction.delete(hostEventPlanDocRef);
 
@@ -54,7 +54,7 @@ export const etlFirebaseDeleteEventPlan = async (
       await Promise.all(
         invitees.map((userId) => {
           const inviteeEventPlanDocRef = firebaseFirestore.doc(
-            `/${FirestorePath.USERS}/${userId}/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
+            `/users/${userId}/event-plans/${eventPlanId}`
           );
           return transaction.delete(inviteeEventPlanDocRef);
         })

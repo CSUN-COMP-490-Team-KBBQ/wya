@@ -19,18 +19,12 @@ import {
   EventPlanInfo,
   EventInfo,
   UserId,
-} from 'wya-api/dist/interfaces';
-// import { TimeFormat } from 'wya-api/dist/lib';
+  TimeFormat,
+} from 'wya-api/src/interfaces';
+
 import app from './firebase';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';
 import UserData from '../interfaces/User';
-
-/** RO3: copied from wya-api/lib/time-format */
-enum TimeFormat {
-  TWELVE_HOURS = 'hh:mm a',
-  TWENTY_FOUR_HOURS = 'HH:mm',
-}
-/** End of RO3 */
 
 const firestore = getFirestore(app);
 
@@ -51,7 +45,7 @@ export const createEventPlan = (
   return new Promise((resolve, reject) => {
     axios
       .post(
-        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/${process.env.REACT_APP_USER_EVENT_PLANS}/create`,
+        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/event-plans/create`,
         JSON.stringify(data),
         {
           headers: {
@@ -101,42 +95,18 @@ export const createEventFinalized = (
   });
 };
 
-export const createEvent = (eventData: EventData): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    // rather than handling this on the client side we will POST the form data to the cloud function api
-    axios
-      .post(
-        'https://us-central1-kbbq-wya-35414.cloudfunctions.net/api/create-event',
-        JSON.stringify(eventData),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((res) => {
-        // eslint-disable-next-line
-        console.log(res.data);
-        resolve(eventData.eventId);
-      })
-      .catch(reject);
-  });
-};
-
 export const getEventData = async (eventId: string): Promise<EventData> => {
-  const eventDocRef = getDocRef(`/${process.env.REACT_APP_EVENTS}/${eventId}`);
+  const eventDocRef = getDocRef(`/events/${eventId}`);
   return (await getDoc(eventDocRef)).data() as EventData;
 };
 
 export const updateEvent = async (event: EventData): Promise<void> => {
-  const eventDocRef = getDocRef(
-    `/${process.env.REACT_APP_EVENTS}/${event.eventId}`
-  );
+  const eventDocRef = getDocRef(`/events/${event.eventId}`);
   return updateDoc(eventDocRef, { ...event });
 };
 
 export const updateUserRecord = async (user: UserData): Promise<void> => {
-  const userDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${user.uid}`);
+  const userDocRef = getDocRef(`/users/${user.uid}`);
   return updateDoc(userDocRef, { ...user });
 };
 

@@ -9,7 +9,6 @@ import {
   Email,
   EventDocument,
   EventInfo,
-  FirestorePath,
   UserEventDocument,
   UserId,
 } from '../../../interfaces';
@@ -81,7 +80,7 @@ export const etlFirebaseCreateNewEventFinalized = async (
     await firebaseFirestore.runTransaction(async (transaction) => {
       // Create the event doc
       const eventFinalizedRef = firebaseFirestore.doc(
-        `/${FirestorePath.EVENTS}/${eventFinalizedId}`
+        `/events/${eventFinalizedId}`
       );
       await transaction.create(eventFinalizedRef, {
         ...restOfParams,
@@ -94,7 +93,7 @@ export const etlFirebaseCreateNewEventFinalized = async (
       await Promise.all(
         guestsByEmail.map((email) => {
           const eventFinalizedGuestsRef = firebaseFirestore.doc(
-            `/${FirestorePath.EVENTS}/${eventFinalizedId}/${FirestorePath.GUESTS}/${email}`
+            `/events/${eventFinalizedId}/guests/${email}`
           );
           return transaction.create(eventFinalizedGuestsRef, {
             status: 'PENDING',
@@ -104,7 +103,7 @@ export const etlFirebaseCreateNewEventFinalized = async (
 
       // Associate event doc to host
       const hostEventFinalizedDocRef = firebaseFirestore.doc(
-        `/${FirestorePath.USERS}/${hostId}/${FirestorePath.EVENTS}/${eventFinalizedId}`
+        `/users/${hostId}/events/${eventFinalizedId}`
       );
       await transaction.create(hostEventFinalizedDocRef, {
         ...restOfParams,
@@ -115,7 +114,7 @@ export const etlFirebaseCreateNewEventFinalized = async (
       await Promise.all(
         guestsByUserIds.map((userId) => {
           const guestEventFinalizedDocRef = firebaseFirestore.doc(
-            `/${FirestorePath.USERS}/${userId}/${FirestorePath.EVENTS}/${eventFinalizedId}`
+            `/users/${userId}/events/${eventFinalizedId}`
           );
           return transaction.create(guestEventFinalizedDocRef, {
             ...restOfParams,

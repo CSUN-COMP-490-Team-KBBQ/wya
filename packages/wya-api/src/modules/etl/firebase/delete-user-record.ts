@@ -3,7 +3,7 @@ import Debug from 'debug';
 import { App } from 'firebase-admin/app';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
-import { FirestorePath, UserId } from '../../../interfaces';
+import { UserId } from '../../../interfaces';
 
 const debug = Debug('wya-api:etl/firebase/delete-user-record');
 
@@ -29,9 +29,7 @@ export const etlFirebaseDeleteUserRecord = async (
     const { firebaseClientInjection } = context;
     const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
 
-    const userRecordRef = firebaseFirestore.doc(
-      `/${FirestorePath.USERS}/${uid}`
-    );
+    const userRecordRef = firebaseFirestore.doc(`/users/${uid}`);
     await firebaseFirestore.recursiveDelete(userRecordRef);
   } catch (err: any) {
     throw {

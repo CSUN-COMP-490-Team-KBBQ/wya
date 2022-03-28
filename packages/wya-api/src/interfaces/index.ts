@@ -1,26 +1,6 @@
-export const SUPPORTED_TIME_FORMATS = [
-  'h:mm a',
-  'h:mm A',
-  'hh:mm a',
-  'hh:mm A',
-  'HH:mm',
-];
-
 export enum TimeFormat {
   TWELVE_HOURS = 'hh:mm a',
   TWENTY_FOUR_HOURS = 'HH:mm',
-}
-
-export enum FirestorePath {
-  AVAILABILITIES = 'availabilities',
-  EVENTS = 'events',
-  EVENT_PLANS = 'event-plans',
-  GUESTS = 'guests',
-  NOTIFICATIONS = 'notifications',
-  USERS = 'users',
-  // TODO: Deprecate in favor of USER_WEEKLY_AVAILABILITY
-  USER_HEAT_MAP_AVAILABILITY = 'heat-map',
-  USER_WEEKLY_AVAILABILITY = 'weekly',
 }
 
 /** users */

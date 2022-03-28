@@ -4,7 +4,6 @@ import { App } from 'firebase-admin/app';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
 import {
-  FirestorePath,
   TimeFormat,
   User,
   UserAvailabilityHeatMapDocument,
@@ -39,9 +38,7 @@ export const etlFirebaseCreateNewUserRecord = async (
 
     await firebaseFirestore.runTransaction(async (transaction) => {
       // Create user record
-      const userRecordRef = firebaseFirestore.doc(
-        `/${FirestorePath.USERS}/${uid}`
-      );
+      const userRecordRef = firebaseFirestore.doc(`/users/${uid}`);
       await transaction.create(userRecordRef, {
         uid,
         email,
@@ -52,7 +49,7 @@ export const etlFirebaseCreateNewUserRecord = async (
 
       // Create user availabilities sub collection
       const userHeatMapAvailabilityDocRef = firebaseFirestore.doc(
-        `/${FirestorePath.USERS}/${uid}/${FirestorePath.USER_HEAT_MAP_AVAILABILITY}`
+        `/users/${uid}/heat-map`
       );
       await transaction.create(userHeatMapAvailabilityDocRef, {
         //TODO: Create empty user availability heat map here

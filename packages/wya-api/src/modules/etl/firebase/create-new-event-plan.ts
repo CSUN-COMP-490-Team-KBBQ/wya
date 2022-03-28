@@ -10,7 +10,6 @@ import {
   EventPlanDocument,
   EventPlanInfo,
   EventPlanAvailabilityDocument,
-  FirestorePath,
   UserEventPlanDocument,
   UserId,
 } from '../../../interfaces';
@@ -76,9 +75,7 @@ export const etlFirebaseCreateNewEventPlan = async (
     /** Load */
     await firebaseFirestore.runTransaction(async (transaction) => {
       // Create the event-plan doc
-      const eventPlanRef = firebaseFirestore.doc(
-        `/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
-      );
+      const eventPlanRef = firebaseFirestore.doc(`/event-plans/${eventPlanId}`);
       await transaction.create(eventPlanRef, {
         ...restOfParams,
         // Re adding back hostId because it was destructed earlier
@@ -92,7 +89,7 @@ export const etlFirebaseCreateNewEventPlan = async (
       await Promise.all(
         inviteesAndHostByUserId.map((userId) => {
           const eventPlanAvailabilitiesHeatMapRef = firebaseFirestore.doc(
-            `/${FirestorePath.EVENT_PLANS}/${eventPlanId}/${FirestorePath.AVAILABILITIES}/${userId}`
+            `/event-plans/${eventPlanId}/availabilities/${userId}`
           );
           return transaction.create(eventPlanAvailabilitiesHeatMapRef, {
             data: {},
@@ -102,7 +99,7 @@ export const etlFirebaseCreateNewEventPlan = async (
 
       // Associate event-plan doc to host
       const hostEventPlanDocRef = firebaseFirestore.doc(
-        `/${FirestorePath.USERS}/${hostId}/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
+        `/users/${hostId}/event-plans/${eventPlanId}`
       );
       await transaction.create(hostEventPlanDocRef, {
         ...restOfParams,
@@ -113,7 +110,7 @@ export const etlFirebaseCreateNewEventPlan = async (
       await Promise.all(
         inviteesByUserIds.map((userId) => {
           const inviteeEventPlanDocRef = firebaseFirestore.doc(
-            `/${FirestorePath.USERS}/${userId}/${FirestorePath.EVENT_PLANS}/${eventPlanId}`
+            `/users/${userId}/event-plans/${eventPlanId}`
           );
           return transaction.create(inviteeEventPlanDocRef, {
             ...restOfParams,

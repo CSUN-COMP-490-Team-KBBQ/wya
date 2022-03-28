@@ -25,7 +25,7 @@ export const UserRecordProvider: React.FC = ({ children }) => {
   React.useEffect(() => {
     if (user) {
       setPending(true);
-      return getDocSnapshot$(`/${process.env.REACT_APP_USERS}/${user.uid}`, {
+      return getDocSnapshot$(`/users/${user.uid}`, {
         next: (snapshot) => {
           if (snapshot.exists()) {
             setUserRecord(snapshot.data() as UserRecordDocument);
