@@ -19,12 +19,12 @@ import {
   EventPlanInfo,
   EventInfo,
   UserId,
+  UserDocument,
   TimeFormat,
 } from 'wya-api/src/interfaces';
 
 import app from './firebase';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';
-import UserData from '../interfaces/User';
 
 const firestore = getFirestore(app);
 
@@ -105,7 +105,7 @@ export const updateEvent = async (event: EventData): Promise<void> => {
   return updateDoc(eventDocRef, { ...event });
 };
 
-export const updateUserRecord = async (user: UserData): Promise<void> => {
+export const updateUserRecord = async (user: UserDocument): Promise<void> => {
   const userDocRef = getDocRef(`/users/${user.uid}`);
   return updateDoc(userDocRef, { ...user });
 };

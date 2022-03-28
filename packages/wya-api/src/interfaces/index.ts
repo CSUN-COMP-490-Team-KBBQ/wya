@@ -12,7 +12,7 @@ export type User = {
   email: Email;
 };
 
-export type UserRecordDocument = {
+export type UserDocument = {
   email: Email;
   firstName: string;
   lastName: string;
@@ -24,12 +24,24 @@ export type UserAvailabilityHeatMapDocument = {
   data: number[];
 };
 
-export type UserEventPlanDocument = Omit<EventPlanInfo, 'hostId'> & {
-  role: EventPlanRole;
+export type UserEventPlanDocument = {
+  name: string;
+  description: string;
+  dailyStartTime: string;
+  dailyEndTime: string;
+  startDate: string;
+  endDate: string;
 };
 
-export type UserEventDocument = Omit<EventInfo, 'hostId'> & {
-  role: EventRole;
+export type UserEventDocument = {
+  name: string;
+  description: string;
+  // Date times
+  day: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
 };
 
 /** event-plans */
@@ -45,7 +57,14 @@ export type EventPlanInfo = {
 };
 
 export type EventPlanId = string;
-export type EventPlanDocument = EventPlanInfo & {
+export type EventPlanDocument = {
+  name: string;
+  description: string;
+  dailyStartTime: string;
+  dailyEndTime: string;
+  startDate: string;
+  endDate: string;
+  hostId: UserId;
   invitees: UserId[];
   eventPlanId: EventPlanId;
 };
@@ -73,11 +92,22 @@ export type EventInfo = {
 };
 
 export type EventId = string;
-export type EventDocument = EventInfo & {
+export type EventDocument = {
+  name: string;
+  description: string;
+  hostId: UserId;
+  // Date times
+  day: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
   eventId: EventId;
 };
 
 export type EventGuestStatus = 'ACCEPTED' | 'DECLINED' | 'PENDING';
-export type EventGuest = User & {
+export type EventGuest = {
+  uid: UserId;
+  email: Email;
   status: EventGuestStatus;
 };

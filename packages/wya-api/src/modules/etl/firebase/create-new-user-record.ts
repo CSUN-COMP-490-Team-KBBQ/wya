@@ -7,7 +7,7 @@ import {
   TimeFormat,
   User,
   UserAvailabilityHeatMapDocument,
-  UserRecordDocument,
+  UserDocument,
 } from '../../../interfaces';
 
 const debug = Debug('wya-api:etl/firebase/create-new-user-record');
@@ -45,7 +45,7 @@ export const etlFirebaseCreateNewUserRecord = async (
         firstName: firstName ?? 'Guest',
         lastName: lastName ?? 'Guest',
         timeFormat: TimeFormat.TWELVE_HOURS,
-      } as UserRecordDocument);
+      } as UserDocument);
 
       // Create user availabilities sub collection
       const userHeatMapAvailabilityDocRef = firebaseFirestore.doc(
