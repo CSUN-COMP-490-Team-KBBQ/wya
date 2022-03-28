@@ -8,9 +8,10 @@ import { createHeatMapDataAndScheduleSelectorData } from '../../lib/availability
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import EventPlanning from './EventPlanning';
 
-import './EventPlanPage.css';
 import { isUserAHost } from '../../lib/eventHelpers';
-import { EventPlanDocument } from 'wya-api/dist/interfaces';
+import { EventPlanDocument } from '../../interfaces';
+
+import './EventPlanPage.css';
 
 /**
  *

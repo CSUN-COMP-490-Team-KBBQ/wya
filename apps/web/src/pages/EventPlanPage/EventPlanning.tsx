@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Container, Modal, Button } from 'react-bootstrap';
+
 import AvailabilityHeatMap from '../../components/AvailabilityHeatMap/AvailabilityHeatMap';
 import HeatMapData from '../../interfaces/HeatMapData';
 import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
@@ -7,11 +8,11 @@ import ConfirmEventModal from '../../components/ConfirmEventModal/ConfirmEventMo
 import { appendUserAvailabilityToGroupEventPlanAvailability } from '../../lib/availability';
 import { updateEventAvailability } from '../../lib/firestore';
 import AvailabilityScheduleSelector from '../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
+import { transformStartTime, transformEndTime } from '../../lib/eventHelpers';
+import { EventDataAvailability } from '../../interfaces/EventData';
+import { EventPlanDocument } from '../../interfaces';
 
 import './EventPlanPage.css';
-import { transformStartTime, transformEndTime } from '../../lib/eventHelpers';
-import { EventPlanDocument } from 'wya-api/dist/interfaces';
-import { EventDataAvailability } from '../../interfaces/EventData';
 
 type AddAvailabilityModalProps = {
   scheduleSelectorData: ScheduleSelectorData;

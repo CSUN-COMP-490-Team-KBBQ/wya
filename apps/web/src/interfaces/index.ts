@@ -1,5 +1,7 @@
 /**
- * RO3: Copied in web/src/interfaces
+ * RO3: Copying from wya-api/src/interfaces until we can find a better way to
+ * share schema / type information bc current implementation is causing a lot
+ * of problems
  */
 export const TIME_FORMAT = {
   TWELVE_HOURS: 'hh:mm a',
@@ -111,4 +113,5 @@ export type EventGuest = {
   email: string;
   status: EventGuestStatus;
 };
+
 /** End of RO3 */

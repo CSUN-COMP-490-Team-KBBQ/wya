@@ -1,12 +1,15 @@
 import React from 'react';
-import { UserRecordDocument } from 'wya-api/dist/interfaces';
 
+import { UserDocument } from '../interfaces';
 import { getDocSnapshot$ } from '../lib/firestore';
 import { useUserContext } from './UserContext';
 
+// TODO: Rename UserRecord to UserDocument, we don't use SQL db so UserDocument
+// makes more sense
+
 type UserRecordState = {
   pending: boolean;
-  userRecord: UserRecordDocument | null;
+  userRecord: UserDocument | null;
 };
 
 const UserRecordContext = React.createContext<UserRecordState>({
@@ -16,9 +19,7 @@ const UserRecordContext = React.createContext<UserRecordState>({
 
 export const UserRecordProvider: React.FC = ({ children }) => {
   const [pending, setPending] = React.useState<boolean>(false);
-  const [userRecord, setUserRecord] = React.useState<UserRecordDocument | null>(
-    null
-  );
+  const [userRecord, setUserRecord] = React.useState<UserDocument | null>(null);
 
   const { user } = useUserContext();
 
@@ -28,7 +29,7 @@ export const UserRecordProvider: React.FC = ({ children }) => {
       return getDocSnapshot$(`/users/${user.uid}`, {
         next: (snapshot) => {
           if (snapshot.exists()) {
-            setUserRecord(snapshot.data() as UserRecordDocument);
+            setUserRecord(snapshot.data() as UserDocument);
           }
           setPending(false);
         },

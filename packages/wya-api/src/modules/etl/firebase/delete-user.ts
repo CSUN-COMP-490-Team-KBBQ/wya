@@ -3,10 +3,11 @@ import Debug from 'debug';
 import { App } from 'firebase-admin/app';
 import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 
-import { UserId } from '../../../interfaces';
 import { etlFirebaseDeleteUserRecord } from './delete-user-record';
 
 const debug = Debug('wya-api:etl/firebase/delete-user');
+
+type UserId = string;
 
 type EtlFirebaseDeleteUserParams = {
   uid: UserId;

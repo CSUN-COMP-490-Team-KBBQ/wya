@@ -4,7 +4,7 @@ import { App } from 'firebase-admin/app';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
 import {
-  TimeFormat,
+  TIME_FORMAT,
   User,
   UserAvailabilityHeatMapDocument,
   UserDocument,
@@ -44,7 +44,7 @@ export const etlFirebaseCreateNewUserRecord = async (
         email,
         firstName: firstName ?? 'Guest',
         lastName: lastName ?? 'Guest',
-        timeFormat: TimeFormat.TWELVE_HOURS,
+        timeFormat: TIME_FORMAT.TWELVE_HOURS,
       } as UserDocument);
 
       // Create user availabilities sub collection

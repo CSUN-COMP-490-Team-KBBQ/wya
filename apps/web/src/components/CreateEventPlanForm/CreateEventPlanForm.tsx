@@ -9,12 +9,12 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useHistory } from 'react-router-dom';
-import { Email, EventPlanInfo } from 'wya-api/dist/interfaces';
-// import { TimeFormat } from 'wya-api/dist/lib';
+
 import Recaptcha from '../Recaptcha/Recaptcha';
+import GuestList from '../GuestList/GuestList';
+import { EventPlanInfo, TIME_FORMAT } from '../../interfaces';
 import { createEventPlan } from '../../lib/firestore';
 import { useUserContext } from '../../contexts/UserContext';
-import GuestList from '../GuestList/GuestList';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import './CreateEventPlanForm.css';
@@ -30,12 +30,7 @@ const SUPPORTED_TIME_FORMATS = [
 ];
 /** End of RO3 */
 
-/** RO3: copied from wya-api/lib/time-format */
-enum TimeFormat {
-  TWELVE_HOURS = 'hh:mm a',
-  TWENTY_FOUR_HOURS = 'HH:mm',
-}
-/** End of RO3 */
+type Email = string;
 
 export default function CreateEventPlanForm(): JSX.Element {
   const { user } = useUserContext();
@@ -51,18 +46,10 @@ export default function CreateEventPlanForm(): JSX.Element {
   const [endTimeValue, setEndTimeValue] = React.useState<moment.Moment>(
     moment().startOf('hour').add(15, 'minutes')
   );
-  // const [use12Hours, setUse12Hours] = React.useState<boolean>(true);
-
-  // React.useEffect(() => {
-  //   if (userRecord) {
-  //     setUse12Hours(userRecord.timeFormat === TimeFormat.TWELVE_HOURS);
-  //   }
-  // }, [userRecord]);
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    /** Extract */
     // Fail immediately if no token
     assert(recaptchaRef.current, 'ReCAPTCHA has not loaded');
     const token = await recaptchaRef.current.executeAsync();
@@ -73,18 +60,16 @@ export default function CreateEventPlanForm(): JSX.Element {
       formData.entries()
     ) as unknown as EventPlanInfo;
 
-    /** Transform */
     // We always convert to 24 hour time when storing these time
     // intervals in firestore
-
     formValues.dailyStartTime = moment(
       formValues.dailyStartTime,
       SUPPORTED_TIME_FORMATS
-    ).format(TimeFormat.TWENTY_FOUR_HOURS);
+    ).format(TIME_FORMAT.TWENTY_FOUR_HOURS);
     formValues.dailyEndTime = moment(
       formValues.dailyEndTime,
       SUPPORTED_TIME_FORMATS
-    ).format(TimeFormat.TWENTY_FOUR_HOURS);
+    ).format(TIME_FORMAT.TWENTY_FOUR_HOURS);
 
     assert(
       moment(formValues.dailyStartTime, SUPPORTED_TIME_FORMATS, true).isValid()
@@ -102,7 +87,6 @@ export default function CreateEventPlanForm(): JSX.Element {
       'g-recaptcha-response': token,
     };
 
-    /** Load */
     const eventPlanId = await createEventPlan(
       eventPlanData as EventPlanInfo & {
         invitees: Email[];
@@ -201,7 +185,7 @@ export default function CreateEventPlanForm(): JSX.Element {
                     name="dailyStartTime"
                     allowEmpty={false}
                     use12Hours={
-                      userRecord?.timeFormat === TimeFormat.TWELVE_HOURS
+                      userRecord?.timeFormat === TIME_FORMAT.TWELVE_HOURS
                     }
                   />
                 </Col>
@@ -218,7 +202,7 @@ export default function CreateEventPlanForm(): JSX.Element {
                     name="dailyEndTime"
                     allowEmpty={false}
                     use12Hours={
-                      userRecord?.timeFormat === TimeFormat.TWELVE_HOURS
+                      userRecord?.timeFormat === TIME_FORMAT.TWELVE_HOURS
                     }
                   />
                 </Col>

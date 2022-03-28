@@ -4,35 +4,29 @@ import {
   getFirestore,
   getDoc,
   DocumentData,
-  DocumentReference,
   onSnapshot,
   DocumentSnapshot,
   FirestoreError,
   Unsubscribe,
   updateDoc,
   collection,
-  CollectionReference,
   QuerySnapshot,
 } from 'firebase/firestore';
-import {
-  Email,
-  EventPlanInfo,
-  EventInfo,
-  UserId,
-  UserDocument,
-  TimeFormat,
-} from 'wya-api/src/interfaces';
+import { EventPlanInfo, EventInfo, UserDocument } from 'wya-api/src/interfaces';
 
 import app from './firebase';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';
 
+type Email = string;
+type UserId = string;
+
 const firestore = getFirestore(app);
 
-function getDocRef(path: string): DocumentReference<DocumentData> {
+function getDocRef(path: string) {
   return doc(firestore, path);
 }
 
-function getCollRef(path: string): CollectionReference<DocumentData> {
+function getCollRef(path: string) {
   return collection(firestore, path);
 }
 
@@ -74,7 +68,7 @@ export const createEventFinalized = (
   return new Promise((resolve, reject) => {
     axios
       .post(
-        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/${process.env.REACT_APP_USER_EVENTS}/create`,
+        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/events/create`,
         JSON.stringify(data),
         {
           headers: {
@@ -103,6 +97,11 @@ export const getEventData = async (eventId: string): Promise<EventData> => {
 export const updateEvent = async (event: EventData): Promise<void> => {
   const eventDocRef = getDocRef(`/events/${event.eventId}`);
   return updateDoc(eventDocRef, { ...event });
+};
+
+export const updateUserDocument = async (userDocument: UserDocument) => {
+  const userDocRef = getDocRef(`/users/${userDocument.uid}`);
+  return updateDoc(userDocRef, { ...userDocument });
 };
 
 export const updateUserRecord = async (user: UserDocument): Promise<void> => {
@@ -155,20 +154,9 @@ export const updateCalendarAvailability = (data: number[], uid: string) => {
   });
 };
 
-export const updateUserTimeFormatOption = (
-  timeFormatOption: boolean,
-  uid: string
-): Promise<void> => {
-  const userDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${uid}`);
-  return updateDoc(userDocRef, 'timeFormat24Hr', timeFormatOption);
-};
-
-export const updateUserRecordTimeFormat = (
-  uid: UserId,
-  timeFormat: TimeFormat
-) => {
-  const userRecordDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${uid}`);
-  return updateDoc(userRecordDocRef, { timeFormat });
+export const updateUserTimeFormat = (uid: UserId, timeFormat: string) => {
+  const userDocRef = getDocRef(`/users/${uid}`);
+  return updateDoc(userDocRef, { timeFormat });
 };
 
 export const updateEventAvailability = (

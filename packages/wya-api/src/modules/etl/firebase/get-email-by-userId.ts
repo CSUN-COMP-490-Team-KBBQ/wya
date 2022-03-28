@@ -3,9 +3,9 @@ import Debug from 'debug';
 import { App } from 'firebase-admin/app';
 import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 
-import { UserId } from '../../../interfaces';
-
 const debug = Debug('wya-api:etl/firebase/get-email-by-userId');
+
+type UserId = string;
 
 type EtlFirebaseGetEmailByUserIdParams = {
   userId: UserId;

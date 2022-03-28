@@ -5,11 +5,13 @@ import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
 
 import HeatMapData from '../../interfaces/HeatMapData';
+import { EventInfo, EventPlanDocument } from '../../interfaces';
 import { createEventFinalized } from '../../lib/firestore';
+import { convertStringArrayToObjectWithValueAndLabel } from '../../lib/eventHelpers';
 
 import './ConfirmEventModal.css';
-import { convertStringArrayToObjectWithValueAndLabel } from '../../lib/eventHelpers';
-import { EventInfo, EventPlanDocument, UserId } from 'wya-api/dist/interfaces';
+
+type UserId = string;
 
 interface ConfirmEventModalProps {
   eventPlanDocument: EventPlanDocument;

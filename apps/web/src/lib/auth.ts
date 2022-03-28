@@ -7,9 +7,10 @@ import {
   updatePassword,
 } from 'firebase/auth';
 import axios, { AxiosResponse } from 'axios';
-import { UserId } from 'wya-api/dist/interfaces';
 
 import app from './firebase';
+
+type UserId = string;
 
 const auth = getAuth(app);
 

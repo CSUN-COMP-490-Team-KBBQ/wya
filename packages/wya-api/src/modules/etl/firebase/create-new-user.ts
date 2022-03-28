@@ -3,9 +3,9 @@ import Debug from 'debug';
 import { App } from 'firebase-admin/app';
 import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 
-import { Email } from '../../../interfaces';
-
 const debug = Debug('wya-api:etl/firebase/create-new-user');
+
+type Email = string;
 
 type EtlFirebaseCreateNewUserParams = {
   email: Email;

@@ -1,5 +1,6 @@
 import moment from 'moment';
-import { EventPlanDocument } from 'wya-api/dist/interfaces';
+
+import { EventPlanDocument } from '../interfaces';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';
 import HeatMapData from '../interfaces/HeatMapData';
 import ScheduleSelectorData from '../interfaces/ScheduleSelectorData';

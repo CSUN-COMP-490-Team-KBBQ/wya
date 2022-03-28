@@ -2,7 +2,8 @@ import React from 'react';
 import './EventPlanList.css';
 import { ListGroup } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { EventPlanInfo, EventPlanId } from 'wya-api/dist/interfaces';
+
+import { EventPlanInfo, EventPlanId } from '../../interfaces';
 
 interface EventPlanListProps {
   elementId: string;

@@ -23,8 +23,7 @@ import {
 } from '../../lib/availability';
 
 import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
-
-import { EventPlanId, EventPlanInfo } from 'wya-api/dist/interfaces';
+import { EventPlanId, EventPlanInfo } from '../../interfaces';
 
 type UpdateAvailabilityModalProps = {
   uid: string;

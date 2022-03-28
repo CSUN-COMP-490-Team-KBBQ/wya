@@ -6,15 +6,16 @@ import nodemailer from 'nodemailer';
 import { v4 as uuid } from 'uuid';
 
 import {
-  Email,
   EventDocument,
   EventInfo,
   UserEventDocument,
-  UserId,
 } from '../../../interfaces';
 import { etlFirebaseGetEmailByUserId } from './get-email-by-userId';
 
 const debug = Debug('wya-api:etl/firebase/create-new-event-finalized');
+
+type UserId = string;
+type Email = string;
 
 type EtlFirebaseCreateNewEventFinalizedParams = EventInfo & {
   invitees: UserId[];
