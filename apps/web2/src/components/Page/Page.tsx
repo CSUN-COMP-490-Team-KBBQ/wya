@@ -1,3 +1,9 @@
+// Will be converted to PrivatePage which will need auth to visit
+// Dashboard layout - sidebar, body will have access to:
+// > Main (events, calendar)
+// > Settings
+// > Events (Planned and Finalized)
+
 import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
