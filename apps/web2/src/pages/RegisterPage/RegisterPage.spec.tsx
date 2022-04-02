@@ -14,3 +14,7 @@ import React from 'react';
 //   );
 //   expect(queryAllByText('Register Page')).toBeTruthy();
 // });
+
+it('runs an empty test', () => {
+  expect(true).toBeTruthy();
+});

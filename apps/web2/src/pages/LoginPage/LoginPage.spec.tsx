@@ -14,3 +14,7 @@ import React from 'react';
 //   );
 //   expect(queryAllByText('Login Page')).toBeTruthy();
 // });
+
+it('runs an empty test', () => {
+  expect(true).toBeTruthy();
+});
