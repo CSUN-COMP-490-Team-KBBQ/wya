@@ -10,11 +10,11 @@ export default function LandingPage() {
   const history = useHistory();
   const { user } = useUserContext();
 
-  React.useEffect(() => {
-    if (user) {
-      history.push('/dashboard');
-    }
-  });
+  // React.useEffect(() => {
+  //   if (user) {
+  //     history.push('/dashboard');
+  //   }
+  // });
 
   return (
     <>
@@ -29,7 +29,11 @@ export default function LandingPage() {
                 <div className="flex items-center flex-grow flex-shrink-0">
                   <div className="flex items-center justify-between w-full">
                     <a href="#">
-                      <img className="h-8 w-auto sm:h-10" src={logo} />
+                      <img
+                        className="h-8 w-auto sm:h-10"
+                        src={logo}
+                        alt="wya? logo"
+                      />
                     </a>
                   </div>
                   <Link
@@ -89,7 +93,7 @@ export default function LandingPage() {
         <img
           className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
           src={image}
-          alt=""
+          alt="blue wave background"
         />
       </div>
     </>

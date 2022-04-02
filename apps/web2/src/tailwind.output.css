@@ -1863,18 +1863,8 @@ select {
     flex-shrink: 0;
   }
 
-  .lg\:flex-grow-0 {
-    flex-grow: 0;
-  }
-
   .lg\:justify-start {
     justify-content: flex-start;
-  }
-
-  .lg\:space-x-60 > :not([hidden]) ~ :not([hidden]) {
-    --tw-space-x-reverse: 0;
-    margin-right: calc(15rem * var(--tw-space-x-reverse));
-    margin-left: calc(15rem * calc(1 - var(--tw-space-x-reverse)));
   }
 
   .lg\:px-8 {
