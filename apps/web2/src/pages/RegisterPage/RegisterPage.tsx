@@ -43,7 +43,7 @@ export default function RegisterPage() {
         ```
       */}
       <div className="min-h-screen bg-slate-100">
-        <div className="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8 pt-24">
+        <div className="min-h-full flex flex-col justify-center py-32 sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <img
               className="mx-auto h-12 w-auto"

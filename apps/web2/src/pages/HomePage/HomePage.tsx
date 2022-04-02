@@ -57,8 +57,8 @@ import logo from '../../assets/wya-logo.png';
 
 const navigation = [
   { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  // { name: 'Teams', href: '#', icon: UserGroupIcon, current: false },
+  // { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
+  { name: 'Friends', href: '#', icon: UserGroupIcon, current: false },
   // { name: 'Directory', href: '#', icon: SearchCircleIcon, current: false },
   // { name: 'Announcements', href: '#', icon: SpeakerphoneIcon, current: false },
   // { name: 'Office Map', href: '#', icon: MapIcon, current: false },
@@ -134,10 +134,11 @@ export default function HomePage() {
                   </div>
                 </Transition.Child>
                 <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-                  <div className="flex-shrink-0 flex items-center px-4">
+                  <div className="flex-shrink-0 flex items-center px-4 justify-center">
                     <img
-                      className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-900-text.svg"
+                      className="h-10 w-auto"
+                      // src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-900-text.svg"
+                      src={logo}
                       alt="Workflow"
                     />
                   </div>
@@ -172,18 +173,25 @@ export default function HomePage() {
                 <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
                   <a href="#" className="flex-shrink-0 group block">
                     <div className="flex items-center">
-                      <div>
-                        <img
+                      <div className="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-200">
+                        <svg
+                          className="h-full w-full text-gray-300"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        {/* <img
                           className="inline-block h-10 w-10 rounded-full"
                           src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
                           alt=""
-                        />
+                        /> */}
                       </div>
                       <div className="ml-3">
-                        <p className="text-base font-medium text-gray-700 group-hover:text-gray-900">
+                        <p className="text-base font-medium text-gray-700 group-hover:text-gray-900 mb-0">
                           Whitney Francis
                         </p>
-                        <p className="text-sm font-medium text-gray-500 group-hover:text-gray-700">
+                        <p className="text-sm font-medium text-gray-500 group-hover:text-gray-700 mb-0">
                           View profile
                         </p>
                       </div>
@@ -243,12 +251,19 @@ export default function HomePage() {
               <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
                 <a href="#" className="flex-shrink-0 w-full group block">
                   <div className="flex items-center">
-                    <div>
-                      <img
+                    <div className="inline-block h-9 w-9 rounded-full overflow-hidden bg-gray-200">
+                      <svg
+                        className="h-full w-full text-gray-300"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                      {/* <img
                         className="inline-block h-9 w-9 rounded-full"
                         src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
                         alt=""
-                      />
+                      /> */}
                     </div>
                     <div className="ml-3">
                       <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 mb-0">
@@ -270,7 +285,8 @@ export default function HomePage() {
               <div>
                 <img
                   className="h-8 w-auto"
-                  src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+                  // src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+                  src={logo}
                   alt="Workflow"
                 />
               </div>
