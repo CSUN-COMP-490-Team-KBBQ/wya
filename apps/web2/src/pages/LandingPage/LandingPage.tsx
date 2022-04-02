@@ -10,11 +10,11 @@ export default function LandingPage() {
   const history = useHistory();
   const { user } = useUserContext();
 
-  // React.useEffect(() => {
-  //   if (user) {
-  //     history.push('/dashboard');
-  //   }
-  // });
+  React.useEffect(() => {
+    if (user) {
+      history.push('/dashboard');
+    }
+  });
 
   return (
     <>
