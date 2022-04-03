@@ -51,7 +51,8 @@
   "dependencies": {
     "assert": "^2.0.0",
     "debug": "^4.3.3",
-    "firebase-functions": "^3.16.0",
+    "firebase-admin": "^10.0.2",
+    "firebase-functions": "^3.18.1",
     "tslib": "^2.3.1"
   }
 }

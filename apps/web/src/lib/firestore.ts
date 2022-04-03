@@ -1,42 +1,45 @@
+import axios from 'axios';
 import {
   doc,
   getFirestore,
   getDoc,
   DocumentData,
-  DocumentReference,
   onSnapshot,
   DocumentSnapshot,
   FirestoreError,
   Unsubscribe,
   updateDoc,
+  collection,
+  QuerySnapshot,
 } from 'firebase/firestore';
-import axios from 'axios';
-import {
-  Email,
-  EventPlanInfo,
-  HourlyTimeFormat,
-  UserId,
-} from 'wya-api/dist/interfaces';
+import { EventPlanInfo, EventInfo, UserDocument } from 'wya-api/src/interfaces';
 
 import app from './firebase';
 import EventData, { EventDataAvailability } from '../interfaces/EventData';
-import UserData from '../interfaces/User';
+
+type Email = string;
+type UserId = string;
 
 const firestore = getFirestore(app);
 
-function getDocRef(path: string): DocumentReference<DocumentData> {
+function getDocRef(path: string) {
   return doc(firestore, path);
+}
+
+function getCollRef(path: string) {
+  return collection(firestore, path);
 }
 
 export const createEventPlan = (
   data: EventPlanInfo & {
     invitees: Email[];
+    'g-recaptcha-response': string;
   }
 ) => {
   return new Promise((resolve, reject) => {
     axios
       .post(
-        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/${process.env.REACT_APP_USER_EVENT_PLANS}/create`,
+        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/event-plans/create`,
         JSON.stringify(data),
         {
           headers: {
@@ -57,13 +60,16 @@ export const createEventPlan = (
   });
 };
 
-export const createEvent = (eventData: EventData): Promise<string> => {
+export const createEventFinalized = (
+  data: EventInfo & {
+    invitees: UserId[];
+  }
+) => {
   return new Promise((resolve, reject) => {
-    // rather than handling this on the client side we will POST the form data to the cloud function api
     axios
       .post(
-        'https://us-central1-kbbq-wya-35414.cloudfunctions.net/api/create-event',
-        JSON.stringify(eventData),
+        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/events/create`,
+        JSON.stringify(data),
         {
           headers: {
             'Content-Type': 'application/json',
@@ -71,28 +77,35 @@ export const createEvent = (eventData: EventData): Promise<string> => {
         }
       )
       .then((res) => {
-        // eslint-disable-next-line
-        console.log(res.data);
-        resolve(eventData.eventId);
+        console.log(res);
+        const {
+          data: {
+            data: [eventFinalizedId],
+          },
+        } = res;
+        resolve(eventFinalizedId);
       })
       .catch(reject);
   });
 };
 
 export const getEventData = async (eventId: string): Promise<EventData> => {
-  const eventDocRef = getDocRef(`/${process.env.REACT_APP_EVENTS}/${eventId}`);
+  const eventDocRef = getDocRef(`/events/${eventId}`);
   return (await getDoc(eventDocRef)).data() as EventData;
 };
 
 export const updateEvent = async (event: EventData): Promise<void> => {
-  const eventDocRef = getDocRef(
-    `/${process.env.REACT_APP_EVENTS}/${event.eventId}`
-  );
+  const eventDocRef = getDocRef(`/events/${event.eventId}`);
   return updateDoc(eventDocRef, { ...event });
 };
 
-export const updateUserRecord = async (user: UserData): Promise<void> => {
-  const userDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${user.uid}`);
+export const updateUserDocument = async (userDocument: UserDocument) => {
+  const userDocRef = getDocRef(`/users/${userDocument.uid}`);
+  return updateDoc(userDocRef, { ...userDocument });
+};
+
+export const updateUserRecord = async (user: UserDocument): Promise<void> => {
+  const userDocRef = getDocRef(`/users/${user.uid}`);
   return updateDoc(userDocRef, { ...user });
 };
 
@@ -107,10 +120,33 @@ export const getDocSnapshot$ = (
   const docRef = getDocRef(path);
   return onSnapshot(docRef, observer);
 };
+export const getSubCollDocSnapshot$ = (
+  path: string,
+  observer: {
+    next?: ((snapshot: DocumentSnapshot<DocumentData>) => void) | undefined;
+    error?: ((error: FirestoreError) => void) | undefined;
+    complete?: (() => void) | undefined;
+  }
+): Unsubscribe => {
+  const subCollDocRef = getDocRef(path);
+  return onSnapshot(subCollDocRef, observer);
+};
+
+export const getAllSubCollDocsSnapshot$ = (
+  path: string,
+  observer: {
+    next?: ((snapshot: QuerySnapshot<DocumentData>) => void) | undefined;
+    error?: ((error: FirestoreError) => void) | undefined;
+    complete?: (() => void) | undefined;
+  }
+): Unsubscribe => {
+  const subCollRef = getCollRef(path);
+  return onSnapshot(subCollRef, observer);
+};
 
 export const updateCalendarAvailability = (data: number[], uid: string) => {
   const userHeatMapAvailabilityDocRef = getDocRef(
-    `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_HEAT_MAP_AVAILABILITY}`
+    `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_SCHEDULE_SELECTOR_AVAILABILITY}/`
   );
 
   return updateDoc(userHeatMapAvailabilityDocRef, {
@@ -118,28 +154,22 @@ export const updateCalendarAvailability = (data: number[], uid: string) => {
   });
 };
 
-export const updateUserTimeFormatOption = (
-  timeFormatOption: boolean,
-  uid: string
-): Promise<void> => {
-  const userDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${uid}`);
-  return updateDoc(userDocRef, 'timeFormat24Hr', timeFormatOption);
-};
-
-export const updateUserRecordHourlyTimeFormat = (
-  uid: UserId,
-  hourlyTimeFormat: HourlyTimeFormat
-) => {
-  const userRecordDocRef = getDocRef(`/${process.env.REACT_APP_USERS}/${uid}`);
-  return updateDoc(userRecordDocRef, { hourlyTimeFormat });
+export const updateUserTimeFormat = (uid: UserId, timeFormat: string) => {
+  const userDocRef = getDocRef(`/users/${uid}`);
+  return updateDoc(userDocRef, { timeFormat });
 };
 
 export const updateEventAvailability = (
   data: EventDataAvailability,
-  eventId: string
+  eventPlanId: string,
+  userId: string
 ): Promise<void> => {
-  const eventDocRef = getDocRef(`/${process.env.REACT_APP_EVENTS}/${eventId}`);
-  return updateDoc(eventDocRef, 'availability', data);
+  const eventPlanAvailabilityDocRef = getDocRef(
+    `/${process.env.REACT_APP_EVENT_PLANS}/${eventPlanId}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${userId}`
+  );
+  return updateDoc(eventPlanAvailabilityDocRef, {
+    data,
+  });
 };
 
 export default firestore;

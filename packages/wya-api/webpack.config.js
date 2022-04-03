@@ -42,7 +42,4 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js', '.json'],
     modules: [path.resolve(root, 'node_modules'), 'node_modules'],
   },
-  externals: {
-    'firebase-admin': 'firebase-admin',
-  },
 };

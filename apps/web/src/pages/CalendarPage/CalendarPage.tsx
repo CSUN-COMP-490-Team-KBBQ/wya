@@ -6,19 +6,24 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Calendar from 'react-calendar';
-import EventList from '../../components/EventList/EventList';
+import EventPlanList from '../../components/EventPlanList/EventPlanList';
 import Page from '../../components/Page/Page';
 import AvailabilityScheduleSelector from '../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
+
 import {
   getDocSnapshot$,
+  getAllSubCollDocsSnapshot$,
   updateCalendarAvailability,
 } from '../../lib/firestore';
-import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
+
 import {
   convertUserAvailabilityDateArrayToTimestampArray,
   createScheduleSelectorData,
 } from '../../lib/availability';
+
+import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
+import { EventPlanId, EventPlanInfo } from '../../interfaces';
 
 type UpdateAvailabilityModalProps = {
   uid: string;
@@ -33,7 +38,7 @@ function UpdateAvailabilityModal({
   show,
   onHide,
 }: UpdateAvailabilityModalProps): JSX.Element {
-  const { scheduleData, is24Hour } = scheduleSelectorData;
+  const { scheduleData, timeFormat: is24Hour } = scheduleSelectorData;
 
   const [userAvailabilityData, setUserAvailabilityData] =
     React.useState<Array<Date>>(scheduleData);
@@ -91,7 +96,7 @@ function UpdateAvailabilityModal({
           days={7}
           startDate={new Date('January 04, 1970')}
           handleChange={onClickScheduleSelectorHandle}
-          is24Hour={is24Hour}
+          timeFormat={is24Hour}
         />
       </Modal.Body>
       <Modal.Footer>
@@ -119,25 +124,70 @@ export default function CalendarPage(): JSX.Element {
   const [modalShow, setModalShow] = React.useState<boolean>(false);
   const [scheduleSelectorData, setScheduleSelectorData] =
     React.useState<ScheduleSelectorData>();
+  const [eventPlans, setEventPlans] = React.useState<
+    Array<EventPlanInfo & { eventPlanId: EventPlanId }>
+  >([]);
 
   // Observe user availability
   React.useEffect(() => {
     if (userRecord) {
       const { uid } = userRecord;
-      return getDocSnapshot$(
-        `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_HEAT_MAP_AVAILABILITY}`,
+
+      getDocSnapshot$(
+        `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_SCHEDULE_SELECTOR_AVAILABILITY}`,
         {
-          next: (snapshot) => {
-            if (snapshot.exists()) {
-              const { data: heatMapAvailability } = snapshot.data();
+          next: (scheduleSelectorDocSnapshot) => {
+            if (scheduleSelectorDocSnapshot.exists()) {
+              const { data: scheduleSelectorAvailability } =
+                scheduleSelectorDocSnapshot.data();
 
               setScheduleSelectorData(
                 createScheduleSelectorData(
-                  heatMapAvailability ?? [],
-                  // TODO: Use new hourlyTimeFormat
-                  true
+                  scheduleSelectorAvailability ?? [],
+                  userRecord.timeFormat
                 )
               );
+            }
+          },
+        }
+      );
+
+      // begin geting eventPlanId from documentId from users/uid/event-plans/eventPlanId
+      getAllSubCollDocsSnapshot$(
+        `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_EVENT_PLANS}`,
+        {
+          next: (eventPlansSnapshot) => {
+            if (!eventPlansSnapshot.empty) {
+              const eventPlanInfoAndEventPlanId: Array<
+                EventPlanInfo & { eventPlanId: EventPlanId }
+              > = [];
+
+              eventPlansSnapshot.forEach((doc) => {
+                // now get document object by using eventPlanId
+                getDocSnapshot$(
+                  `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_EVENT_PLANS}/${doc.id}`,
+                  {
+                    next: (eventPlanDocSnapshot) => {
+                      if (eventPlanDocSnapshot.exists()) {
+                        const eventPlanInfo: EventPlanInfo =
+                          eventPlanDocSnapshot.data() as EventPlanInfo;
+
+                        eventPlanInfoAndEventPlanId.push({
+                          eventPlanId: doc.id,
+                          ...eventPlanInfo,
+                        });
+
+                        if (
+                          eventPlanInfoAndEventPlanId.length ===
+                          eventPlansSnapshot.size
+                        ) {
+                          setEventPlans(eventPlanInfoAndEventPlanId);
+                        }
+                      }
+                    },
+                  }
+                );
+              });
             }
           },
         }
@@ -178,10 +228,9 @@ export default function CalendarPage(): JSX.Element {
               </div>
             </Col>
             <Col sm={6} id="eventListCol">
-              <EventList
-                elementId="calendar-event-list"
-                // TODO: List all user related events
-                events={[]}
+              <EventPlanList
+                elementId="calendar-event-plan-list"
+                eventPlans={eventPlans}
               />
             </Col>
           </Row>

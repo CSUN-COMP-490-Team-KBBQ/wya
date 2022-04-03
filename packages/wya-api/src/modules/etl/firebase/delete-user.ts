@@ -1,18 +1,20 @@
 import assert from 'assert';
 import Debug from 'debug';
-import firebaseAdmin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 
-import { UserId } from '../../../interfaces';
 import { etlFirebaseDeleteUserRecord } from './delete-user-record';
 
 const debug = Debug('wya-api:etl/firebase/delete-user');
+
+type UserId = string;
 
 type EtlFirebaseDeleteUserParams = {
   uid: UserId;
 };
 
 type EtlFirebaseDeleteUserContext = {
-  firebase: firebaseAdmin.app.App;
+  firebaseClientInjection: App;
 };
 
 export const etlFirebaseDeleteUser = async (
@@ -26,12 +28,12 @@ export const etlFirebaseDeleteUser = async (
   debug(`Deleting user: ${uid}`);
 
   try {
-    const { firebase } = context;
-    const firebaseAuth = firebase.auth();
+    const { firebaseClientInjection } = context;
+    const firebaseAuth = getFirebaseAuth(firebaseClientInjection);
 
     await firebaseAuth.deleteUser(uid);
 
-    await etlFirebaseDeleteUserRecord({ uid }, { firebase });
+    await etlFirebaseDeleteUserRecord({ uid }, { firebaseClientInjection });
 
     return {
       data: [],

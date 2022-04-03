@@ -1,30 +1,47 @@
-/** users */
-export type UserId = string;
-export type Email = string;
-
-export type User = {
-  uid: UserId;
-  email: Email;
+/**
+ * RO3: Copied in web/src/interfaces
+ */
+export const TIME_FORMAT = {
+  TWELVE_HOURS: 'hh:mm a',
+  TWENTY_FOUR_HOURS: 'HH:mm',
 };
 
-export type HourlyTimeFormat = 'hh' | 'HH';
-export type UserRecordDocument = {
-  email: Email;
+/** users */
+export type User = {
+  uid: string;
+  email: string;
+};
+
+export type UserDocument = {
+  email: string;
   firstName: string;
   lastName: string;
-  hourlyTimeFormat: HourlyTimeFormat;
-  uid: UserId;
+  timeFormat: string;
+  uid: string;
 };
 
 export type UserAvailabilityHeatMapDocument = {
   data: number[];
 };
 
-export type UserEventPlanDocument = Exclude<
-  EventPlanInfo,
-  { hostId: UserId }
-> & {
-  role: EventPlanRole;
+export type UserEventPlanDocument = {
+  name: string;
+  description: string;
+  dailyStartTime: string;
+  dailyEndTime: string;
+  startDate: string;
+  endDate: string;
+};
+
+export type UserEventDocument = {
+  name: string;
+  description: string;
+  // Date times
+  day: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
 };
 
 /** event-plans */
@@ -36,29 +53,36 @@ export type EventPlanInfo = {
   dailyEndTime: string;
   startDate: string;
   endDate: string;
-  hostId: UserId;
-  hourlyTimeFormat: HourlyTimeFormat;
+  hostId: string;
 };
 
 export type EventPlanId = string;
-export type EventPlanDocument = EventPlanInfo & {
-  invitees: UserId[];
+export type EventPlanDocument = {
+  name: string;
+  description: string;
+  dailyStartTime: string;
+  dailyEndTime: string;
+  startDate: string;
+  endDate: string;
+  hostId: string;
+  invitees: string[];
   eventPlanId: EventPlanId;
 };
 
 export type EventPlanAvailabilityDocument = {
   data: {
     [time: string]: {
-      [date: string]: UserId[];
+      [date: string]: string[];
     };
   };
 };
 
 /** events */
+export type EventRole = 'GUEST' | 'HOST';
 export type EventInfo = {
   name: string;
   description: string;
-  hostId: UserId;
+  hostId: string;
   // Date times
   day: string;
   startDate: string;
@@ -68,11 +92,23 @@ export type EventInfo = {
 };
 
 export type EventId = string;
-export type EventDocument = EventInfo & {
+export type EventDocument = {
+  name: string;
+  description: string;
+  hostId: string;
+  // Date times
+  day: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
   eventId: EventId;
 };
 
 export type EventGuestStatus = 'ACCEPTED' | 'DECLINED' | 'PENDING';
-export type EventGuest = User & {
+export type EventGuest = {
+  uid: string;
+  email: string;
   status: EventGuestStatus;
 };
+/** End of RO3 */

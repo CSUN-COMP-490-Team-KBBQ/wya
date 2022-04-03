@@ -1,6 +1,7 @@
 import assert from 'assert';
 import Debug from 'debug';
-import firebaseAdmin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
 import { EventPlanDocument } from '../../../interfaces';
 
@@ -11,7 +12,7 @@ type EtlFirebaseDeleteEventPlanParams = {
 };
 
 type EtlFirebaseDeleteEventPlanContext = {
-  firebase: firebaseAdmin.app.App;
+  firebaseClientInjection: App;
 };
 
 export const etlFirebaseDeleteEventPlan = async (
@@ -25,13 +26,13 @@ export const etlFirebaseDeleteEventPlan = async (
   debug(`Deleting event plan: ${eventPlanId}`);
 
   try {
-    const { firebase } = context;
-    const firebaseFirestore = firebase.firestore();
+    const { firebaseClientInjection } = context;
+    const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
 
     await firebaseFirestore.runTransaction(async (transaction) => {
       /** Extract */
       const eventPlanDocRef = firebaseFirestore.doc(
-        `/${process.env.EVENT_PLANS}/${eventPlanId}`
+        `/event-plans/${eventPlanId}`
       );
       const eventPlanDoc = await eventPlanDocRef.get();
       const eventPlanDocData = eventPlanDoc.data() as
@@ -45,7 +46,7 @@ export const etlFirebaseDeleteEventPlan = async (
       /** Load */
       // Delete the event plan for host
       const hostEventPlanDocRef = firebaseFirestore.doc(
-        `/${process.env.USERS}/${hostId}/${process.env.USER_EVENT_PLANS}/${eventPlanId}`
+        `/users/${hostId}/event-plans/${eventPlanId}`
       );
       await transaction.delete(hostEventPlanDocRef);
 
@@ -53,7 +54,7 @@ export const etlFirebaseDeleteEventPlan = async (
       await Promise.all(
         invitees.map((userId) => {
           const inviteeEventPlanDocRef = firebaseFirestore.doc(
-            `/${process.env.USERS}/${userId}/${process.env.USER_EVENT_PLANS}/${eventPlanId}`
+            `/users/${userId}/event-plans/${eventPlanId}`
           );
           return transaction.delete(inviteeEventPlanDocRef);
         })
