@@ -18,7 +18,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import LandingPage from '../../pages/LandingPage/LandingPage';
 import EventPlanPage from '../../pages/EventPlanPage/EventPlanPage';
 import EventFinalizedPage from '../../pages/EventFinalizedPage/EventFinalizedPage';
-import SamplePage from '../../pages/SamplePage/SamplePage';
 import DashboardPage from '../../pages/DashboardPage/DashboardPage';
 
 export default function App(): JSX.Element {
@@ -46,7 +45,6 @@ export default function App(): JSX.Element {
             <PrivateRoute path="/calendar" component={CalendarPage} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/profile" component={ProfilePage} />
-            <PrivateRoute path="/sample" component={SamplePage} />
             <Route path="*" exact component={NotFoundPage} />
           </Switch>
         </BrowserRouter>
