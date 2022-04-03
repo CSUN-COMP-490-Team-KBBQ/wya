@@ -4,9 +4,8 @@ import { App } from 'firebase-admin/app';
 import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
-import { makeApiError } from '../../../lib/errors';
-
-import { UserId } from '../../interfaces';
+import { UserId } from '../../../interfaces';
+import { makeApiError } from '../../../../lib/errors';
 
 type Params = {
   uid: UserId;
@@ -16,10 +15,10 @@ type Context = {
   firebaseClientInjection: App;
 };
 
-export const etlDeleteUser = async (
+export const etlUsersDelete = async (
   params: Params,
   context: Context,
-  { debug = Debug('api:etl/delete-user') as any } = {}
+  { debug = Debug('api:etl/users/delete') as any } = {}
 ) => {
   assert(params.uid, makeApiError(409, 'User is required'));
 

@@ -10,8 +10,8 @@ import {
   UserAvailabilityHeatMapDocument,
   TIME_FORMAT,
   UserId,
-} from '../../interfaces';
-import { makeApiError } from '../../../lib/errors';
+} from '../../../interfaces';
+import { makeApiError } from '../../../../lib/errors';
 
 type Params = {
   email: Email;
@@ -25,10 +25,10 @@ type Context = {
   firebaseClientInjection: App;
 };
 
-export const etlCreateNewUser = async (
+export const etlUsersCreate = async (
   params: Params,
   context: Context,
-  { debug = Debug('api:etl/create-new-user') as any } = {}
+  { debug = Debug('api:etl/users/create') as any } = {}
 ) => {
   assert(params.email, makeApiError(409, 'Email is required'));
   assert(params.password, makeApiError(409, 'Password is required'));
@@ -69,8 +69,6 @@ export const etlCreateNewUser = async (
     };
 
   try {
-    assert(userDocumentPatch.uid, makeApiError(422, 'User is required'));
-
     await firebaseFirestore.runTransaction(async (transaction) => {
       // Create the user document
       const userDocumentRef = firebaseFirestore.doc(`/users/${uid}`);

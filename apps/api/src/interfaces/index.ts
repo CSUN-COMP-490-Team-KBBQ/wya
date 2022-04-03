@@ -48,7 +48,10 @@ export type UserEventDocument = {
 };
 
 /** event-plans */
-export type EventPlanRole = 'INVITEE' | 'HOST';
+export enum EVENT_PLAN_ROLE {
+  HOST = 'HOST',
+  INVITEE = 'INVITEE',
+}
 export type EventPlanInfo = {
   name: string;
   description: string;
