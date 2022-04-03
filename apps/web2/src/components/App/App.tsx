@@ -19,7 +19,7 @@ import LandingPage from '../../pages/LandingPage/LandingPage';
 import EventPlanPage from '../../pages/EventPlanPage/EventPlanPage';
 import EventFinalizedPage from '../../pages/EventFinalizedPage/EventFinalizedPage';
 import SamplePage from '../../pages/SamplePage/SamplePage';
-import HomePage from '../../pages/HomePage/HomePage';
+import DashboardPage from '../../pages/DashboardPage/DashboardPage';
 
 export default function App(): JSX.Element {
   return (
@@ -44,7 +44,7 @@ export default function App(): JSX.Element {
               component={EventFinalizedPage}
             />
             <PrivateRoute path="/calendar" component={CalendarPage} />
-            <PrivateRoute path="/dashboard" component={HomePage} />
+            <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/profile" component={ProfilePage} />
             <PrivateRoute path="/sample" component={SamplePage} />
             <Route path="*" exact component={NotFoundPage} />
