@@ -6,6 +6,12 @@ export const TIME_FORMAT = {
   TWENTY_FOUR_HOURS: 'HH:mm',
 };
 
+export enum DOCUMENT_TYPE {
+  USER = 'USER',
+  EVENT_PLAN = 'EVENT_PLAN',
+  EVENT = 'EVENT',
+}
+
 /** users */
 export type UserId = string;
 export type Email = string;
@@ -84,7 +90,10 @@ export type EventPlanAvailabilityDocument = {
 };
 
 /** events */
-export type EventRole = 'GUEST' | 'HOST';
+export enum EVENT_ROLE {
+  GUEST = 'GUEST',
+  HOST = 'HOST',
+}
 export type EventInfo = {
   name: string;
   description: string;
@@ -111,10 +120,14 @@ export type EventDocument = {
   eventId: EventId;
 };
 
-export type EventGuestStatus = 'ACCEPTED' | 'DECLINED' | 'PENDING';
+export enum EVENT_GUEST_STATUS {
+  ACCEPTED = 'ACCEPTED',
+  DECLINED = 'DECLINED',
+  PENDING = 'PENDING',
+}
 export type EventGuest = {
   uid: UserId;
   email: Email;
-  status: EventGuestStatus;
+  status: EVENT_GUEST_STATUS;
 };
 /** End of RO3 */

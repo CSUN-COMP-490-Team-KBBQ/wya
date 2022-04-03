@@ -7,7 +7,7 @@ import nodemailer from 'nodemailer';
 import { v4 as uuid } from 'uuid';
 
 import { Email, UserId, EVENT_PLAN_ROLE } from '../../../interfaces';
-import { makeApiError } from '../../../../lib/errors';
+import { ApiError, makeApiError } from '../../../../lib/errors';
 
 type Params = {
   name: string;
@@ -78,9 +78,9 @@ export const etlEventPlansCreate = async (
   }
 
   const patches = {
-    eventPlans: [] as { [key: string]: {} }[],
-    eventPlansAvailabilities: [] as { [key: string]: {} }[],
-    usersEventPlans: [] as { [key: string]: {} }[],
+    eventPlans: [] as { [EventPlanId: string]: {} }[],
+    eventPlansAvailabilities: [] as { [UserId: string]: {} }[],
+    usersEventPlans: [] as { [EventPlanId: string]: {} }[],
   };
   try {
     await firebaseFirestore.runTransaction(async (transaction) => {
@@ -116,20 +116,22 @@ export const etlEventPlansCreate = async (
       }
 
       // Associate the event-plan to the host user
-      const hostUserEventPlanDocRef = firebaseFirestore.doc(
+      const hostUserEventPlansDocRef = firebaseFirestore.doc(
         `/users/${hostId}/event-plans/${eventPlanId}`
       );
-      const hostUserEventPlanDocPatch = {
+      const hostUserEventPlansDocPatch = {
         ...restOfParams,
         eventPlanId,
         role: EVENT_PLAN_ROLE.HOST,
       };
 
-      transaction.create(hostUserEventPlanDocRef, hostUserEventPlanDocPatch);
+      transaction.create(hostUserEventPlansDocRef, hostUserEventPlansDocPatch);
 
-      patches.usersEventPlans.push({ [hostId]: hostUserEventPlanDocPatch });
+      patches.usersEventPlans.push({
+        [eventPlanId]: hostUserEventPlansDocPatch,
+      });
 
-      // Associate the event-plan to the invitee user
+      // Associate the event-plan to the invitee users
       for (const userId of inviteesByUserId) {
         const userEventPlansDocRef = firebaseFirestore.doc(
           `/users/${userId}/event-plans/${eventPlanId}`
@@ -142,11 +144,14 @@ export const etlEventPlansCreate = async (
 
         transaction.create(userEventPlansDocRef, userEventPlansDocPatch);
 
-        patches.usersEventPlans.push({ [userId]: userEventPlansDocPatch });
+        patches.usersEventPlans.push({ [eventPlanId]: userEventPlansDocPatch });
       }
     });
   } catch (err: any) {
     debug(err);
+    if (err instanceof ApiError) {
+      throw err;
+    }
     throw makeApiError(500, 'Unable to create event-plan', err);
   } finally {
     debug(patches);

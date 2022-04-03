@@ -11,7 +11,7 @@ import {
   TIME_FORMAT,
   UserId,
 } from '../../../interfaces';
-import { makeApiError } from '../../../../lib/errors';
+import { ApiError, makeApiError } from '../../../../lib/errors';
 
 type Params = {
   email: Email;
@@ -88,6 +88,9 @@ export const etlUsersCreate = async (
     });
   } catch (err: any) {
     debug(err);
+    if (err instanceof ApiError) {
+      throw err;
+    }
     throw makeApiError(500, 'Unable to create user document', err);
   }
 

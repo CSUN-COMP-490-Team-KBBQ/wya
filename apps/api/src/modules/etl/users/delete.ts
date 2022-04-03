@@ -5,7 +5,7 @@ import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
 import { UserId } from '../../../interfaces';
-import { makeApiError } from '../../../../lib/errors';
+import { ApiError, makeApiError } from '../../../../lib/errors';
 
 type Params = {
   uid: UserId;
@@ -42,6 +42,9 @@ export const etlUsersDelete = async (
     await firebaseFirestore.recursiveDelete(userDocumentRef);
   } catch (err: any) {
     debug(err);
+    if (err instanceof ApiError) {
+      throw err;
+    }
     throw makeApiError(500, 'Unable to delete user', err);
   }
 

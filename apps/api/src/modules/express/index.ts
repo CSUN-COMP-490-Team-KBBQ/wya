@@ -1,16 +1,14 @@
-import express from 'express';
-import cors from 'cors';
-import { json as jsonBodyParser } from 'body-parser';
+import { Router } from 'express';
 
-import usersRouter from './users';
-import eventPlansRouter from './event-plans';
+import { functions } from '../firebase';
 
-const app = express();
+const router = Router();
 
-app.use(cors());
-app.use(jsonBodyParser());
+router.post('/', async (req, res) => {
+  const logger = functions.logger;
 
-app.use('/users', usersRouter);
-app.use('/event-plans', eventPlansRouter);
+  logger.info(req.body);
+  res.status(200).json({ ...req.body });
+});
 
-export default app;
+export default router;
