@@ -46,13 +46,21 @@ export default function DashboardPage() {
   const { pending, userRecord } = useUserRecordContext();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentContent, setCurrentContent] = useState(content.DASHBOARD);
+  const [nav, setNav] = useState(navigation);
 
   const loadContent = (type: string) => {
-    navigation.forEach((item) =>
-      item.content === type ? (item.current = true) : (item.current = false)
+    let updatedNav: any = [];
+    nav.forEach((item) =>
+      updatedNav.push({
+        name: item.name,
+        icon: item.icon,
+        content: item.content,
+        current: item.content === type,
+      })
     );
 
     setCurrentContent(type);
+    setNav(updatedNav);
     setSidebarOpen(false);
   };
 
@@ -120,7 +128,7 @@ export default function DashboardPage() {
                   </div>
                   <nav aria-label="Sidebar" className="mt-5">
                     <div className="px-2 space-y-1">
-                      {navigation.map((item) => (
+                      {nav.map((item) => (
                         <button
                           key={item.name}
                           onClick={() => loadContent(item.content)}
@@ -192,7 +200,7 @@ export default function DashboardPage() {
                 </div>
                 <nav className="mt-5 flex-1" aria-label="Sidebar">
                   <div className="px-2 space-y-1">
-                    {navigation.map((item) => (
+                    {nav.map((item) => (
                       <button
                         key={item.name}
                         onClick={() => loadContent(item.content)}
