@@ -1,12 +1,4 @@
-/**
- *
- * FIX: rendering content on small screen -> maybe make a Link to render page or hide navbar in transition
- * FIX: setting state for navigation current field to reflect tab
- *
- *
- */
 import { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Dialog, Transition } from '@headlessui/react';
 import {
   HomeIcon,
@@ -55,8 +47,13 @@ export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentContent, setCurrentContent] = useState(content.DASHBOARD);
 
-  const loadSettingsContent = (type: string) => {
+  const loadContent = (type: string) => {
+    navigation.forEach((item) =>
+      item.content === type ? (item.current = true) : (item.current = false)
+    );
+
     setCurrentContent(type);
+    setSidebarOpen(false);
   };
 
   if (pending) {
@@ -126,7 +123,7 @@ export default function DashboardPage() {
                       {navigation.map((item) => (
                         <button
                           key={item.name}
-                          onClick={() => loadSettingsContent(item.content)}
+                          onClick={() => loadContent(item.content)}
                           className={classNames(
                             item.current
                               ? 'bg-gray-100 text-gray-900'
@@ -150,7 +147,10 @@ export default function DashboardPage() {
                   </nav>
                 </div>
                 <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-                  <button className="flex-shrink-0 group block no-underline">
+                  <button
+                    onClick={() => loadContent(content.SETTINGS)}
+                    className="flex-shrink-0 group block no-underline"
+                  >
                     <div className="flex items-center">
                       <div className="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-200">
                         {/* can add image tag for profile pics in future work */}
@@ -195,7 +195,7 @@ export default function DashboardPage() {
                     {navigation.map((item) => (
                       <button
                         key={item.name}
-                        onClick={() => loadSettingsContent(item.content)}
+                        onClick={() => loadContent(item.content)}
                         className={classNames(
                           item.current
                             ? 'bg-gray-200 text-gray-900'
@@ -220,7 +220,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
                 <button
-                  onClick={() => loadSettingsContent(content.SETTINGS)}
+                  onClick={() => loadContent(content.SETTINGS)}
                   className="flex-shrink-0 w-full group block no-underline"
                 >
                   <div className="flex items-center">
