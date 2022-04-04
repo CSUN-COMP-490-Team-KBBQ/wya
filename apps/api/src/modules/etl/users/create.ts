@@ -74,9 +74,9 @@ export const etlUsersCreate = async (
       const userDocumentRef = firebaseFirestore.doc(`/users/${uid}`);
       await transaction.create(userDocumentRef, userDocumentPatch);
 
-      // Create the user availabilites heat-map
+      // Create the user availabilites schedule-selector
       const userAvailabilityHeatMapDocRef = firebaseFirestore.doc(
-        `/users/${uid}/availabilities/heat-map`
+        `/users/${uid}/availabilities/schedule-selector`
       );
       await transaction.create(
         userAvailabilityHeatMapDocRef,

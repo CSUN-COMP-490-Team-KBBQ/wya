@@ -96,6 +96,22 @@ export const etlEventPlansCreate = async (
       transaction.create(eventPlanDocRef, eventPlanDocPatch);
       patches.eventPlans.push({ [eventPlanId]: eventPlanDocPatch });
 
+      // Create event-plan availabilites heat-map doc
+      const eventPlanAvailabilitesHeatMapDocRef = firebaseFirestore.doc(
+        `/event-plans/${eventPlanId}/availabilities/heat-map`
+      );
+      const eventPlanAvailabilitesHeatMapDocPatch = {
+        data: {},
+      };
+
+      transaction.create(
+        eventPlanAvailabilitesHeatMapDocRef,
+        eventPlanAvailabilitesHeatMapDocPatch
+      );
+      patches.eventPlansAvailabilities.push({
+        'heat-map': eventPlanAvailabilitesHeatMapDocPatch,
+      });
+
       // Create event-plan availabilities doc for each associated user
       for (const userId of [...inviteesByUserId, hostId]) {
         const eventPlanAvailabilitiesDocRef = firebaseFirestore.doc(

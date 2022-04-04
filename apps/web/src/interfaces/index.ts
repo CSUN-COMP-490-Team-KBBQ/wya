@@ -1,25 +1,32 @@
 /**
- * RO3: Copying from wya-api/src/interfaces until we can find a better way to
- * share schema / type information bc current implementation is causing a lot
- * of problems
+ * RO3: Copied in web/src/interfaces
  */
 export const TIME_FORMAT = {
   TWELVE_HOURS: 'hh:mm a',
   TWENTY_FOUR_HOURS: 'HH:mm',
 };
 
+export enum DOCUMENT_TYPE {
+  USER = 'USER',
+  EVENT_PLAN = 'EVENT_PLAN',
+  EVENT = 'EVENT',
+}
+
 /** users */
+export type UserId = string;
+export type Email = string;
+
 export type User = {
-  uid: string;
-  email: string;
+  uid: UserId;
+  email: Email;
 };
 
 export type UserDocument = {
-  email: string;
+  email: Email;
   firstName: string;
   lastName: string;
   timeFormat: string;
-  uid: string;
+  uid: UserId;
 };
 
 export type UserAvailabilityHeatMapDocument = {
@@ -47,7 +54,10 @@ export type UserEventDocument = {
 };
 
 /** event-plans */
-export type EventPlanRole = 'INVITEE' | 'HOST';
+export enum EVENT_PLAN_ROLE {
+  HOST = 'HOST',
+  INVITEE = 'INVITEE',
+}
 export type EventPlanInfo = {
   name: string;
   description: string;
@@ -55,7 +65,7 @@ export type EventPlanInfo = {
   dailyEndTime: string;
   startDate: string;
   endDate: string;
-  hostId: string;
+  hostId: UserId;
 };
 
 export type EventPlanId = string;
@@ -66,8 +76,8 @@ export type EventPlanDocument = {
   dailyEndTime: string;
   startDate: string;
   endDate: string;
-  hostId: string;
-  invitees: string[];
+  hostId: UserId;
+  invitees: UserId[] | Email[];
   eventPlanId: EventPlanId;
 };
 
@@ -80,11 +90,14 @@ export type EventPlanAvailabilityDocument = {
 };
 
 /** events */
-export type EventRole = 'GUEST' | 'HOST';
+export enum EVENT_ROLE {
+  GUEST = 'GUEST',
+  HOST = 'HOST',
+}
 export type EventInfo = {
   name: string;
   description: string;
-  hostId: string;
+  hostId: UserId;
   // Date times
   day: string;
   startDate: string;
@@ -97,7 +110,7 @@ export type EventId = string;
 export type EventDocument = {
   name: string;
   description: string;
-  hostId: string;
+  hostId: UserId;
   // Date times
   day: string;
   startDate: string;
@@ -107,11 +120,16 @@ export type EventDocument = {
   eventId: EventId;
 };
 
-export type EventGuestStatus = 'ACCEPTED' | 'DECLINED' | 'PENDING';
+export enum EVENT_GUEST_STATUS {
+  ACCEPTED = 'ACCEPTED',
+  DECLINED = 'DECLINED',
+  PENDING = 'PENDING',
+}
 export type EventGuest = {
-  uid: string;
-  email: string;
-  status: EventGuestStatus;
+  uid: UserId;
+  email: Email;
+  status: EVENT_GUEST_STATUS;
 };
-
 /** End of RO3 */
+
+// web specific interfaces below
