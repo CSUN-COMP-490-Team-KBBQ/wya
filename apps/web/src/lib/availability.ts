@@ -174,7 +174,7 @@ export const appendUserAvailabilityToGroupEventPlanAvailability = (
   userAvailability: Array<Date>,
   uid: string
 ): EventDataAvailability => {
-  removeInvalidDatesFromUserAvailability(userAvailability);
+  userAvailability = removeInvalidDatesFromUserAvailability(userAvailability);
 
   // removes uid from each cell to start from scratch
   for (let i = 0; i < yTimes.length; i += 1) {
@@ -230,8 +230,6 @@ export const createEventPlanAvailability = (
     tempDateTimeStamp.add(1, 'days');
   }
   days = JSON.parse(JSON.stringify(days));
-
-  console.log(days);
 
   // creating availability map
   while (tempTimeTimeStamp.isSameOrBefore(endTimeTimeStamp)) {
