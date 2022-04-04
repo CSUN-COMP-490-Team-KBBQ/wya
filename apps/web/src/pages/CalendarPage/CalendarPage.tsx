@@ -134,7 +134,7 @@ export default function CalendarPage(): JSX.Element {
       const { uid } = userRecord;
 
       getDocSnapshot$(
-        `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_SCHEDULE_SELECTOR_AVAILABILITY}`,
+        `/users/${uid}/availabilities/schedule-selector`,
         {
           next: (scheduleSelectorDocSnapshot) => {
             if (scheduleSelectorDocSnapshot.exists()) {
@@ -154,7 +154,7 @@ export default function CalendarPage(): JSX.Element {
 
       // begin geting eventPlanId from documentId from users/uid/event-plans/eventPlanId
       getAllSubCollDocsSnapshot$(
-        `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_EVENT_PLANS}`,
+        `/users/${uid}/event-plans`,
         {
           next: (eventPlansSnapshot) => {
             if (!eventPlansSnapshot.empty) {
@@ -165,7 +165,7 @@ export default function CalendarPage(): JSX.Element {
               eventPlansSnapshot.forEach((doc) => {
                 // now get document object by using eventPlanId
                 getDocSnapshot$(
-                  `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_EVENT_PLANS}/${doc.id}`,
+                  `/users/${uid}/event-plans/${doc.id}`,
                   {
                     next: (eventPlanDocSnapshot) => {
                       if (eventPlanDocSnapshot.exists()) {

@@ -45,17 +45,17 @@ export default function EventPlanPage({
       const { uid, timeFormat } = userRecord;
 
       getDocSnapshot$(
-        `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}`,
+        `/event-plans/${match.params.id}`,
         {
           next: (eventPlanSnapshot) => {
             const eventPlan = eventPlanSnapshot.data() as EventPlanDocument;
 
             getSubCollDocSnapshot$(
-              `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${uid}`,
+              `/event-plans/${match.params.id}/availabilities/${uid}`,
               {
                 next: (eventPlanAvailabilitiesSnapshot) => {
                   getDocSnapshot$(
-                    `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_SCHEDULE_SELECTOR_AVAILABILITY}`,
+                    `/users/${uid}/availabilities/schedule-selector`,
                     {
                       next: (scheduleSelectorDocSnapshot) => {
                         const { data: scheduleSelectorData } =

@@ -146,7 +146,7 @@ export const getAllSubCollDocsSnapshot$ = (
 
 export const updateCalendarAvailability = (data: number[], uid: string) => {
   const userHeatMapAvailabilityDocRef = getDocRef(
-    `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_SCHEDULE_SELECTOR_AVAILABILITY}/`
+    `/users}/${uid}/schedule-selector/`
   );
 
   return updateDoc(userHeatMapAvailabilityDocRef, {
@@ -165,7 +165,7 @@ export const updateEventAvailability = (
   userId: string
 ): Promise<void> => {
   const eventPlanAvailabilityDocRef = getDocRef(
-    `/${process.env.REACT_APP_EVENT_PLANS}/${eventPlanId}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${userId}`
+    `/event-plans/${eventPlanId}/availabilities/${userId}`
   );
   return updateDoc(eventPlanAvailabilityDocRef, {
     data,
