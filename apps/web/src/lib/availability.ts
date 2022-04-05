@@ -189,7 +189,6 @@ export const appendUserAvailabilityToGroupEventPlanAvailability = (
   // removes uid from each cell to start from scratch
   for (let i = 0; i < yTimes.length; i += 1) {
     for (let j = 0; j < xDays.length; j += 1) {
-      console.log(eventPlanAvailabilityDocument);
       if (
         eventPlanAvailabilityDocument.data[yTimes[i]][xDays[j]].includes(uid)
       ) {
