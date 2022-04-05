@@ -106,23 +106,34 @@ export const createScheduleSelectorData = (
 
 export const createHeatMapDataAndScheduleSelectorData = (
   eventPlanData: EventPlanDocument,
-  eventPlanAvailabilityDocument: EventPlanAvailabilityDocument,
+  userEventPlanAvailability: EventPlanAvailabilityDocument,
+  mergedEventPlanAvailabilitiesDocument: EventPlanAvailabilityDocument,
   userAvailability: number[],
   timeFormat: string
 ): [EventPlanAvailabilityDocument, HeatMapData, ScheduleSelectorData] => {
-  const createdEventPlanAvailabilityDocument: EventPlanAvailabilityDocument =
-    Object.keys(eventPlanAvailabilityDocument.data).length === 0
+  const createdUserPlanAvailabilityDocument: EventPlanAvailabilityDocument =
+    Object.keys(userEventPlanAvailability.data).length === 0
       ? createEventPlanAvailability(
           eventPlanData.startDate,
           eventPlanData.endDate,
           eventPlanData.dailyStartTime,
           eventPlanData.dailyEndTime
         )
-      : { ...eventPlanAvailabilityDocument };
+      : { ...userEventPlanAvailability };
+
+  const createdMergedEventPlanAvailabilitiesDocument: EventPlanAvailabilityDocument =
+    Object.keys(mergedEventPlanAvailabilitiesDocument.data).length === 0
+      ? createEventPlanAvailability(
+          eventPlanData.startDate,
+          eventPlanData.endDate,
+          eventPlanData.dailyStartTime,
+          eventPlanData.dailyEndTime
+        )
+      : { ...mergedEventPlanAvailabilitiesDocument };
 
   const sortedYTimesLabelsArray: string[] = sortObjectByKeys<{
     [time: string]: { [date: string]: string[] };
-  }>(createdEventPlanAvailabilityDocument.data);
+  }>(createdUserPlanAvailabilityDocument.data);
 
   const formattedYTimesTo12Or24Hour = formatYTimesTo12Or24Hour(
     timeFormat,
@@ -130,7 +141,7 @@ export const createHeatMapDataAndScheduleSelectorData = (
   );
   const sortedXDaysLabelsArray: string[] = sortObjectByKeys<{
     [date: string]: string[];
-  }>(createdEventPlanAvailabilityDocument.data[sortedYTimesLabelsArray[0]]);
+  }>(createdUserPlanAvailabilityDocument.data[sortedYTimesLabelsArray[0]]);
   const formattedXDaysToSlicedDateString = formatXDaysToSlicedDateString(
     sortedXDaysLabelsArray
   );
@@ -142,7 +153,7 @@ export const createHeatMapDataAndScheduleSelectorData = (
     heatMap2dArray: createHeatMapAvailabilityDataArray(
       sortedYTimesLabelsArray,
       sortedXDaysLabelsArray,
-      { ...createdEventPlanAvailabilityDocument }
+      { ...createdMergedEventPlanAvailabilitiesDocument }
     ),
   };
 
@@ -160,7 +171,7 @@ export const createHeatMapDataAndScheduleSelectorData = (
   };
 
   return [
-    createdEventPlanAvailabilityDocument,
+    createdUserPlanAvailabilityDocument,
     heatMapData,
     scheduleSelectorData,
   ];
@@ -178,6 +189,7 @@ export const appendUserAvailabilityToGroupEventPlanAvailability = (
   // removes uid from each cell to start from scratch
   for (let i = 0; i < yTimes.length; i += 1) {
     for (let j = 0; j < xDays.length; j += 1) {
+      console.log(eventPlanAvailabilityDocument);
       if (
         eventPlanAvailabilityDocument.data[yTimes[i]][xDays[j]].includes(uid)
       ) {
@@ -260,6 +272,11 @@ export const convertUserAvailabilityDateArrayToTimestampArray = (
 export const mergeEventPlanAvailabilities = (
   availabilities: EventPlanAvailabilityDocument[]
 ): EventPlanAvailabilityDocument => {
+  function tempCustom(objValue: any, srcValue: any) {
+    if (_.isArray(objValue)) {
+      return objValue.concat(srcValue);
+    }
+  }
   const len = availabilities.length;
   let mergedAvailabilities: EventPlanAvailabilityDocument = { data: {} };
 
@@ -268,7 +285,7 @@ export const mergeEventPlanAvailabilities = (
     const userAvailabilityTimes = Object.keys(availabilities[i].data);
     // if a user's availability is not empty
     if (userAvailabilityTimes.length !== 0) {
-      _.merge(mergedAvailabilities, availabilities[i]);
+      _.mergeWith(mergedAvailabilities, availabilities[i], tempCustom);
     }
   }
 
