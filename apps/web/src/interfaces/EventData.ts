@@ -1,4 +1,4 @@
-import { EventPlanAvailabilityDocument } from '../interfaces/index';
+import { EventPlanAvailabilityDocument } from '../interfaces';
 
 type EventPlanId = string;
 type UserId = string;

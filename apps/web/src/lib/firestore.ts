@@ -12,18 +12,19 @@ import {
   collection,
   QuerySnapshot,
 } from 'firebase/firestore';
-import { EventPlanInfo, EventInfo, UserDocument } from 'wya-api/src/interfaces';
 
 import app from './firebase';
-import EventData from '../interfaces/EventData';
 
+import EventData from '../interfaces/EventData';
 import {
+  EventPlanInfo,
+  EventInfo,
+  UserDocument,
   EventPlanAvailabilityDocument,
   EventPlanDocument,
-} from '../interfaces/index';
-
-type Email = string;
-type UserId = string;
+  Email,
+  UserId,
+} from '../interfaces';
 
 const firestore = getFirestore(app);
 

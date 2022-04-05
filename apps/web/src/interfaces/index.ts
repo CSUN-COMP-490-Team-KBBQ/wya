@@ -150,7 +150,7 @@ export interface HeatMapData {
 }
 
 export interface ScheduleSelectorData {
-  scheduleData: Array<Date>;
+  scheduleData: Date[];
   xDaysScheduleSelectorLabelsArray: string[];
   xDaysFormattedToSlicedDateString: string[];
   yTimesScheduleSelectorLabelsArray: string[];

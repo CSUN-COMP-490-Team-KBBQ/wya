@@ -7,7 +7,7 @@ import {
   EventPlanAvailabilityDocument,
   HeatMapData,
   ScheduleSelectorData,
-} from '../interfaces/index';
+} from '../interfaces';
 
 export const sortObjectByKeys = <T>(item: T): string[] => {
   return Object.keys(item).sort();
@@ -46,7 +46,7 @@ export const createHeatMapAvailabilityDataArray = (
 
 export const createCalendarAvailabilityDataArray = (
   userAvailability: Array<number>
-): Array<Date> => {
+): Date[] => {
   const scheduleData = userAvailability.map((value) => new Date(value));
 
   return scheduleData;
@@ -56,8 +56,8 @@ export const createScheduleSelectorPreloadDataArray = (
   yTimes: string[],
   xDays: string[],
   userAvailability: Array<number>
-): Array<Date> => {
-  const scheduleData: Array<Date> = [];
+): Date[] => {
+  const scheduleData: Date[] = [];
   const convertedDate = userAvailability.map((value) => new Date(value));
   const scheduleDataDay = convertedDate.map((value) =>
     value.toDateString().slice(0, 3)
@@ -170,7 +170,7 @@ export const appendUserAvailabilityToGroupEventPlanAvailability = (
   xDays: string[],
   yTimes: string[],
   eventPlanAvailabilityDocument: EventPlanAvailabilityDocument,
-  userAvailability: Array<Date>,
+  userAvailability: Date[],
   uid: string
 ): EventPlanAvailabilityDocument => {
   userAvailability = removeInvalidDatesFromUserAvailability(userAvailability);

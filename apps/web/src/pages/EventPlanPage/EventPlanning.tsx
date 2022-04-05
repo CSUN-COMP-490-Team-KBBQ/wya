@@ -3,18 +3,17 @@ import { Row, Col, Container, Modal, Button } from 'react-bootstrap';
 
 import AvailabilityHeatMap from '../../components/AvailabilityHeatMap/AvailabilityHeatMap';
 import ConfirmEventModal from '../../components/ConfirmEventModal/ConfirmEventModal';
+import AvailabilityScheduleSelector from '../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
+
 import { appendUserAvailabilityToGroupEventPlanAvailability } from '../../lib/availability';
 import { updateEventAvailability } from '../../lib/firestore';
-import AvailabilityScheduleSelector from '../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
 import { transformStartTime, transformEndTime } from '../../lib/eventHelpers';
 import {
   EventPlanAvailabilityDocument,
-  HeatMapData,
-} from '../../interfaces/index';
-import {
   EventPlanDocument,
+  HeatMapData,
   ScheduleSelectorData,
-} from '../../interfaces/index';
+} from '../../interfaces';
 
 import './EventPlanPage.css';
 
@@ -44,12 +43,12 @@ function AddAvailabilityModal({
   } = scheduleSelectorData;
 
   const [userAvailabilityData, setUserAvailabilityData] =
-    React.useState<Array<Date>>(scheduleData);
+    React.useState<Date[]>(scheduleData);
 
   const startTime = transformStartTime(sortedYData[0]);
   const endTime = transformEndTime(sortedYData[sortedYData.length - 1]);
 
-  const onClickScheduleSelectorHandle = (newSchedule: Array<Date>) => {
+  const onClickScheduleSelectorHandle = (newSchedule: Date[]) => {
     setUserAvailabilityData(newSchedule);
   };
 

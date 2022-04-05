@@ -44,9 +44,9 @@ function UpdateAvailabilityModal({
   const { scheduleData, timeFormat: is24Hour } = scheduleSelectorData;
 
   const [userAvailabilityData, setUserAvailabilityData] =
-    React.useState<Array<Date>>(scheduleData);
+    React.useState<Date[]>(scheduleData);
 
-  const onClickScheduleSelectorHandle = (newSchedule: Array<Date>) => {
+  const onClickScheduleSelectorHandle = (newSchedule: Date[]) => {
     setUserAvailabilityData(newSchedule);
   };
 

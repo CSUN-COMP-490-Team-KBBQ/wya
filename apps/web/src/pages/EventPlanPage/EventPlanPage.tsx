@@ -1,9 +1,6 @@
 import React from 'react';
 import Page from '../../components/Page/Page';
-import {
-  EventPlanAvailabilityDocument,
-  HeatMapData,
-} from '../../interfaces/index';
+
 import {
   getAllSubCollDocsSnapshot$,
   getDocSnapshot$,
@@ -12,14 +9,16 @@ import {
   createHeatMapDataAndScheduleSelectorData,
   mergeEventPlanAvailabilities,
 } from '../../lib/availability';
-import { useUserRecordContext } from '../../contexts/UserRecordContext';
-import EventPlanning from './EventPlanning';
-
 import { isUserAHost } from '../../lib/eventHelpers';
 import {
   EventPlanDocument,
+  EventPlanAvailabilityDocument,
+  HeatMapData,
   ScheduleSelectorData,
-} from '../../interfaces/index';
+} from '../../interfaces';
+
+import { useUserRecordContext } from '../../contexts/UserRecordContext';
+import EventPlanning from './EventPlanning';
 
 import './EventPlanPage.css';
 
