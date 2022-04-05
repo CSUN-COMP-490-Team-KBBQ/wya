@@ -7,12 +7,13 @@ import {
   createHeatMapAvailabilityDataArray,
   sortObjectByKeys,
 } from '../../lib/availability';
+import { EventPlanAvailabilityDocument } from '../../interfaces';
 
-const FAKE_AVAILABILITY = {
+const FAKE_AVAILABILITY: EventPlanAvailabilityDocument = {
   data: {
     '04:15': {
-      '1635058800000': [],
       '1634972400000': [],
+      '1635058800000': [],
     },
     '04:45': {
       '1634972400000': [],
@@ -27,10 +28,18 @@ const FAKE_AVAILABILITY = {
       '1635058800000': ['user1', 'user2'],
     },
   },
+} as {
+  data: {
+    [time: string]: { [date: string]: string[] };
+  };
 };
 
-const FAKE_YTIMES = sortObjectByKeys(FAKE_AVAILABILITY);
-const FAKE_XDAYS = sortObjectByKeys(FAKE_AVAILABILITY.data['04:00']);
+const FAKE_YTIMES: string[] = sortObjectByKeys<{
+  [time: string]: { [date: string]: string[] };
+}>(FAKE_AVAILABILITY.data);
+const FAKE_XDAYS: string[] = sortObjectByKeys<{ [date: string]: string[] }>(
+  FAKE_AVAILABILITY.data['04:00']
+);
 
 const FAKE_HEATMAPDATA = {
   yData: FAKE_YTIMES,
