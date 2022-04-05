@@ -153,7 +153,7 @@ export const getAllSubCollDocsSnapshot$ = (
 
 export const updateCalendarAvailability = (data: number[], uid: string) => {
   const userHeatMapAvailabilityDocRef = getDocRef(
-    `/users}/${uid}/schedule-selector/`
+    `/users/${uid}/availabilities/schedule-selector/`
   );
 
   return updateDoc(userHeatMapAvailabilityDocRef, {
