@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import moment from 'moment';
 
 import {
@@ -256,15 +257,20 @@ export const convertUserAvailabilityDateArrayToTimestampArray = (
   return userAvailabilityData.map((value) => value.getTime());
 };
 
-// export const createAndAppendAvailability = (
-//   eventDataWithoutAvail: EventPlanDocument
-// ): EventPlanDocument => {
-//   const availability = createEventPlanAvailability(
-//     eventDataWithoutAvail.startDate,
-//     eventDataWithoutAvail.endDate,
-//     eventDataWithoutAvail.dailyStartTime,
-//     eventDataWithoutAvail.dailyEndTime
-//   );
+export const mergeEventPlanAvailabilities = (
+  availabilities: EventPlanAvailabilityDocument[]
+): EventPlanAvailabilityDocument => {
+  const len = availabilities.length;
+  let mergedAvailabilities: EventPlanAvailabilityDocument = { data: {} };
 
-//   return { ...eventDataWithoutAvail, availability };
-// };
+  // iterate through each user's event-plan availability
+  for (let i = 0; i < len; i++) {
+    const userAvailabilityTimes = Object.keys(availabilities[i].data);
+    // if a user's availability is not empty
+    if (userAvailabilityTimes.length !== 0) {
+      _.merge(mergedAvailabilities, availabilities[i]);
+    }
+  }
+
+  return mergedAvailabilities;
+};

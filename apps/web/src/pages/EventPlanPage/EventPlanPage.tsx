@@ -4,8 +4,14 @@ import {
   EventPlanAvailabilityDocument,
   HeatMapData,
 } from '../../interfaces/index';
-import { getDocSnapshot$, getSubCollDocSnapshot$ } from '../../lib/firestore';
-import { createHeatMapDataAndScheduleSelectorData } from '../../lib/availability';
+import {
+  getAllSubCollDocsSnapshot$,
+  getDocSnapshot$,
+} from '../../lib/firestore';
+import {
+  createHeatMapDataAndScheduleSelectorData,
+  mergeEventPlanAvailabilities,
+} from '../../lib/availability';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import EventPlanning from './EventPlanning';
 
@@ -51,42 +57,60 @@ export default function EventPlanPage({
       getDocSnapshot$(`/event-plans/${match.params.id}`, {
         next: (eventPlanSnapshot) => {
           const eventPlan = eventPlanSnapshot.data() as EventPlanDocument;
+          eventPlanData.current = eventPlan;
 
-          getSubCollDocSnapshot$(
-            `/event-plans/${match.params.id}/availabilities/${uid}`,
+          getAllSubCollDocsSnapshot$(
+            `/event-plans/${match.params.id}/availabilities`,
             {
               next: (eventPlanAvailabilitiesSnapshot) => {
-                getDocSnapshot$(
-                  `/users/${uid}/availabilities/schedule-selector`,
-                  {
-                    next: (scheduleSelectorDocSnapshot) => {
-                      const { data: scheduleSelectorData } =
-                        scheduleSelectorDocSnapshot.data() as {
-                          data: number[];
-                        };
+                if (!eventPlanAvailabilitiesSnapshot.empty) {
+                  let eventPlanAvailabilities: EventPlanAvailabilityDocument[] =
+                    [{ data: {} }];
+                  eventPlanAvailabilitiesSnapshot.forEach((doc) => {
+                    getDocSnapshot$(
+                      `event-plans/${match.params.id}/availabilities/${doc.id}`,
+                      {
+                        next: (eventPlanAvailabilitiesDocSnapshot) => {
+                          if (eventPlanAvailabilitiesDocSnapshot.exists()) {
+                            eventPlanAvailabilities.push(
+                              eventPlanAvailabilitiesDocSnapshot.data() as EventPlanAvailabilityDocument
+                            );
+                          }
+                        },
+                      }
+                    );
+                  });
 
-                      const eventPlanAvailabilitiesDocument =
-                        eventPlanAvailabilitiesSnapshot.data() as EventPlanAvailabilityDocument;
-                      eventPlanData.current = eventPlan;
+                  getDocSnapshot$(
+                    `/users/${uid}/availabilities/schedule-selector`,
+                    {
+                      next: (scheduleSelectorDocSnapshot) => {
+                        const { data: scheduleSelectorData } =
+                          scheduleSelectorDocSnapshot.data() as {
+                            data: number[];
+                          };
 
-                      const [
-                        createdEventAvailability,
-                        createdHeatMapData,
-                        createdScheduleSelectorData,
-                      ] = createHeatMapDataAndScheduleSelectorData(
-                        eventPlan,
-                        // TODO: Extract event availabilities from every user
-                        eventPlanAvailabilitiesDocument,
-                        scheduleSelectorData ?? [],
-                        timeFormat
-                      );
+                        const mergedEventPlanAvailabilities: EventPlanAvailabilityDocument =
+                          mergeEventPlanAvailabilities(eventPlanAvailabilities);
 
-                      setEventAvailability(createdEventAvailability);
-                      setHeatMapData(createdHeatMapData);
-                      setScheduleSelectorData(createdScheduleSelectorData);
-                    },
-                  }
-                );
+                        const [
+                          createdEventAvailability,
+                          createdHeatMapData,
+                          createdScheduleSelectorData,
+                        ] = createHeatMapDataAndScheduleSelectorData(
+                          eventPlan,
+                          mergedEventPlanAvailabilities,
+                          scheduleSelectorData ?? [],
+                          timeFormat
+                        );
+
+                        setEventAvailability(createdEventAvailability);
+                        setHeatMapData(createdHeatMapData);
+                        setScheduleSelectorData(createdScheduleSelectorData);
+                      },
+                    }
+                  );
+                }
               },
             }
           );
