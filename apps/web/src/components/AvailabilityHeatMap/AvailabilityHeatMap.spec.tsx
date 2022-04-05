@@ -9,26 +9,28 @@ import {
 } from '../../lib/availability';
 
 const FAKE_AVAILABILITY = {
-  '04:15': {
-    '1635058800000': [],
-    '1634972400000': [],
-  },
-  '04:45': {
-    '1634972400000': [],
-    '1635058800000': ['user3'],
-  },
-  '04:30': {
-    '1634972400000': [],
-    '1635058800000': ['user3'],
-  },
-  '04:00': {
-    '1634972400000': ['user1'],
-    '1635058800000': ['user1', 'user2'],
+  data: {
+    '04:15': {
+      '1635058800000': [],
+      '1634972400000': [],
+    },
+    '04:45': {
+      '1634972400000': [],
+      '1635058800000': ['user3'],
+    },
+    '04:30': {
+      '1634972400000': [],
+      '1635058800000': ['user3'],
+    },
+    '04:00': {
+      '1634972400000': ['user1'],
+      '1635058800000': ['user1', 'user2'],
+    },
   },
 };
 
 const FAKE_YTIMES = sortObjectByKeys(FAKE_AVAILABILITY);
-const FAKE_XDAYS = sortObjectByKeys(FAKE_AVAILABILITY['04:00']);
+const FAKE_XDAYS = sortObjectByKeys(FAKE_AVAILABILITY.data['04:00']);
 
 const FAKE_HEATMAPDATA = {
   yData: FAKE_YTIMES,

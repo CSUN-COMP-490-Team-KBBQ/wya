@@ -15,7 +15,12 @@ import {
 import { EventPlanInfo, EventInfo, UserDocument } from 'wya-api/src/interfaces';
 
 import app from './firebase';
-import EventData, { EventDataAvailability } from '../interfaces/EventData';
+import EventData from '../interfaces/EventData';
+
+import {
+  EventPlanAvailabilityDocument,
+  EventPlanDocument,
+} from '../interfaces/index';
 
 type Email = string;
 type UserId = string;
@@ -89,13 +94,15 @@ export const createEventFinalized = (
   });
 };
 
-export const getEventData = async (eventId: string): Promise<EventData> => {
+export const getEventData = async (
+  eventId: string
+): Promise<EventPlanDocument> => {
   const eventDocRef = getDocRef(`/events/${eventId}`);
-  return (await getDoc(eventDocRef)).data() as EventData;
+  return (await getDoc(eventDocRef)).data() as EventPlanDocument;
 };
 
 export const updateEvent = async (event: EventData): Promise<void> => {
-  const eventDocRef = getDocRef(`/events/${event.eventId}`);
+  const eventDocRef = getDocRef(`/events/${event.eventPlanId}`);
   return updateDoc(eventDocRef, { ...event });
 };
 
@@ -160,16 +167,14 @@ export const updateUserTimeFormat = (uid: UserId, timeFormat: string) => {
 };
 
 export const updateEventAvailability = (
-  data: EventDataAvailability,
+  data: EventPlanAvailabilityDocument,
   eventPlanId: string,
   userId: string
 ): Promise<void> => {
   const eventPlanAvailabilityDocRef = getDocRef(
     `/event-plans/${eventPlanId}/availabilities/${userId}`
   );
-  return updateDoc(eventPlanAvailabilityDocRef, {
-    data,
-  });
+  return updateDoc(eventPlanAvailabilityDocRef, { ...data });
 };
 
 export default firestore;

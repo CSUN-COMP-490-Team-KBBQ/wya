@@ -4,7 +4,7 @@ import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
 
-import HeatMapData from '../../interfaces/HeatMapData';
+import { HeatMapData } from '../../interfaces/index';
 import { EventInfo, EventPlanDocument } from '../../interfaces';
 import { createEventFinalized } from '../../lib/firestore';
 import { convertStringArrayToObjectWithValueAndLabel } from '../../lib/eventHelpers';
