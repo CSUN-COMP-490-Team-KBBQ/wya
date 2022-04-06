@@ -1,23 +1,27 @@
 import React from 'react';
 import { Row, Col, Container, Modal, Button } from 'react-bootstrap';
+
 import AvailabilityHeatMap from '../../components/AvailabilityHeatMap/AvailabilityHeatMap';
-import HeatMapData from '../../interfaces/HeatMapData';
-import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
 import ConfirmEventModal from '../../components/ConfirmEventModal/ConfirmEventModal';
-import { appendUserAvailabilityToGroupEventPlanAvailability } from '../../lib/availability';
-import { updateEventAvailability } from '../../lib/firestore';
 import AvailabilityScheduleSelector from '../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
 
-import './EventPlanPage.css';
+import { appendUserAvailabilityToGroupEventPlanAvailability } from '../../lib/availability';
+import { updateEventAvailability } from '../../lib/firestore';
 import { transformStartTime, transformEndTime } from '../../lib/eventHelpers';
-import { EventPlanDocument } from '../../../../../packages/wya-api/src/interfaces';
-import { EventDataAvailability } from '../../interfaces/EventData';
+import {
+  EventPlanAvailabilityDocument,
+  EventPlanDocument,
+  HeatMapData,
+  ScheduleSelectorData,
+} from '../../interfaces';
+
+import './EventPlanPage.css';
 
 type AddAvailabilityModalProps = {
   scheduleSelectorData: ScheduleSelectorData;
   show: boolean;
   onHide: () => void;
-  eventPlanAvailability: EventDataAvailability;
+  eventPlanAvailability: EventPlanAvailabilityDocument;
   eventPlanId: string;
   uid: string;
 };
@@ -39,12 +43,12 @@ function AddAvailabilityModal({
   } = scheduleSelectorData;
 
   const [userAvailabilityData, setUserAvailabilityData] =
-    React.useState<Array<Date>>(scheduleData);
+    React.useState<Date[]>(scheduleData);
 
   const startTime = transformStartTime(sortedYData[0]);
   const endTime = transformEndTime(sortedYData[sortedYData.length - 1]);
 
-  const onClickScheduleSelectorHandle = (newSchedule: Array<Date>) => {
+  const onClickScheduleSelectorHandle = (newSchedule: Date[]) => {
     setUserAvailabilityData(newSchedule);
   };
 
@@ -54,7 +58,7 @@ function AddAvailabilityModal({
   };
 
   const onSubmitHandler = () => {
-    const newEventPlanAvailability: EventDataAvailability =
+    const newEventPlanAvailability: EventPlanAvailabilityDocument =
       appendUserAvailabilityToGroupEventPlanAvailability(
         sortedXData,
         sortedYData,
@@ -108,7 +112,7 @@ function AddAvailabilityModal({
 interface EventPlanningProps {
   userId: string;
   eventPlanData: EventPlanDocument;
-  eventPlanAvailability: EventDataAvailability;
+  eventPlanAvailability: EventPlanAvailabilityDocument;
   heatMapData: HeatMapData;
   scheduleSelector: ScheduleSelectorData;
   isHost: boolean;

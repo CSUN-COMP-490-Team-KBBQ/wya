@@ -3,17 +3,20 @@ import Modal from 'react-bootstrap/Modal';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
+import { useHistory } from 'react-router-dom';
 
-import HeatMapData from '../../interfaces/HeatMapData';
-import { createEventFinalized } from '../../lib/firestore';
-
-import './ConfirmEventModal.css';
-import { convertStringArrayToObjectWithValueAndLabel } from '../../lib/eventHelpers';
 import {
   EventInfo,
   EventPlanDocument,
-  UserId,
-} from '../../../../../packages/wya-api/src/interfaces';
+  EventPlanId,
+  HeatMapData,
+} from '../../interfaces';
+import { createEventFinalized } from '../../lib/firestore';
+import { convertStringArrayToObjectWithValueAndLabel } from '../../lib/eventHelpers';
+
+import './ConfirmEventModal.css';
+
+type UserId = string;
 
 interface ConfirmEventModalProps {
   eventPlanDocument: EventPlanDocument;
@@ -23,6 +26,7 @@ interface ConfirmEventModalProps {
 export default function ConfirmEventModal(
   props: ConfirmEventModalProps
 ): JSX.Element {
+  const history = useHistory();
   const [show, setShow] = React.useState<boolean>(false);
   const [displayError, setDisplayError] = React.useState<string>('');
   const { eventPlanDocument, heatMapData } = props;
@@ -59,28 +63,25 @@ export default function ConfirmEventModal(
   };
   const handleShow = () => setShow(true);
 
-  const onSubmitHandler = () => {
+  const onSubmitHandler = async () => {
     if (day && startTime && endTime) {
       if (startTime >= endTime) {
         setDisplayError('The start time must be less than the end time!');
       } else {
-        const {
-          eventPlanId,
-          dailyStartTime: startTime,
-          dailyEndTime: endTime,
-          ...restOfParams
-        } = eventPlanDocument;
+        const { eventPlanId, ...restOfParams } = eventPlanDocument;
 
-        const newEventData: EventInfo & {
+        const newEventData: EventInfo & { eventPlanId: EventPlanId } & {
           invitees: UserId[];
         } = {
-          startTime,
-          endTime,
           day,
+          eventPlanId,
           ...restOfParams,
         };
 
-        createEventFinalized(newEventData);
+        const eventId = await createEventFinalized(newEventData);
+
+        console.log('Event finalized: ', eventId);
+        history.push(`/events-finalized/${eventId}`);
       }
     } else {
       setDisplayError('All values need to be entered to update event!');

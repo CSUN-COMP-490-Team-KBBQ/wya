@@ -3,14 +3,14 @@ import { Alert, Button, ListGroup } from 'react-bootstrap';
 import { v4 as uuid } from 'uuid';
 
 import EventData from '../../../interfaces/EventData';
-import UserData from '../../../interfaces/User';
-import { updateEvent, updateUserRecord } from '../../../lib/firestore';
+import { UserDocument } from '../../../interfaces';
+import { updateEvent, updateUserDocument } from '../../../lib/firestore';
 
 import '../EventPage.css';
 
 interface EventFinalizedProps {
   event: EventData;
-  user: UserData;
+  user: UserDocument;
   isHost: boolean;
 }
 
@@ -19,9 +19,13 @@ export default function EventFinalized({
   user,
   isHost,
 }: EventFinalizedProps): JSX.Element {
-  const eventInUserRecord = user.events.find(
-    (e) => e.eventId === event.eventId
-  )!;
+  /**
+   * HACK just to get this thing to compile. In reality, we would need to fetch
+   * all events / event-plans associated with the user.
+   */
+  const eventInUserRecord = { accepted: false, declined: true };
+  /** End of HACK */
+
   const { accepted, declined } = eventInUserRecord;
 
   const handleAccept = () => {
@@ -29,14 +33,14 @@ export default function EventFinalized({
     eventInUserRecord.declined = false;
     event.rsvp.push(`${user.firstName} ${user.lastName}`);
 
-    updateUserRecord(user);
+    updateUserDocument(user);
     updateEvent(event);
   };
 
   const handleDecline = () => {
     eventInUserRecord.accepted = false;
     eventInUserRecord.declined = true;
-    updateUserRecord(user);
+    updateUserDocument(user);
   };
 
   return (

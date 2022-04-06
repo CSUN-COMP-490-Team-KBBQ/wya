@@ -1,6 +1,6 @@
-import { UserRecordDocument } from '../../../../packages/wya-api/src/interfaces';
+import { UserDocument } from '../interfaces';
 
-export const isUserAHost = (userRecord: UserRecordDocument | null): boolean => {
+export const isUserAHost = (userRecord: UserDocument | null): boolean => {
   if (!userRecord) return false;
   return true;
 };

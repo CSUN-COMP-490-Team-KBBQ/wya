@@ -4,7 +4,8 @@ import { Button, ListGroup } from 'react-bootstrap';
 import {
   EventDocument,
   EventGuest,
-} from '../../../../../packages/wya-api/src/interfaces';
+  EVENT_GUEST_STATUS,
+} from '../../interfaces';
 import {
   updateGuest,
   getDocSnapshot$,
@@ -28,58 +29,48 @@ export default function EventFinalizedPage({
   const { userRecord } = useUserRecordContext();
   const [eventData, setEventData] = React.useState<EventDocument>();
   const [eventGuests, setEventGuests] = React.useState<EventGuest[]>([]);
-  const [userIdxFromGuests, setUserIdxFromGuests] = React.useState<number>(-1);
 
   React.useEffect(() => {
     console.log('rendered - react use effect');
     if (userRecord) {
       // collect information from event which was finalized
-      getDocSnapshot$(`/${process.env.REACT_APP_EVENTS}/${match.params.id}`, {
+      getDocSnapshot$(`/events/${match.params.id}`, {
         next: (eventSnapshot) => {
           const event = eventSnapshot.data() as EventDocument;
 
           // collect guests from finalized event
-          getAllSubCollDocsSnapshot$(
-            `/${process.env.REACT_APP_EVENTS}/${match.params.id}/${process.env.REACT_APP_EVENT_GUESTS}`,
-            {
-              next: (eventGuestsSnapshot) => {
-                if (!eventGuestsSnapshot.empty) {
-                  let guests: EventGuest[] = [];
+          getAllSubCollDocsSnapshot$(`/events/${match.params.id}/guests`, {
+            next: (eventGuestsSnapshot) => {
+              if (!eventGuestsSnapshot.empty) {
+                let guests: EventGuest[] = [];
 
-                  eventGuestsSnapshot.forEach((doc) => {
-                    // get guest using document id
-                    getDocSnapshot$(
-                      `/${process.env.REACT_APP_EVENTS}/${match.params.id}/${process.env.REACT_APP_EVENT_GUESTS}/${doc.id}`,
-                      {
-                        next: (eventGuestDocSnapshot) => {
-                          if (eventGuestDocSnapshot.exists()) {
-                            const eventGuestInfo: EventGuest =
-                              eventGuestDocSnapshot.data() as EventGuest;
+                eventGuestsSnapshot.forEach((doc) => {
+                  // get guest using document id
+                  getDocSnapshot$(
+                    `/events/${match.params.id}/guests/${doc.id}`,
+                    {
+                      next: (eventGuestDocSnapshot) => {
+                        if (eventGuestDocSnapshot.exists()) {
+                          const eventGuestInfo: EventGuest =
+                            eventGuestDocSnapshot.data() as EventGuest;
 
-                            guests.push({
-                              ...eventGuestInfo,
-                              uid: doc.id,
-                            });
+                          guests.push({
+                            ...eventGuestInfo,
+                            uid: doc.id,
+                          });
 
-                            // only update eventGuests once all have been added to guests
-                            if (guests.length === eventGuestsSnapshot.size) {
-                              setEventGuests(guests);
-                              guests.some((guest, idx) => {
-                                if (guest.uid === userRecord.email) {
-                                  setUserIdxFromGuests(idx);
-                                  return true;
-                                }
-                              });
-                            }
+                          // only update eventGuests once all have been added to guests
+                          if (guests.length === eventGuestsSnapshot.size) {
+                            setEventGuests(guests);
                           }
-                        },
-                      }
-                    );
-                  });
-                }
-              },
-            }
-          );
+                        }
+                      },
+                    }
+                  );
+                });
+              }
+            },
+          });
 
           setEventData(event);
         },
@@ -88,22 +79,26 @@ export default function EventFinalizedPage({
   }, [userRecord, match.params.id]);
 
   const handleAccept = () => {
-    if (userIdxFromGuests !== -1) {
-      const user: EventGuest = eventGuests[userIdxFromGuests];
-      user.status = 'ACCEPTED';
+    if (userRecord) {
+      const user: EventGuest = eventGuests.find(
+        (obj) => obj.uid === userRecord.uid
+      ) as EventGuest;
+      user.status = EVENT_GUEST_STATUS.ACCEPTED;
       updateGuest(match.params.id, user);
     }
   };
 
   const handleDecline = () => {
-    if (userIdxFromGuests !== -1) {
-      const user: EventGuest = eventGuests[userIdxFromGuests];
-      user.status = 'DECLINED';
+    if (userRecord) {
+      const user: EventGuest = eventGuests.find(
+        (obj) => obj.uid === userRecord.uid
+      ) as EventGuest;
+      user.status = EVENT_GUEST_STATUS.DECLINED;
       updateGuest(match.params.id, user);
     }
   };
 
-  if (userRecord && eventData && eventGuests && userIdxFromGuests !== -1) {
+  if (userRecord && eventData && eventGuests) {
     return (
       <Page>
         <div id="eventFinalizedContent">

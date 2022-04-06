@@ -4,22 +4,17 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Toggle from 'react-toggle';
-// import { TimeFormat } from '../../../../../packages/wya-api/src/lib';
 
 import ChangePasswordForm from '../../components/ChangePasswordForm/ChangePasswordForm';
 import Page from '../../components/Page/Page';
 import { useUserContext } from '../../contexts/UserContext';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import { logIn, changePassword } from '../../lib/auth';
-import { updateUserRecordTimeFormat } from '../../lib/firestore';
+import { updateUserTimeFormat } from '../../lib/firestore';
+import { TIME_FORMAT } from '../../interfaces';
 
 import './ProfilePage.css';
 import 'react-toggle/style.css';
-
-enum TimeFormat {
-  TWELVE_HOURS = 'hh:mm a',
-  TWENTY_FOUR_HOURS = 'HH:mm',
-}
 
 export default function ProfilePage(): JSX.Element {
   const { user } = useUserContext();
@@ -27,8 +22,8 @@ export default function ProfilePage(): JSX.Element {
   const [displaySuccess, setDisplaySuccess] = React.useState<string>('');
   const [displayError, setDisplayError] = React.useState<string>('');
 
-  const [timeFormat, setTimeFormat] = React.useState<TimeFormat>(
-    TimeFormat.TWELVE_HOURS
+  const [timeFormat, setTimeFormat] = React.useState<string>(
+    TIME_FORMAT.TWELVE_HOURS
   );
 
   React.useEffect(() => {
@@ -67,10 +62,10 @@ export default function ProfilePage(): JSX.Element {
     if (userRecord) {
       const { uid, timeFormat } = userRecord;
       const intendedTimeFormat =
-        timeFormat === TimeFormat.TWELVE_HOURS
-          ? TimeFormat.TWENTY_FOUR_HOURS
-          : TimeFormat.TWELVE_HOURS;
-      updateUserRecordTimeFormat(uid, intendedTimeFormat)
+        timeFormat === TIME_FORMAT.TWELVE_HOURS
+          ? TIME_FORMAT.TWENTY_FOUR_HOURS
+          : TIME_FORMAT.TWELVE_HOURS;
+      updateUserTimeFormat(uid, intendedTimeFormat)
         .then(() => {
           setTimeFormat(intendedTimeFormat);
         })
@@ -82,7 +77,7 @@ export default function ProfilePage(): JSX.Element {
     return (
       <div id="toggleContent">
         <Toggle
-          defaultChecked={timeFormat === TimeFormat.TWENTY_FOUR_HOURS}
+          defaultChecked={timeFormat === TIME_FORMAT.TWENTY_FOUR_HOURS}
           icons={false}
           onChange={handleTimeFormatToggle}
         />

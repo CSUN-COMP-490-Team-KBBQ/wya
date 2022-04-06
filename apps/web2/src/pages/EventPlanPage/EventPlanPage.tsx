@@ -1,16 +1,26 @@
 import React from 'react';
 import Page from '../../components/Page/Page';
-import { EventDataAvailability } from '../../interfaces/EventData';
-import { getDocSnapshot$, getSubCollDocSnapshot$ } from '../../lib/firestore';
-import HeatMapData from '../../interfaces/HeatMapData';
-import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
-import { createHeatMapDataAndScheduleSelectorData } from '../../lib/availability';
+
+import {
+  getAllSubCollDocsSnapshot$,
+  getDocSnapshot$,
+} from '../../lib/firestore';
+import {
+  createHeatMapDataAndScheduleSelectorData,
+  mergeEventPlanAvailabilities,
+} from '../../lib/availability';
+import { isUserAHost } from '../../lib/eventHelpers';
+import {
+  EventPlanDocument,
+  EventPlanAvailabilityDocument,
+  HeatMapData,
+  ScheduleSelectorData,
+} from '../../interfaces';
+
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import EventPlanning from './EventPlanning';
 
 import './EventPlanPage.css';
-import { isUserAHost } from '../../lib/eventHelpers';
-import { EventPlanDocument } from '../../../../../packages/wya-api/src/interfaces';
 
 /**
  *
@@ -33,7 +43,7 @@ export default function EventPlanPage({
   const { userRecord } = useUserRecordContext();
   const eventPlanData = React.useRef<EventPlanDocument>();
   const [eventAvailability, setEventAvailability] =
-    React.useState<EventDataAvailability>();
+    React.useState<EventPlanAvailabilityDocument>();
   const [heatMapData, setHeatMapData] = React.useState<HeatMapData>();
   const [scheduleSelectorData, setScheduleSelectorData] =
     React.useState<ScheduleSelectorData>();
@@ -43,18 +53,41 @@ export default function EventPlanPage({
     if (userRecord) {
       const { uid, timeFormat } = userRecord;
 
-      getDocSnapshot$(
-        `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}`,
-        {
-          next: (eventPlanSnapshot) => {
-            const eventPlan = eventPlanSnapshot.data() as EventPlanDocument;
+      getDocSnapshot$(`/event-plans/${match.params.id}`, {
+        next: (eventPlanSnapshot) => {
+          const eventPlan = eventPlanSnapshot.data() as EventPlanDocument;
+          eventPlanData.current = eventPlan;
 
-            getSubCollDocSnapshot$(
-              `/${process.env.REACT_APP_EVENT_PLANS}/${match.params.id}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${uid}`,
-              {
-                next: (eventPlanAvailabilitiesSnapshot) => {
+          getAllSubCollDocsSnapshot$(
+            `/event-plans/${match.params.id}/availabilities`,
+            {
+              next: (eventPlanAvailabilitiesSnapshot) => {
+                if (!eventPlanAvailabilitiesSnapshot.empty) {
+                  let eventPlanAvailabilities: EventPlanAvailabilityDocument[] =
+                    [{ data: {} }];
+                  let userEventPlanAvailability: EventPlanAvailabilityDocument =
+                    { data: {} };
+                  eventPlanAvailabilitiesSnapshot.forEach((doc) => {
+                    getDocSnapshot$(
+                      `event-plans/${match.params.id}/availabilities/${doc.id}`,
+                      {
+                        next: (eventPlanAvailabilitiesDocSnapshot) => {
+                          if (eventPlanAvailabilitiesDocSnapshot.exists()) {
+                            if (doc.id === uid) {
+                              userEventPlanAvailability =
+                                eventPlanAvailabilitiesDocSnapshot.data() as EventPlanAvailabilityDocument;
+                            }
+                            eventPlanAvailabilities.push(
+                              eventPlanAvailabilitiesDocSnapshot.data() as EventPlanAvailabilityDocument
+                            );
+                          }
+                        },
+                      }
+                    );
+                  });
+
                   getDocSnapshot$(
-                    `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_SCHEDULE_SELECTOR_AVAILABILITY}`,
+                    `/users/${uid}/availabilities/schedule-selector`,
                     {
                       next: (scheduleSelectorDocSnapshot) => {
                         const { data: scheduleSelectorData } =
@@ -62,37 +95,35 @@ export default function EventPlanPage({
                             data: number[];
                           };
 
-                        const { data: eventPlanAvailabilities } =
-                          eventPlanAvailabilitiesSnapshot.data() as {
-                            data: EventDataAvailability;
-                          };
-
-                        eventPlanData.current = eventPlan;
+                        const mergedEventPlanAvailabilities: EventPlanAvailabilityDocument =
+                          mergeEventPlanAvailabilities(eventPlanAvailabilities);
 
                         const [
-                          createdEventAvailability,
+                          createdUserPlanAvailabilityDocument,
                           createdHeatMapData,
                           createdScheduleSelectorData,
                         ] = createHeatMapDataAndScheduleSelectorData(
                           eventPlan,
-                          // TODO: Extract event availabilities from every user
-                          eventPlanAvailabilities,
+                          userEventPlanAvailability,
+                          mergedEventPlanAvailabilities,
                           scheduleSelectorData ?? [],
                           timeFormat
                         );
 
-                        setEventAvailability(createdEventAvailability);
+                        setEventAvailability(
+                          createdUserPlanAvailabilityDocument
+                        );
                         setHeatMapData(createdHeatMapData);
                         setScheduleSelectorData(createdScheduleSelectorData);
                       },
                     }
                   );
-                },
-              }
-            );
-          },
-        }
-      );
+                }
+              },
+            }
+          );
+        },
+      });
     }
   }, [userRecord, match.params.id]);
   /**

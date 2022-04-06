@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import EventPlanList from './EventPlanList';
 
 const FAKE_USER_EVENT_PLANS = [
@@ -17,12 +17,12 @@ const FAKE_USER_EVENT_PLANS = [
 ];
 
 it('renders component', () => {
-  const { queryByText } = render(
+  render(
     <EventPlanList
       elementId="calender-event-plan-list"
       eventPlans={FAKE_USER_EVENT_PLANS}
     />
   );
-  expect(queryByText('Event Plans')).toBeTruthy();
-  expect(queryByText('test event plan')).toBeTruthy();
+  expect(screen.getByText('Event Plans')).toBeTruthy();
+  expect(screen.getByText('test event plan')).toBeTruthy();
 });

@@ -1,8 +1,8 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import ChangePasswordForm from './ChangePasswordForm';
 
 it('renders component', () => {
-  const { queryByText } = render(<ChangePasswordForm />);
-  expect(queryByText('Old Password')).toBeTruthy();
+  render(<ChangePasswordForm />);
+  expect(screen.getByText('Old Password')).toBeTruthy();
 });
