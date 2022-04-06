@@ -6,16 +6,18 @@
   },
   "main": "./dist/index.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=development webpack",
-    "build:production": "cross-env NODE_ENV=production webpack",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "---turborepo scripts---": "",
+    "build:dev": "cross-env NODE_ENV=development webpack",
+    "build": "cross-env NODE_ENV=production webpack",
+    "deploy:dev": "npm run build:dev && firebase deploy --project=development --only functions",
+    "deploy": "npm run build && firebase deploy --project=production --only functions",
+    "dev": "echo dev functions",
     "test": "echo testing api",
-    "deploy": "npm run build && firebase deploy --project=development --only functions",
-    "deploy:prod": "npm run build:prod && firebase deploy --project=production --only functions",
     "lint": "eslint src --fix",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "---cloud functions scripts---": "",
     "serve": "npm run build && firebase emulators:start --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "dev": "echo dev functions"
+    "shell": "npm run build && firebase functions:shell"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

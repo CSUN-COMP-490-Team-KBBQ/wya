@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import GuestList from './GuestList';
 
 const updateGuests = jest.fn();
@@ -8,8 +8,6 @@ const updateGuests = jest.fn();
 afterEach(updateGuests.mockClear);
 
 it('renders component', () => {
-  const { queryByTestId } = render(
-    <GuestList guests={[]} updateGuests={updateGuests} />
-  );
-  expect(queryByTestId('guests-list')).toBeTruthy();
+  render(<GuestList guests={[]} updateGuests={updateGuests} />);
+  expect(screen.getByTestId('guests-list')).toBeTruthy();
 });

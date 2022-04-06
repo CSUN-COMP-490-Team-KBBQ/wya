@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import AvailabilityHeatMap from './AvailabilityHeatMap';
 import {
@@ -52,7 +52,7 @@ const FAKE_HEATMAPDATA = {
 };
 
 it('renders component', () => {
-  const { queryByText } = render(
+  render(
     <AvailabilityHeatMap
       yLabels={FAKE_HEATMAPDATA.yData}
       xLabels={FAKE_HEATMAPDATA.xData}
@@ -60,11 +60,11 @@ it('renders component', () => {
       onClick={() => undefined}
     />
   );
-  expect(queryByText('Sat Oct 23 2021')).toBeTruthy();
-  expect(queryByText('Sun Oct 24 2021')).toBeTruthy();
+  expect(screen.getByText('Sat Oct 23 2021')).toBeTruthy();
+  expect(screen.getByText('Sun Oct 24 2021')).toBeTruthy();
 
-  expect(queryByText('04:00')).toBeTruthy();
-  expect(queryByText('04:15')).toBeTruthy();
-  expect(queryByText('04:30')).toBeTruthy();
-  expect(queryByText('04:45')).toBeTruthy();
+  expect(screen.getByText('04:00')).toBeTruthy();
+  expect(screen.getByText('04:15')).toBeTruthy();
+  expect(screen.getByText('04:30')).toBeTruthy();
+  expect(screen.getByText('04:45')).toBeTruthy();
 });

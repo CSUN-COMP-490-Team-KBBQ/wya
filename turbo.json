@@ -1,23 +1,23 @@
 {
+  "$schema": "https://turborepo.org/schema.json",
   "baseBranch": "origin/main",
-  "npmClient": "npm",
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "deploy": {
+      "dependsOn": ["build", "test", "lint"]
+    },
+    "dev": {
+      "cache": false
+    },
     "test": {
       "dependsOn": ["^build"],
       "outputs": []
     },
-    "deploy": {
-      "dependsOn": ["build", "test", "lint"]
-    },
     "lint": {
       "outputs": []
-    },
-    "dev": {
-      "cache": false
     },
     "clean": {
       "cache": false

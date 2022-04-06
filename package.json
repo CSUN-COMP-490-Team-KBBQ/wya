@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "turbo run build",
+    "build:prod": "turbo run build:prod",
     "dev": "turbo run dev --no-cache --parallel --continue",
     "lint": "turbo run lint",
     "test": "turbo run test",
@@ -33,7 +34,7 @@
     "lint-staged": "^12.1.7",
     "prettier": "^2.5.1",
     "tsup": "^5.11.13",
-    "turbo": "^1.1.2"
+    "turbo": "^1.1.10"
   },
   "workspaces": [
     "apps/*",
