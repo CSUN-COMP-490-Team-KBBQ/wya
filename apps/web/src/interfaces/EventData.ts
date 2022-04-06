@@ -1,26 +1,21 @@
+import { EventPlanAvailabilityDocument } from '../interfaces';
+
+type EventPlanId = string;
+type UserId = string;
+type Email = string;
+
 export default interface EventData {
-  eventId: string;
-  hostId: string;
   name: string;
   description: string;
-  startDate: string;
-  endDate: string;
   startTime: string;
   endTime: string;
-  guests: string[];
-  availability: EventDataAvailability;
-  /**
-   *  Fields for finalizing an event.
-   *  Temp added here as part of the solution developed
-   *  because of time contraints to MVP.
-   */
+  startDate: string;
+  endDate: string;
+  hostId: UserId;
+  invitees: UserId[] | Email[];
+  eventPlanId: EventPlanId;
+  availability: EventPlanAvailabilityDocument;
   isFinalized: boolean;
   day: string;
   rsvp: string[];
-}
-
-export interface EventDataAvailability {
-  [time: string]: {
-    [date: string]: string[];
-  };
 }

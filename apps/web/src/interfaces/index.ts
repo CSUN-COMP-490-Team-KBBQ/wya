@@ -133,3 +133,27 @@ export type EventGuest = {
 /** End of RO3 */
 
 // web specific interfaces below
+
+export const SUPPORTED_TIME_FORMATS = [
+  'h:mm a',
+  'h:mm A',
+  'hh:mm a',
+  'hh:mm A',
+  'HH:mm',
+];
+
+export interface HeatMapData {
+  yTimesHeatMapLabelsArray: string[];
+  xDaysHeatMapLabelsArray: string[];
+  xDaysFormattedToSlicedDateString: string[];
+  heatMap2dArray: number[][];
+}
+
+export interface ScheduleSelectorData {
+  scheduleData: Date[];
+  xDaysScheduleSelectorLabelsArray: string[];
+  xDaysFormattedToSlicedDateString: string[];
+  yTimesScheduleSelectorLabelsArray: string[];
+  yTimesFormattedTo12Or24Hour: string[];
+  timeFormat: string;
+}

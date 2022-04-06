@@ -12,13 +12,19 @@ import {
   collection,
   QuerySnapshot,
 } from 'firebase/firestore';
-import { EventPlanInfo, EventInfo, UserDocument } from 'wya-api/src/interfaces';
 
 import app from './firebase';
-import EventData, { EventDataAvailability } from '../interfaces/EventData';
 
-type Email = string;
-type UserId = string;
+import EventData from '../interfaces/EventData';
+import {
+  EventPlanInfo,
+  EventInfo,
+  UserDocument,
+  EventPlanAvailabilityDocument,
+  EventPlanDocument,
+  Email,
+  UserId,
+} from '../interfaces';
 
 const firestore = getFirestore(app);
 
@@ -89,13 +95,15 @@ export const createEventFinalized = (
   });
 };
 
-export const getEventData = async (eventId: string): Promise<EventData> => {
+export const getEventData = async (
+  eventId: string
+): Promise<EventPlanDocument> => {
   const eventDocRef = getDocRef(`/events/${eventId}`);
-  return (await getDoc(eventDocRef)).data() as EventData;
+  return (await getDoc(eventDocRef)).data() as EventPlanDocument;
 };
 
 export const updateEvent = async (event: EventData): Promise<void> => {
-  const eventDocRef = getDocRef(`/events/${event.eventId}`);
+  const eventDocRef = getDocRef(`/events/${event.eventPlanId}`);
   return updateDoc(eventDocRef, { ...event });
 };
 
@@ -146,7 +154,7 @@ export const getAllSubCollDocsSnapshot$ = (
 
 export const updateCalendarAvailability = (data: number[], uid: string) => {
   const userHeatMapAvailabilityDocRef = getDocRef(
-    `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_SCHEDULE_SELECTOR_AVAILABILITY}/`
+    `/users/${uid}/availabilities/schedule-selector/`
   );
 
   return updateDoc(userHeatMapAvailabilityDocRef, {
@@ -160,16 +168,14 @@ export const updateUserTimeFormat = (uid: UserId, timeFormat: string) => {
 };
 
 export const updateEventAvailability = (
-  data: EventDataAvailability,
+  data: EventPlanAvailabilityDocument,
   eventPlanId: string,
   userId: string
 ): Promise<void> => {
   const eventPlanAvailabilityDocRef = getDocRef(
-    `/${process.env.REACT_APP_EVENT_PLANS}/${eventPlanId}/${process.env.REACT_APP_EVENT_PLAN_AVAILABILITIES}/${userId}`
+    `/event-plans/${eventPlanId}/availabilities/${userId}`
   );
-  return updateDoc(eventPlanAvailabilityDocRef, {
-    data,
-  });
+  return updateDoc(eventPlanAvailabilityDocRef, { ...data });
 };
 
 export default firestore;

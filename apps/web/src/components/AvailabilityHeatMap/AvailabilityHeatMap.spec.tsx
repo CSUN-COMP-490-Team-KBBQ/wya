@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import AvailabilityHeatMap from './AvailabilityHeatMap';
 import {
@@ -7,28 +7,39 @@ import {
   createHeatMapAvailabilityDataArray,
   sortObjectByKeys,
 } from '../../lib/availability';
+import { EventPlanAvailabilityDocument } from '../../interfaces';
 
-const FAKE_AVAILABILITY = {
-  '04:15': {
-    '1635058800000': [],
-    '1634972400000': [],
+const FAKE_AVAILABILITY: EventPlanAvailabilityDocument = {
+  data: {
+    '04:15': {
+      '1634972400000': [],
+      '1635058800000': [],
+    },
+    '04:45': {
+      '1634972400000': [],
+      '1635058800000': ['user3'],
+    },
+    '04:30': {
+      '1634972400000': [],
+      '1635058800000': ['user3'],
+    },
+    '04:00': {
+      '1634972400000': ['user1'],
+      '1635058800000': ['user1', 'user2'],
+    },
   },
-  '04:45': {
-    '1634972400000': [],
-    '1635058800000': ['user3'],
-  },
-  '04:30': {
-    '1634972400000': [],
-    '1635058800000': ['user3'],
-  },
-  '04:00': {
-    '1634972400000': ['user1'],
-    '1635058800000': ['user1', 'user2'],
-  },
+} as {
+  data: {
+    [time: string]: { [date: string]: string[] };
+  };
 };
 
-const FAKE_YTIMES = sortObjectByKeys(FAKE_AVAILABILITY);
-const FAKE_XDAYS = sortObjectByKeys(FAKE_AVAILABILITY['04:00']);
+const FAKE_YTIMES: string[] = sortObjectByKeys<{
+  [time: string]: { [date: string]: string[] };
+}>(FAKE_AVAILABILITY.data);
+const FAKE_XDAYS: string[] = sortObjectByKeys<{ [date: string]: string[] }>(
+  FAKE_AVAILABILITY.data['04:00']
+);
 
 const FAKE_HEATMAPDATA = {
   yData: FAKE_YTIMES,
@@ -41,7 +52,7 @@ const FAKE_HEATMAPDATA = {
 };
 
 it('renders component', () => {
-  const { queryByText } = render(
+  render(
     <AvailabilityHeatMap
       yLabels={FAKE_HEATMAPDATA.yData}
       xLabels={FAKE_HEATMAPDATA.xData}
@@ -49,11 +60,11 @@ it('renders component', () => {
       onClick={() => undefined}
     />
   );
-  expect(queryByText('Sat Oct 23 2021')).toBeTruthy();
-  expect(queryByText('Sun Oct 24 2021')).toBeTruthy();
+  expect(screen.getByText('Sat Oct 23 2021')).toBeTruthy();
+  expect(screen.getByText('Sun Oct 24 2021')).toBeTruthy();
 
-  expect(queryByText('04:00')).toBeTruthy();
-  expect(queryByText('04:15')).toBeTruthy();
-  expect(queryByText('04:30')).toBeTruthy();
-  expect(queryByText('04:45')).toBeTruthy();
+  expect(screen.getByText('04:00')).toBeTruthy();
+  expect(screen.getByText('04:15')).toBeTruthy();
+  expect(screen.getByText('04:30')).toBeTruthy();
+  expect(screen.getByText('04:45')).toBeTruthy();
 });

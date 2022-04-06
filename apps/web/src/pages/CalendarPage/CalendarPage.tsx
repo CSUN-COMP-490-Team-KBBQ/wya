@@ -22,8 +22,11 @@ import {
   createScheduleSelectorData,
 } from '../../lib/availability';
 
-import ScheduleSelectorData from '../../interfaces/ScheduleSelectorData';
-import { EventPlanId, EventPlanInfo } from '../../interfaces';
+import {
+  EventPlanId,
+  EventPlanInfo,
+  ScheduleSelectorData,
+} from '../../interfaces/';
 
 type UpdateAvailabilityModalProps = {
   uid: string;
@@ -41,9 +44,9 @@ function UpdateAvailabilityModal({
   const { scheduleData, timeFormat: is24Hour } = scheduleSelectorData;
 
   const [userAvailabilityData, setUserAvailabilityData] =
-    React.useState<Array<Date>>(scheduleData);
+    React.useState<Date[]>(scheduleData);
 
-  const onClickScheduleSelectorHandle = (newSchedule: Array<Date>) => {
+  const onClickScheduleSelectorHandle = (newSchedule: Date[]) => {
     setUserAvailabilityData(newSchedule);
   };
 
@@ -133,65 +136,56 @@ export default function CalendarPage(): JSX.Element {
     if (userRecord) {
       const { uid } = userRecord;
 
-      getDocSnapshot$(
-        `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_SCHEDULE_SELECTOR_AVAILABILITY}`,
-        {
-          next: (scheduleSelectorDocSnapshot) => {
-            if (scheduleSelectorDocSnapshot.exists()) {
-              const { data: scheduleSelectorAvailability } =
-                scheduleSelectorDocSnapshot.data();
+      getDocSnapshot$(`/users/${uid}/availabilities/schedule-selector`, {
+        next: (scheduleSelectorDocSnapshot) => {
+          if (scheduleSelectorDocSnapshot.exists()) {
+            const { data: scheduleSelectorAvailability } =
+              scheduleSelectorDocSnapshot.data();
 
-              setScheduleSelectorData(
-                createScheduleSelectorData(
-                  scheduleSelectorAvailability ?? [],
-                  userRecord.timeFormat
-                )
-              );
-            }
-          },
-        }
-      );
+            setScheduleSelectorData(
+              createScheduleSelectorData(
+                scheduleSelectorAvailability ?? [],
+                userRecord.timeFormat
+              )
+            );
+          }
+        },
+      });
 
       // begin geting eventPlanId from documentId from users/uid/event-plans/eventPlanId
-      getAllSubCollDocsSnapshot$(
-        `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_EVENT_PLANS}`,
-        {
-          next: (eventPlansSnapshot) => {
-            if (!eventPlansSnapshot.empty) {
-              const eventPlanInfoAndEventPlanId: Array<
-                EventPlanInfo & { eventPlanId: EventPlanId }
-              > = [];
+      getAllSubCollDocsSnapshot$(`/users/${uid}/event-plans`, {
+        next: (eventPlansSnapshot) => {
+          if (!eventPlansSnapshot.empty) {
+            const eventPlanInfoAndEventPlanId: Array<
+              EventPlanInfo & { eventPlanId: EventPlanId }
+            > = [];
 
-              eventPlansSnapshot.forEach((doc) => {
-                // now get document object by using eventPlanId
-                getDocSnapshot$(
-                  `/${process.env.REACT_APP_USERS}/${uid}/${process.env.REACT_APP_USER_EVENT_PLANS}/${doc.id}`,
-                  {
-                    next: (eventPlanDocSnapshot) => {
-                      if (eventPlanDocSnapshot.exists()) {
-                        const eventPlanInfo: EventPlanInfo =
-                          eventPlanDocSnapshot.data() as EventPlanInfo;
+            eventPlansSnapshot.forEach((doc) => {
+              // now get document object by using eventPlanId
+              getDocSnapshot$(`/users/${uid}/event-plans/${doc.id}`, {
+                next: (eventPlanDocSnapshot) => {
+                  if (eventPlanDocSnapshot.exists()) {
+                    const eventPlanInfo: EventPlanInfo =
+                      eventPlanDocSnapshot.data() as EventPlanInfo;
 
-                        eventPlanInfoAndEventPlanId.push({
-                          eventPlanId: doc.id,
-                          ...eventPlanInfo,
-                        });
+                    eventPlanInfoAndEventPlanId.push({
+                      eventPlanId: doc.id,
+                      ...eventPlanInfo,
+                    });
 
-                        if (
-                          eventPlanInfoAndEventPlanId.length ===
-                          eventPlansSnapshot.size
-                        ) {
-                          setEventPlans(eventPlanInfoAndEventPlanId);
-                        }
-                      }
-                    },
+                    if (
+                      eventPlanInfoAndEventPlanId.length ===
+                      eventPlansSnapshot.size
+                    ) {
+                      setEventPlans(eventPlanInfoAndEventPlanId);
+                    }
                   }
-                );
+                },
               });
-            }
-          },
-        }
-      );
+            });
+          }
+        },
+      });
     }
   }, [userRecord]);
 

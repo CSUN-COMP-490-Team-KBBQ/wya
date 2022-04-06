@@ -26,14 +26,12 @@ We use [turborepo](https://turborepo.org/) as the tool to manage our monorepo.
 ```
 *root*
 - apps
-   - cli       : our cli tool that provides many useful functions for both dev and prod environments
+   - api       : out api served via firebase cloud functions
    - web       : our web application
-   - functions : our firebase cloud-functions
    - discord   : our discord integration
 - packages
    - config   : shared configurations
    - tsconfig : typescript configurations
-   - wya-api  : core / business logic
 ```
 
 ## Setup
