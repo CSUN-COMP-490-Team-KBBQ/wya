@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@babel/core": "^7.16.0",
+    "@headlessui/react": "^1.5.0",
+    "@heroicons/react": "^1.0.6",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.16.2",
@@ -52,7 +54,6 @@
     "moment": "^2.29.1",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
-    "postcss": "^8.4.4",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-loader": "^6.2.1",
     "postcss-normalize": "^10.0.1",
@@ -82,7 +83,6 @@
     "stream-http": "^3.2.0",
     "style-loader": "^3.3.1",
     "styled-components": "^5.3.3",
-    "tailwindcss": "^3.0.2",
     "terser-webpack-plugin": "^5.2.5",
     "tty-browserify": "^0.0.1",
     "typescript": "^4.5.5",
@@ -100,7 +100,9 @@
     "dev": "node scripts/start.js",
     "test": "node scripts/test.js src --watchAll=false",
     "lint": "eslint src --fix",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf build"
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf build",
+    "build:tailwind": "tailwindcss build -i src/tailwind.css -o src/tailwind.output.css",
+    "prestart": "npm run build:tailwind"
   },
   "eslintConfig": {
     "extends": [
@@ -175,5 +177,11 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "@types/uuid": "^8.3.4",
+    "autoprefixer": "^10.4.4",
+    "postcss": "^8.4.12",
+    "tailwindcss": "^3.0.23"
   }
 }

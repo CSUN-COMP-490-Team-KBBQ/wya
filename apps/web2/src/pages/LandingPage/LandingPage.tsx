@@ -1,0 +1,101 @@
+import React from 'react';
+import { Link, useHistory } from 'react-router-dom';
+
+import { useUserContext } from '../../contexts/UserContext';
+
+import logo from '../../assets/wya-logo.png';
+import image from '../../assets/background9.png';
+
+export default function LandingPage() {
+  const history = useHistory();
+  const { user } = useUserContext();
+
+  React.useEffect(() => {
+    if (user) {
+      history.push('/dashboard');
+    }
+  });
+
+  return (
+    <>
+      <div className="relative bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32 h-screen">
+            <div className="relative pt-6 px-4 sm:px-6 lg:px-8">
+              <nav
+                className="relative flex items-center justify-between sm:h-10"
+                aria-label="Global"
+              >
+                <div className="flex items-center flex-grow flex-shrink-0">
+                  <div className="flex items-center justify-between w-full">
+                    <a href="#">
+                      <img
+                        className="h-8 w-auto sm:h-10"
+                        src={logo}
+                        alt="wya? logo"
+                      />
+                    </a>
+                  </div>
+                  <Link
+                    to="/login"
+                    className="flex justify-end font-large w-full z-10 text-blue-600 hover:text-blue-500 no-underline"
+                  >
+                    Log in
+                  </Link>
+                </div>
+              </nav>
+            </div>
+
+            <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+              <div className="sm:text-center lg:text-left">
+                <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                  <span className="block xl:inline">Data to enrich your</span>{' '}
+                  <span className="block text-blue-600 xl:inline">
+                    scheduling
+                  </span>
+                </h1>
+                <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                  wya? is a web-based application that will help you, your
+                  friends, or your family meet up without the headache of
+                  planning. We are creating a system to easily make plans by
+                  stacking personal schedules so that your group will be able to
+                  clearly see who&apos;s doing what and when. The add-a-friend
+                  feature and overall simplicity of wya? removes the need for
+                  multiple apps and lets you chat, plan, and invite whomever
+                  you&apos;d like.
+                </p>
+                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+                  <div className="rounded-md shadow">
+                    <Link
+                      to="/register"
+                      className="no-underline w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10"
+                    >
+                      Get started
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              <svg
+                className="hidden lg:block absolute right-0 inset-y-0 h-full w-48 text-white transform translate-x-1/2"
+                fill="currentColor"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <polygon points="50,0 100,0 50,100 0,100" />
+              </svg>
+            </main>
+          </div>
+        </div>
+      </div>
+
+      <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+        <img
+          className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
+          src={image}
+          alt="blue wave background"
+        />
+      </div>
+    </>
+  );
+}

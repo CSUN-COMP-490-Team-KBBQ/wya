@@ -102,8 +102,8 @@ export type EventInfo = {
   day: string;
   startDate: string;
   endDate: string;
-  startTime: string;
-  endTime: string;
+  dailyStartTime: string;
+  dailyEndTime: string;
 };
 
 export type EventId = string;

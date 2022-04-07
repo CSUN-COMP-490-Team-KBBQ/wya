@@ -1,0 +1,44 @@
+.icon-remove {
+    color: grey;
+    cursor: pointer;
+}
+
+.icon-remove:hover {
+    color: red;
+}
+
+.guests-list-item {
+    display: flex;
+}
+
+.guests-list-item > div {
+    flex-grow: 1;
+}
+
+.container-icon-remove {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.container-button-invite {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#group-list {
+    height: 173px;
+    background-color: #f7f7f7;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.guest-invite-button {
+    background-color: #0081d9 !important;
+    border: solid 2px #0081d9 !important;
+}
+
+.guest-invite-button:hover {
+    background-color: #3895d3 !important;
+}
