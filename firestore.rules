@@ -1,49 +1,44 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-  	// checks for /users/
+  	// users
   	function isUser(userId) {
     	// check that the requesting auth matches the userId
     	return request.auth.uid == userId;
     }
-    function isSafeUserWrite() {
-    	// allow write if the uid and email fields will not change
-    	return request.resource.data.uid == resource.data.uid &&
-      			 request.resource.data.email == resource.data.email;
+    
+    match /users/{USER_ID}/{anyUserFile=**} {
+    	allow read: if isUser(USER_ID);
+      
+      // TODO: Let our api handle write rules
+      allow write: if true;
     }
-    match /users/{USERID} {
-    	allow read: if isUser(USERID);
-      allow update: if isSafeUserWrite() && isUser(USERID);
+
+    // event-plans
+    match /event-plans/{EVENT_PLAN_ID}/{anyEventPlanFile=**} {
+      // TODO: Let our api handle read/write rules
+      allow read, write: if true;
     }
     
-    // checks for /events/
+    // events
     function isHost() {
       // check that requesting uid matches hostId
       return request.auth.uid == resource.data.hostId;
     }
-    function isGuest(eventId) {
+    function isEventGuest(eventId) {
       // check that the requesting uid is a guest
       return exists(/databases/$(database)/documents/events/$(eventId)/guests/$(request.auth.uid));
     }
-    function isSafeEventWrite() {
-      // check that the hostId does not change during the write
-      return request.resource.data.hostId == resource.data.hostId;
-    }
-    match /events/{EVENTID} {
-    	allow read: if isHost() || isGuest(EVENTID);
-      allow create, delete: if isHost();
-      allow update: if isHost() || isGuest(EVENTID) && isSafeEventWrite();
-    }
-  	
-    // checks for /events/EVENTID/guests/
-  	function isSaveEventGuestWrite() {
-    	// check that the uid of the guest does not change during the write
-      return request.resource.data.uid == resource.data.uid;
-    }
-    match /events/{EVENTID}/guests/{GUESTID} {
-    	allow read: if true;
-      allow update: if isGuest(EVENTID) && isSaveEventGuestWrite();
-      allow delete: if isHost();
+    match /events/{EVENT_ID} {
+      allow read: if isHost() || isEventGuest(EVENT_ID);
+      
+      // TODO: Let our api handle write rules
+      allow write: if true;
+
+      match /guests/{GUEST_ID} {
+        // TODO: Let our api handle read/write rules
+        allow read, write: if true;
+      }
     }
   }
 }
