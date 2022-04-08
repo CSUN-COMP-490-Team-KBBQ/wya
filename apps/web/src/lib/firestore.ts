@@ -68,6 +68,30 @@ export const createEventPlan = (
   });
 };
 
+export const deleteEventPlan = (
+  data: { eventPlanId: EventPlanId } & {
+    invitees: UserId[];
+  } & { hostId: UserId }
+) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/event-plans/delete`,
+        JSON.stringify(data),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        resolve(res);
+      })
+      .catch(reject);
+  });
+};
+
 export const createEventFinalized = (
   data: EventInfo & { eventPlanId: EventPlanId } & {
     invitees: UserId[];
