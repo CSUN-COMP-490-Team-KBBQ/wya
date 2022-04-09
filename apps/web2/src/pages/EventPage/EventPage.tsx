@@ -96,56 +96,13 @@
 //     </Page>
 //   );
 // }
-/*
-  This example requires Tailwind CSS v2.0+ 
-  
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  const colors = require('tailwindcss/colors')
-  
-  module.exports = {
-    // ...
-    theme: {
-      extend: {
-        colors: {
-          sky: colors.sky,
-        },
-      },
-    },
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-import { Fragment, useState } from 'react';
-import { Disclosure, Menu, RadioGroup, Transition } from '@headlessui/react';
-import { HomeIcon, PlusIcon, SearchIcon } from '@heroicons/react/solid';
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
+import { useState } from 'react';
+import { RadioGroup } from '@headlessui/react';
+import { HomeIcon, PlusIcon } from '@heroicons/react/solid';
 
-const user = {
-  name: 'Floyd Miles',
-  email: 'floy.dmiles@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-};
-const navigation = [
-  { name: 'Dashboard', href: '#' },
-  { name: 'Jobs', href: '#' },
-  { name: 'Applicants', href: '#' },
-  { name: 'Company', href: '#' },
-];
 const breadcrumbs = [
   { name: 'Projects', href: '#', current: false },
   { name: 'Project Nero', href: '#', current: true },
-];
-const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
 ];
 const team = [
   {

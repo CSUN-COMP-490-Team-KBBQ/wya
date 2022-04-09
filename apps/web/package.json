@@ -100,9 +100,7 @@
     "dev": "node scripts/start.js",
     "test": "node scripts/test.js src --watchAll=false",
     "lint": "eslint src --fix",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf build",
-    "build:tailwind": "tailwindcss build -i src/tailwind.css -o src/tailwind.output.css",
-    "prestart": "npm run build:tailwind"
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf build"
   },
   "eslintConfig": {
     "extends": [
@@ -181,7 +179,6 @@
   "devDependencies": {
     "@types/uuid": "^8.3.4",
     "autoprefixer": "^10.4.4",
-    "postcss": "^8.4.12",
-    "tailwindcss": "^3.0.23"
+    "postcss": "^8.4.12"
   }
 }
