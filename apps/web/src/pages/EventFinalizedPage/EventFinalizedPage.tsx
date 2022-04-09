@@ -4,14 +4,18 @@ import { Button, ListGroup } from 'react-bootstrap';
 import {
   EventDocument,
   EventGuest,
+  EventId,
   EVENT_GUEST_STATUS,
+  UserId,
 } from '../../interfaces';
 import {
   updateGuest,
   getDocSnapshot$,
   getAllSubCollDocsSnapshot$,
+  deleteEventFinalized,
 } from '../../lib/firestore';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
+import { useHistory } from 'react-router-dom';
 
 import Page from '../../components/Page/Page';
 
@@ -29,6 +33,7 @@ export default function EventFinalizedPage({
   const { userRecord } = useUserRecordContext();
   const [eventData, setEventData] = React.useState<EventDocument>();
   const [eventGuests, setEventGuests] = React.useState<EventGuest[]>([]);
+  const history = useHistory();
 
   React.useEffect(() => {
     console.log('rendered - react use effect');
@@ -98,6 +103,23 @@ export default function EventFinalizedPage({
     }
   };
 
+  const handleDelete = async () => {
+    if (eventData !== undefined) {
+      const dataNeededToDelete: { eventId: EventId } & {
+        guests: EventGuest[];
+      } & { hostId: UserId } = {
+        eventId: eventData.eventId,
+        guests: eventGuests,
+        hostId: eventData.hostId,
+      };
+
+      await deleteEventFinalized(dataNeededToDelete);
+
+      console.log('Event deleted');
+      history.push('/calendar');
+    }
+  };
+
   if (userRecord && eventData && eventGuests) {
     return (
       <Page>
@@ -117,6 +139,11 @@ export default function EventFinalizedPage({
             <p>
               <u>Ends</u>: {eventData.endTime}
             </p>
+          </div>
+          <div id="eventFinalizedButtons">
+            <Button onClick={handleDelete} variant="danger">
+              Delete Event
+            </Button>
           </div>
           {/* render for a guest only */}
           {eventData.hostId !== userRecord.uid && (
