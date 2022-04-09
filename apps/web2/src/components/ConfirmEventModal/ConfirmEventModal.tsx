@@ -71,7 +71,7 @@ export default function ConfirmEventModal(
         const { eventPlanId, ...restOfParams } = eventPlanDocument;
 
         const newEventData: EventInfo & { eventPlanId: EventPlanId } & {
-          invitees: UserId[];
+          inviteesByUserId: UserId[];
         } = {
           day,
           eventPlanId,

@@ -42,11 +42,11 @@ router.post('/create', async (req, res, next) => {
 router.post('/delete', async (req, res, next) => {
   const logger = functions.logger;
 
-  const { eventId, hostId } = req.body;
+  const { eventId, userId, hostId } = req.body;
 
   try {
     await etlEventsDelete(
-      { eventId, hostId },
+      { eventId, userId, hostId },
       { firebaseClientInjection: firebaseClient },
       { debug: logger.info }
     );
