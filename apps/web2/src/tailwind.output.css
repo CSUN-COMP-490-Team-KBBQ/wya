@@ -219,6 +219,7 @@ button,
   /* 2 */
   background-image: none;
   /* 2 */
+  display: inline;
 }
 
 /*
@@ -1866,7 +1867,7 @@ Ensure the default browser behavior of the `hidden` attribute.
   }
 
   .sm\:h-10 {
-    height: 2.5rem;
+    height: 4rem;
   }
 
   .sm\:h-72 {
@@ -2001,8 +2002,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   }
 
   .md\:px-10 {
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
   }
 
   .md\:px-8 {
