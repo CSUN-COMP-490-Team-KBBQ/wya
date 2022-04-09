@@ -134,14 +134,15 @@ export default function EventPlanning({
 
   const deleteEventPlanHandler = async () => {
     const dataNeededToDelete: { eventPlanId: EventPlanId } & {
+      userId: UserId;
+    } & {
       hostId: UserId;
     } = {
       eventPlanId: eventPlanData.eventPlanId,
+      userId,
       hostId: eventPlanData.hostId,
     };
-    await deleteEventPlan(
-      dataNeededToDelete as { eventPlanId: EventPlanId } & { hostId: UserId }
-    );
+    await deleteEventPlan(dataNeededToDelete);
 
     console.log('Event Plan deleted');
     history.push('/calendar');

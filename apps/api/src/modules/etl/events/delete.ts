@@ -9,6 +9,7 @@ import { ApiError, makeApiError } from '../../../../lib/errors';
 
 type Params = {
   eventId: EventId;
+  userId: UserId;
   hostId: UserId;
 };
 
@@ -21,7 +22,7 @@ export const etlEventsDelete = async (
   context: Context,
   { debug = Debug('api:etl/events/delete') as any } = {}
 ) => {
-  const { eventId, hostId } = params;
+  const { eventId, userId, hostId } = params;
   let event;
   let guestsByUserId: UserId[] = [];
 
@@ -44,6 +45,8 @@ export const etlEventsDelete = async (
       event = (await transaction.get(eventDocRef)).data();
       assert(event, makeApiError(422, 'Invalid event'));
       assert(hostId === event.hostId, makeApiError(401, 'Unauthorized'));
+      assert(hostId === userId, makeApiError(401, 'Unauthorized'));
+
       guestsByUserId = event.guestsByUserId as UserId[];
     });
 
