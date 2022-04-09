@@ -105,11 +105,8 @@ export default function EventFinalizedPage({
 
   const handleDelete = async () => {
     if (eventData !== undefined) {
-      const dataNeededToDelete: { eventId: EventId } & {
-        guests: EventGuest[];
-      } & { hostId: UserId } = {
+      const dataNeededToDelete: { eventId: EventId } & { hostId: UserId } = {
         eventId: eventData.eventId,
-        guests: eventGuests,
         hostId: eventData.hostId,
       };
 

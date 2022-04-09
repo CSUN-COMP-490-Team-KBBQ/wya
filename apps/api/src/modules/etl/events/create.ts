@@ -69,12 +69,8 @@ export const etlEventsCreate = async (
       assert(eventPlan, makeApiError(422, 'Invalid event plan'));
       assert(hostId === eventPlan.hostId, makeApiError(401, 'Unauthorized'));
 
-      const {
-        invitees: inviteesByUserId,
-        name,
-        description,
-      } = eventPlan as {
-        invitees: UserId[];
+      const { inviteesByUserId, name, description } = eventPlan as {
+        inviteesByUserId: UserId[];
         name: string;
         description: string;
       };
@@ -88,7 +84,7 @@ export const etlEventsCreate = async (
         hostId,
         name,
         description,
-        guests: [...inviteesByUserId],
+        guestsByUserId: [...inviteesByUserId],
       };
 
       transaction.create(eventDocRef, eventDocPatch);

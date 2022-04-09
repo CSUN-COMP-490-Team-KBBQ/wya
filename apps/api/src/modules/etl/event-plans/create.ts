@@ -90,7 +90,7 @@ export const etlEventPlansCreate = async (
       const eventPlanDocPatch = {
         ...restOfParams,
         hostId,
-        invitees: inviteesByUserId,
+        inviteesByUserId,
         eventPlanId,
       };
       transaction.create(eventPlanDocRef, eventPlanDocPatch);

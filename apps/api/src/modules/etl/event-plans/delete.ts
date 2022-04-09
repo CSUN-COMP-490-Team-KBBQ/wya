@@ -9,7 +9,6 @@ import { ApiError, makeApiError } from '../../../../lib/errors';
 
 type Params = {
   eventPlanId: EventPlanId;
-  invitees: UserId[];
   hostId: UserId;
 };
 
@@ -22,10 +21,11 @@ export const etlEventPlansDelete = async (
   context: Context,
   { debug = Debug('api:etl/event-plans/delete') as any } = {}
 ) => {
-  const { eventPlanId, invitees, hostId } = params;
+  const { eventPlanId, hostId } = params;
+  let eventPlan;
+  let inviteesByUserId: UserId[] = [];
 
   assert(eventPlanId, makeApiError(409, 'Event-Plan is required'));
-
   debug(`Deleting an event-plan: ${JSON.stringify(params, null, 4)}`);
 
   const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
@@ -38,18 +38,44 @@ export const etlEventPlansDelete = async (
   );
 
   try {
+    await firebaseFirestore.runTransaction(async (transaction) => {
+      const eventPlanDocRef = firebaseFirestore.doc(
+        `/event-plans/${eventPlanId}`
+      );
+
+      eventPlan = (await transaction.get(eventPlanDocRef)).data();
+      assert(eventPlan, makeApiError(422, 'Invalid event plan'));
+      assert(hostId === eventPlan.hostId, makeApiError(401, 'Unauthorized'));
+      inviteesByUserId = eventPlan.inviteesByUserId as UserId[];
+    });
+
+    debug('Done');
+  } catch (err: any) {
+    debug(err);
+    if (err instanceof ApiError) {
+      throw err;
+    }
+    throw makeApiError(500, 'Unable to get event-plan', err);
+  }
+
+  try {
     debug(`Deleteing event-plan document`);
+
     const eventPlanDocumentRef = firebaseFirestore.doc(
       `/event-plans/${eventPlanId}`
     );
     await firebaseFirestore.recursiveDelete(eventPlanDocumentRef);
-
-    debug('Deleteing event-plan document from invitees and host');
-    let inviteesAndHost: UserId[] = [hostId];
-    if (invitees !== undefined) {
-      inviteesAndHost.push(...invitees);
+  } catch (err: any) {
+    debug(err);
+    if (err instanceof ApiError) {
+      throw err;
     }
-    for (const uid of inviteesAndHost) {
+    throw makeApiError(500, 'Unable to delete event-plan', err);
+  }
+  try {
+    debug('Deleteing event-plan document from invitees and host');
+
+    for (const uid of [...inviteesByUserId, hostId]) {
       const userEventPlanDocumentRef = firebaseFirestore.doc(
         `/users/${uid}/event-plans/${eventPlanId}`
       );
@@ -60,7 +86,7 @@ export const etlEventPlansDelete = async (
     if (err instanceof ApiError) {
       throw err;
     }
-    throw makeApiError(500, 'Unable to delete event-plan', err);
+    throw makeApiError(500, 'Unable to delete event-plan from user', err);
   }
 
   debug('Done');

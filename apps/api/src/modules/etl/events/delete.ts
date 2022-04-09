@@ -4,12 +4,11 @@ import { App } from 'firebase-admin/app';
 import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
-import { EventGuest, EventId, UserId } from '../../../interfaces';
+import { EventId, UserId } from '../../../interfaces';
 import { ApiError, makeApiError } from '../../../../lib/errors';
 
 type Params = {
   eventId: EventId;
-  guests: EventGuest[];
   hostId: UserId;
 };
 
@@ -22,10 +21,11 @@ export const etlEventsDelete = async (
   context: Context,
   { debug = Debug('api:etl/events/delete') as any } = {}
 ) => {
-  const { eventId, guests, hostId } = params;
+  const { eventId, hostId } = params;
+  let event;
+  let guestsByUserId: UserId[] = [];
 
   assert(eventId, makeApiError(409, 'Event is required'));
-
   debug(`Deleting an event: ${JSON.stringify(params, null, 4)}`);
 
   const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
@@ -38,16 +38,40 @@ export const etlEventsDelete = async (
   );
 
   try {
+    await firebaseFirestore.runTransaction(async (transaction) => {
+      const eventDocRef = firebaseFirestore.doc(`/events/${eventId}`);
+
+      event = (await transaction.get(eventDocRef)).data();
+      assert(event, makeApiError(422, 'Invalid event'));
+      assert(hostId === event.hostId, makeApiError(401, 'Unauthorized'));
+      guestsByUserId = event.guestsByUserId as UserId[];
+    });
+
+    debug('Done');
+  } catch (err: any) {
+    debug(err);
+    if (err instanceof ApiError) {
+      throw err;
+    }
+    throw makeApiError(500, 'Unable to get event', err);
+  }
+
+  try {
     debug(`Deleteing event document`);
+
     const eventDocumentRef = firebaseFirestore.doc(`/events/${eventId}`);
     await firebaseFirestore.recursiveDelete(eventDocumentRef);
-
-    debug('Deleteing event document from guests and host');
-    let guestsAndHost: UserId[] = [hostId];
-    if (guests !== undefined) {
-      guestsAndHost.push(...guests.map((value) => value.uid));
+  } catch (err: any) {
+    debug(err);
+    if (err instanceof ApiError) {
+      throw err;
     }
-    for (const uid of guestsAndHost) {
+    throw makeApiError(500, 'Unable to delete event', err);
+  }
+  try {
+    debug('Deleteing event document from guests and host');
+
+    for (const uid of [...guestsByUserId, hostId]) {
       const userEventDocumentRef = firebaseFirestore.doc(
         `/users/${uid}/events/${eventId}`
       );
@@ -58,7 +82,7 @@ export const etlEventsDelete = async (
     if (err instanceof ApiError) {
       throw err;
     }
-    throw makeApiError(500, 'Unable to delete event', err);
+    throw makeApiError(500, 'Unable to delete event from user', err);
   }
 
   debug('Done');
