@@ -70,9 +70,7 @@ export const createEventPlan = (
 };
 
 export const deleteEventPlan = (
-  data: { eventPlanId: EventPlanId } & {
-    invitees: UserId[];
-  } & { hostId: UserId }
+  data: { eventPlanId: EventPlanId } & { hostId: UserId }
 ) => {
   return new Promise((resolve, reject) => {
     axios
@@ -95,7 +93,7 @@ export const deleteEventPlan = (
 
 export const createEventFinalized = (
   data: EventInfo & { eventPlanId: EventPlanId } & {
-    invitees: UserId[];
+    inviteesByUserId: UserId[];
   }
 ) => {
   return new Promise((resolve, reject) => {
@@ -123,9 +121,7 @@ export const createEventFinalized = (
 };
 
 export const deleteEventFinalized = (
-  data: { eventId: EventId } & {
-    guests: EventGuest[];
-  } & { hostId: UserId }
+  data: { eventId: EventId } & { hostId: UserId }
 ) => {
   return new Promise((resolve, reject) => {
     axios
