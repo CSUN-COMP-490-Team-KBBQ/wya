@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import { functions, firebaseClient } from '../../firebase';
 import { etlEventsCreate } from '../../etl/events/create';
+import { etlEventsDelete } from '../../etl/events/delete';
 import guestsRouter from './guests';
 
 const router = Router();
@@ -36,6 +37,24 @@ router.post('/create', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+router.post('/delete', async (req, res, next) => {
+  const logger = functions.logger;
+
+  const { eventId, guests, hostId } = req.body;
+
+  try {
+    await etlEventsDelete(
+      { eventId, guests, hostId },
+      { firebaseClientInjection: firebaseClient },
+      { debug: logger.info }
+    );
+  } catch (err) {
+    next(err);
+  }
+
+  res.sendStatus(200);
 });
 
 router.use('/guests', guestsRouter);

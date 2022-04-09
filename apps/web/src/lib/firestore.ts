@@ -26,6 +26,7 @@ import {
   UserId,
   EventGuest,
   EventPlanId,
+  EventId,
 } from '../interfaces';
 
 const firestore = getFirestore(app);
@@ -116,6 +117,30 @@ export const createEventFinalized = (
           },
         } = res;
         resolve(eventFinalizedId);
+      })
+      .catch(reject);
+  });
+};
+
+export const deleteEventFinalized = (
+  data: { eventId: EventId } & {
+    guests: EventGuest[];
+  } & { hostId: UserId }
+) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/events/delete`,
+        JSON.stringify(data),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        resolve(res);
       })
       .catch(reject);
   });
