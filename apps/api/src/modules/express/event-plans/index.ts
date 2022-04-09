@@ -53,11 +53,10 @@ router.post('/delete', async (req, res, next) => {
       { firebaseClientInjection: firebaseClient },
       { debug: logger.info }
     );
+    res.sendStatus(200);
   } catch (err) {
     next(err);
   }
-
-  res.sendStatus(200);
 });
 
 export default router;
