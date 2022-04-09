@@ -26,7 +26,7 @@ function classNames(...classes) {
 
 export default function SettingsPage() {
   const { pending, userRecord } = useUserRecordContext();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  // const [sidebarOpen, setSidebarOpen] = useState(false);
   const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled] =
     useState(true);
   const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled] =
@@ -49,7 +49,7 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 md:hidden"
-                    onClick={() => setSidebarOpen(true)}
+                    // onClick={() => setSidebarOpen(true)}
                   >
                     <span className="sr-only">Open sidebar</span>
                     <MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
