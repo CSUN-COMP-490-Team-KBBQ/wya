@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/outline';
 import { Link } from 'react-router-dom';
 
-import { useUserContext } from '../../contexts/UserContext';
+// import { useUserContext } from '../../contexts/UserContext';
 
 import logo from '../../assets/wya-logo.png';
 
@@ -38,9 +38,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-// @ts-ignore
-const Page = ({ children }): JSX.Element => {
-  const { user } = useUserContext();
+const Sidebar: React.FC = ({ children }): JSX.Element => {
+  // left here to be used for sidebar user name
+  // const { user } = useUserContext();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -253,4 +253,4 @@ const Page = ({ children }): JSX.Element => {
   );
 };
 
-export default Page;
+export default Sidebar;
