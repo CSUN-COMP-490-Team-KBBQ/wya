@@ -22,11 +22,10 @@ export const etlEventPlansDelete = async (
   context: Context,
   { debug = Debug('api:etl/event-plans/delete') as any } = {}
 ) => {
-  const { eventPlanId, userId, hostId } = params;
-  let eventPlan;
-  let inviteesByUserId: UserId[] = [];
+  // Rough validation of params
+  assert(params.eventPlanId, makeApiError(400, 'Event-plan is required'));
+  assert(params.hostId, makeApiError(400, 'Host is required'));
 
-  assert(eventPlanId, makeApiError(409, 'Event-Plan is required'));
   debug(`Deleting an event-plan: ${JSON.stringify(params, null, 4)}`);
 
   const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
@@ -41,54 +40,42 @@ export const etlEventPlansDelete = async (
   try {
     await firebaseFirestore.runTransaction(async (transaction) => {
       const eventPlanDocRef = firebaseFirestore.doc(
-        `/event-plans/${eventPlanId}`
+        `/event-plans/${params.eventPlanId}`
+      );
+      const eventPlan = (await transaction.get(eventPlanDocRef)).data();
+
+      assert(eventPlan, makeApiError(422, 'Invalid event-plan'));
+
+      // Assert that the params.hostId matches whats in the event-plan doc
+      assert(
+        eventPlan?.hostId === params.hostId,
+        makeApiError(401, 'Unauthorized')
       );
 
-      eventPlan = (await transaction.get(eventPlanDocRef)).data();
-      assert(eventPlan, makeApiError(422, 'Invalid event plan'));
-      assert(hostId === eventPlan.hostId, makeApiError(401, 'Unauthorized'));
-      assert(hostId === userId, makeApiError(401, 'Unauthorized'));
-      inviteesByUserId = eventPlan.inviteesByUserId as UserId[];
+      // Remove user event-plans
+      for (const userId of [
+        ...((eventPlan.inviteesByUserId ?? []) as UserId[]),
+        ...(([eventPlan.hostId] ?? []) as UserId[]),
+      ]) {
+        const userEventPlanDocRef = firebaseFirestore.doc(
+          `/users/${userId}/event-plans/${params.eventPlanId}`
+        );
+        transaction.delete(userEventPlanDocRef);
+      }
+
+      // Remove the actual event plan
+
+      // Not actually sure if this is safe to do or not. Unsure how nicely
+      // a recursive delete does inside of a transaction. Seems safe because
+      // we already got all the info we want out of the event-plan
+      await firebaseFirestore.recursiveDelete(eventPlanDocRef);
     });
-
-    debug('Done');
   } catch (err: any) {
     debug(err);
     if (err instanceof ApiError) {
       throw err;
     }
-    throw makeApiError(500, 'Unable to get event-plan', err);
-  }
-
-  try {
-    debug(`Deleteing event-plan document`);
-
-    const eventPlanDocumentRef = firebaseFirestore.doc(
-      `/event-plans/${eventPlanId}`
-    );
-    await firebaseFirestore.recursiveDelete(eventPlanDocumentRef);
-  } catch (err: any) {
-    debug(err);
-    if (err instanceof ApiError) {
-      throw err;
-    }
-    throw makeApiError(500, 'Unable to delete event-plan', err);
-  }
-  try {
-    debug('Deleteing event-plan document from invitees and host');
-
-    for (const uid of [...inviteesByUserId, hostId]) {
-      const userEventPlanDocumentRef = firebaseFirestore.doc(
-        `/users/${uid}/event-plans/${eventPlanId}`
-      );
-      await firebaseFirestore.recursiveDelete(userEventPlanDocumentRef);
-    }
-  } catch (err: any) {
-    debug(err);
-    if (err instanceof ApiError) {
-      throw err;
-    }
-    throw makeApiError(500, 'Unable to delete event-plan from user', err);
+    throw makeApiError(500, 'Unable to delete event-plan');
   }
 
   debug('Done');
