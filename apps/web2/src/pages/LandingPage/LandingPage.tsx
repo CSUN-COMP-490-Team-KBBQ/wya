@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useUserContext } from '../../contexts/UserContext';
 
 // import logo from '../../assets/wya-logo.png';
-import image from '../../assets/background13.png';
+import image from '../../assets/background14.png';
 
 export default function LandingPage() {
   const history = useHistory();
