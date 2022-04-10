@@ -6,6 +6,7 @@ import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
 import { EventId, UserId } from '../../../interfaces';
 import { ApiError, makeApiError } from '../../../../lib/errors';
+import { etlEventPlansDelete } from '../event-plans/delete';
 
 type Params = {
   eventId: EventId;
@@ -46,6 +47,17 @@ export const etlEventsDelete = async (
       assert(
         event?.hostId === params.hostId,
         makeApiError(401, 'Unauthorized')
+      );
+
+      // Remove all associated event-plan docs
+      await etlEventPlansDelete(
+        {
+          eventPlanId: params.eventId,
+          userId: params.userId,
+          hostId: params.hostId,
+        },
+        { firebaseClientInjection: context.firebaseClientInjection },
+        { debug }
       );
 
       // Remove user events
