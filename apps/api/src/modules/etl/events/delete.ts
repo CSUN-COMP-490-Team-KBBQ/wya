@@ -22,11 +22,8 @@ export const etlEventsDelete = async (
   context: Context,
   { debug = Debug('api:etl/events/delete') as any } = {}
 ) => {
-  const { eventId, userId, hostId } = params;
-  let event;
-  let guestsByUserId: UserId[] = [];
-
-  assert(eventId, makeApiError(409, 'Event is required'));
+  assert(params.eventId, makeApiError(400, 'Event is required'));
+  assert(params.hostId, makeApiError(400, 'Host is required'));
   debug(`Deleting an event: ${JSON.stringify(params, null, 4)}`);
 
   const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
@@ -40,52 +37,41 @@ export const etlEventsDelete = async (
 
   try {
     await firebaseFirestore.runTransaction(async (transaction) => {
-      const eventDocRef = firebaseFirestore.doc(`/events/${eventId}`);
+      const eventDocRef = firebaseFirestore.doc(`/events/${params.eventId}`);
+      const event = (await transaction.get(eventDocRef)).data();
 
-      event = (await transaction.get(eventDocRef)).data();
       assert(event, makeApiError(422, 'Invalid event'));
-      assert(hostId === event.hostId, makeApiError(401, 'Unauthorized'));
-      assert(hostId === userId, makeApiError(401, 'Unauthorized'));
 
-      guestsByUserId = event.guestsByUserId as UserId[];
-    });
-
-    debug('Done');
-  } catch (err: any) {
-    debug(err);
-    if (err instanceof ApiError) {
-      throw err;
-    }
-    throw makeApiError(500, 'Unable to get event', err);
-  }
-
-  try {
-    debug(`Deleteing event document`);
-
-    const eventDocumentRef = firebaseFirestore.doc(`/events/${eventId}`);
-    await firebaseFirestore.recursiveDelete(eventDocumentRef);
-  } catch (err: any) {
-    debug(err);
-    if (err instanceof ApiError) {
-      throw err;
-    }
-    throw makeApiError(500, 'Unable to delete event', err);
-  }
-  try {
-    debug('Deleteing event document from guests and host');
-
-    for (const uid of [...guestsByUserId, hostId]) {
-      const userEventDocumentRef = firebaseFirestore.doc(
-        `/users/${uid}/events/${eventId}`
+      // Assert that the params.hostId matches whats in the event doc
+      assert(
+        event?.hostId === params.hostId,
+        makeApiError(401, 'Unauthorized')
       );
-      await firebaseFirestore.recursiveDelete(userEventDocumentRef);
-    }
+
+      // Remove user events
+      for (const userId of [
+        ...((event.guestsByUserId ?? []) as UserId[]),
+        ...(([event.hostId] ?? []) as UserId[]),
+      ]) {
+        const userEventDocRef = firebaseFirestore.doc(
+          `/users/${userId}/events/${params.eventId}`
+        );
+        transaction.delete(userEventDocRef);
+      }
+
+      // Remove the actual event
+
+      // Not actually sure if this is safe to do or not. Unsure how nicely
+      // a recursive delete does inside of a transaction. Seems safe because
+      // we already got all the info we want out of the event
+      await firebaseFirestore.recursiveDelete(eventDocRef);
+    });
   } catch (err: any) {
     debug(err);
     if (err instanceof ApiError) {
       throw err;
     }
-    throw makeApiError(500, 'Unable to delete event from user', err);
+    throw makeApiError(500, 'Unable to delete event');
   }
 
   debug('Done');
