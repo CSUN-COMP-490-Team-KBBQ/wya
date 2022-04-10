@@ -30,6 +30,7 @@ export default function LandingPage() {
                   <div className="flex items-center justify-between w-full">
                     {/* added for build to pass */}
                     <a href="example.com">
+                      {/* Keeping this here for reference */}
                       {/* <img
                         className="h-8 w-auto sm:h-10"
                         src={logo}
@@ -37,6 +38,7 @@ export default function LandingPage() {
                       /> */}
                     </a>
                   </div>
+                  {/* Keeping this here for reference */}
                   {/* <Link
                     to="/login"
                     className="flex justify-end font-large w-full z-10 text-blue-600 hover:text-blue-500 no-underline"
