@@ -77,7 +77,7 @@ export type EventPlanDocument = {
   startDate: string;
   endDate: string;
   hostId: UserId;
-  inviteesByUserId: UserId[] | Email[];
+  inviteesByUserId: UserId[];
   eventPlanId: EventPlanId;
 };
 
