@@ -142,6 +142,28 @@ export const deleteEventFinalized = (
   });
 };
 
+export const deleteEventGuest = (
+  data: { eventId: EventId } & { userId: UserId }
+) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/events/guests/delete`,
+        JSON.stringify(data),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        resolve(res);
+      })
+      .catch(reject);
+  });
+};
+
 export const getEventData = async (
   eventId: string
 ): Promise<EventPlanDocument> => {
