@@ -25,6 +25,8 @@ import {
 import {
   EventPlanId,
   EventPlanInfo,
+  EventId,
+  EventInfo,
   ScheduleSelectorData,
 } from '../../interfaces/';
 
@@ -130,6 +132,9 @@ export default function CalendarPage(): JSX.Element {
   const [eventPlans, setEventPlans] = React.useState<
     Array<EventPlanInfo & { eventPlanId: EventPlanId }>
   >([]);
+  const [events, setEvents] = React.useState<
+    Array<EventInfo & { eventId: EventId }>
+  >([]);
 
   // Observe user availability
   React.useEffect(() => {
@@ -186,14 +191,66 @@ export default function CalendarPage(): JSX.Element {
           }
         },
       });
+
+      // begin geting eventId from documentId from users/uid/event/eventId
+      getAllSubCollDocsSnapshot$(`/users/${uid}/events`, {
+        next: (eventsSnapshot) => {
+          if (!eventsSnapshot.empty) {
+            const eventInfoAndEventId: Array<
+              EventInfo & { eventId: EventId }
+            > = [];
+
+            eventsSnapshot.forEach((doc) => {
+              // now get document object by using eventId
+              getDocSnapshot$(`/users/${uid}/events/${doc.id}`, {
+                next: (eventDocSnapshot) => {
+                  if (eventDocSnapshot.exists()) {
+                    const eventInfo: EventInfo =
+                      eventDocSnapshot.data() as EventInfo;
+
+                    eventInfoAndEventId.push({
+                      eventId: doc.id,
+                      ...eventInfo,
+                    });
+
+                    if (
+                      eventInfoAndEventId.length ===
+                      eventsSnapshot.size
+                    ) {
+                      setEvents(eventInfoAndEventId);
+                    }
+                  }
+                },
+              });
+            });
+          }
+        },
+      });
     }
   }, [userRecord]);
 
   // Observe user events
 
   return (
-    <Page>
+    <>
       {userRecord && scheduleSelectorData !== undefined ? (
+        <>
+        <div className="flex-1 relative z-0 flex overflow-hidden">
+            <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
+              {/* Start main area*/}
+              <div className="absolute inset-0 py-6 px-4 sm:px-6 lg:px-8">
+                <div className="h-full border-2 border-gray-200 border-dashed rounded-lg" />
+              </div>
+              {/* End main area */}
+            </main>
+            <aside className="hidden relative xl:flex xl:flex-col flex-shrink-0 w-96 border-l border-gray-200 overflow-y-auto">
+              {/* Start secondary column (hidden on smaller screens) */}
+              <div className="absolute inset-0 py-6 px-4 sm:px-6 lg:px-8">
+                <div className="h-full border-2 border-gray-200 border-dashed rounded-lg" />
+              </div>
+              {/* End secondary column */}
+            </aside>
+          </div>
         <Container fluid id="calendarContainer">
           <Row>
             <Col sm={6} id="calendarCol">
@@ -229,9 +286,10 @@ export default function CalendarPage(): JSX.Element {
             </Col>
           </Row>
         </Container>
+        </>
       ) : (
         <></>
       )}
-    </Page>
+    </>
   );
 }
