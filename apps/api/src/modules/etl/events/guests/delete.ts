@@ -21,11 +21,9 @@ export const etlEventsGuestsDelete = async (
   context: Context,
   { debug = Debug('api:etl/events/guests/delete') as any } = {}
 ) => {
-  const { eventId, userId } = params;
-  let event;
-  let guestsByUserId: UserId[] = [];
+  assert(params.eventId, makeApiError(409, 'Event is required'));
+  assert(params.userId, makeApiError(409, 'User is required'));
 
-  assert(eventId, makeApiError(409, 'Event is required'));
   debug(`Deleting an event: ${JSON.stringify(params, null, 4)}`);
 
   const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
@@ -39,80 +37,43 @@ export const etlEventsGuestsDelete = async (
 
   try {
     await firebaseFirestore.runTransaction(async (transaction) => {
-      const eventDocRef = firebaseFirestore.doc(`/events/${eventId}`);
+      const eventDocRef = firebaseFirestore.doc(`/events/${params.eventId}`);
+      const event = (await transaction.get(eventDocRef)).data();
 
-      event = (await transaction.get(eventDocRef)).data();
       assert(event, makeApiError(422, 'Invalid event'));
-      guestsByUserId = event.guestsByUserId as UserId[];
-      assert(
-        guestsByUserId.includes(userId),
-        makeApiError(409, `User: ${userId} is not a guest`)
-      );
-    });
 
-    debug('Done');
+      const guestsByUserId = event.guestsByUserId as UserId[];
+      // Assert that the params.userId is a guest in the event doc
+      assert(
+        guestsByUserId.includes(params.userId),
+        makeApiError(409, `User: ${params.userId} is not a guest`)
+      );
+
+      // Remove user from event
+      const eventGuestsDocRef = firebaseFirestore.doc(
+        `/events/${params.eventId}/guests/${params.userId}`
+      );
+      transaction.delete(eventGuestsDocRef);
+
+      // Updating event guest in events/eventId: { guestsByUserId }
+      const index = guestsByUserId.findIndex(
+        (value) => value === params.userId
+      );
+      guestsByUserId.splice(index, 1);
+      transaction.update(eventDocRef, { guestsByUserId: guestsByUserId });
+
+      // Remove event from user
+      const userEventDocRef = firebaseFirestore.doc(
+        `/users/${params.userId}/events/${params.eventId}`
+      );
+      transaction.delete(userEventDocRef);
+    });
   } catch (err: any) {
     debug(err);
     if (err instanceof ApiError) {
       throw err;
     }
     throw makeApiError(500, 'Unable to get event', err);
-  }
-
-  debug(`Deleting event guest from events/eventId/guests `);
-
-  try {
-    const eventGuestsDocumentRef = firebaseFirestore.doc(
-      `/events/${eventId}/guests/${userId}`
-    );
-    await firebaseFirestore.recursiveDelete(eventGuestsDocumentRef);
-  } catch (err: any) {
-    debug(err);
-    if (err instanceof ApiError) {
-      throw err;
-    }
-    throw makeApiError(
-      500,
-      'Unable to delete event guest from events/eventId/guests',
-      err
-    );
-  }
-
-  debug('Updating event guest in events/eventId: { guestsByUserId }');
-
-  try {
-    await firebaseFirestore.runTransaction(async (transaction) => {
-      const eventDocumentRef = firebaseFirestore.doc(`/events/${eventId}`);
-      const index = guestsByUserId.findIndex((value) => value === userId);
-      guestsByUserId.splice(index, 1);
-
-      transaction.update(eventDocumentRef, { guestsByUserId: guestsByUserId });
-    });
-  } catch (err: any) {
-    debug(err);
-    if (err instanceof ApiError) {
-      throw err;
-    }
-    throw makeApiError(
-      500,
-      'Unable to delete event guest from events/eventId: guestsByUserId',
-      err
-    );
-  }
-
-  debug('Deleting event from user ');
-
-  try {
-    const userEventDocumentRef = firebaseFirestore.doc(
-      `/users/${userId}/events/${eventId}`
-    );
-    await firebaseFirestore.recursiveDelete(userEventDocumentRef);
-  } catch (err: any) {
-    debug(err);
-    if (err instanceof ApiError) {
-      throw err;
-    }
-    throw makeApiError(500, 'Unable to delete event from user', err);
   }
 
   debug('Done');
