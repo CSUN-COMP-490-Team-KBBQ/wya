@@ -49,6 +49,9 @@ export const etlEventsDelete = async (
         makeApiError(401, 'Unauthorized')
       );
 
+      // Not sure if we can create another transaction in the middle of
+      // this transaction
+
       // Remove all associated event-plan docs
       await etlEventPlansDelete(
         {
