@@ -106,12 +106,11 @@ export default function EventFinalizedPage({
 
   const handleDelete = async () => {
     if (eventData !== undefined && userRecord) {
-      const dataNeededToDelete: { eventId: EventId } & { userId: UserId } & {
+      const dataNeededToDelete: { eventId: EventId } & {
         hostId: UserId;
       } = {
         eventId: eventData.eventId,
-        userId: userRecord.uid as UserId,
-        hostId: eventData.hostId,
+        hostId: userRecord.uid as UserId,
       };
 
       await deleteEventFinalized(dataNeededToDelete);

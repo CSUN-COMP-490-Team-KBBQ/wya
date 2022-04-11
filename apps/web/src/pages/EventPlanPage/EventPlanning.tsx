@@ -134,13 +134,10 @@ export default function EventPlanning({
 
   const deleteEventPlanHandler = async () => {
     const dataNeededToDelete: { eventPlanId: EventPlanId } & {
-      userId: UserId;
-    } & {
       hostId: UserId;
     } = {
       eventPlanId: eventPlanData.eventPlanId,
-      userId,
-      hostId: eventPlanData.hostId,
+      hostId: userId,
     };
     await deleteEventPlan(dataNeededToDelete);
 
