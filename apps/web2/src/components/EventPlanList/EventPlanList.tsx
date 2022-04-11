@@ -27,8 +27,16 @@ export default function EventPlanList(props: EventPlanListProps): JSX.Element {
 
   return (
     <div id={elementId}>
-      <h1>Event Plans</h1>
-      <ListGroup className="event-plan-list">
+      <h1 className='py-4 flex justify-center'>Pending Events</h1>
+      <ul role="list" className="space-y-3 pr-8">
+      {eventList.map(({ eventPlanId, name }) => (
+        <li key={eventPlanId} onClick={() => history.push(`/event-plans/${eventPlanId}`)} className="bg-white shadow overflow-hidden rounded-md px-6 py-4">
+          {/* Your content */}
+          {name}
+        </li>
+      ))}
+    </ul>
+      {/* <ListGroup className="event-plan-list">
         {eventList.map(({ eventPlanId, name }) => {
           return (
             <ListGroup.Item
@@ -40,7 +48,7 @@ export default function EventPlanList(props: EventPlanListProps): JSX.Element {
             </ListGroup.Item>
           );
         })}
-      </ListGroup>
+      </ListGroup> */}
     </div>
   );
 }
