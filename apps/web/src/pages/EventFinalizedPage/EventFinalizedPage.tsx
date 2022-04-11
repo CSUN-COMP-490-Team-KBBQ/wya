@@ -134,10 +134,10 @@ export default function EventFinalizedPage({
               <u>Day</u>: {eventData.day}
             </p>
             <p>
-              <u>Starts</u>: {eventData.startTime}
+              <u>Starts</u>: {eventData.dailyStartTime}
             </p>
             <p>
-              <u>Ends</u>: {eventData.endTime}
+              <u>Ends</u>: {eventData.dailyEndTime}
             </p>
           </div>
           <div id="eventFinalizedButtons">

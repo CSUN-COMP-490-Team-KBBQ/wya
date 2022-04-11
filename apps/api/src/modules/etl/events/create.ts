@@ -15,7 +15,7 @@ import { ApiError, makeApiError } from '../../../../lib/errors';
 type Params = {
   eventPlanId: EventPlanId;
   hostId: UserId;
-
+  day: string;
   dailyStartTime: string;
   dailyEndTime: string;
   startDate: string;

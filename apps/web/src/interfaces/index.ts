@@ -115,8 +115,8 @@ export type EventDocument = {
   day: string;
   startDate: string;
   endDate: string;
-  startTime: string;
-  endTime: string;
+  dailyStartTime: string;
+  dailyEndTime: string;
   eventId: EventId;
 };
 

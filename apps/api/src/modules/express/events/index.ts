@@ -13,6 +13,7 @@ router.post('/create', async (req, res, next) => {
   const {
     eventPlanId,
     hostId,
+    day,
     dailyStartTime,
     dailyEndTime,
     startDate,
@@ -24,6 +25,7 @@ router.post('/create', async (req, res, next) => {
       {
         eventPlanId,
         hostId,
+        day,
         dailyStartTime,
         dailyEndTime,
         startDate,
