@@ -53,10 +53,12 @@ export default function GeneralSettings() {
         </div>
         <div className="mt-6">
           <dl className="divide-y divide-gray-200">
-            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 items-center">
               <dt className="text-sm font-medium text-gray-500">Name</dt>
               <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                <span className="flex-grow">Chelsea Hagon</span>
+                <span className="flex-grow">
+                  {userRecord?.firstName} {userRecord?.lastName}
+                </span>
                 <span className="ml-4 flex-shrink-0">
                   <button
                     type="button"
@@ -67,15 +69,19 @@ export default function GeneralSettings() {
                 </span>
               </dd>
             </div>
-            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5">
+            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5 items-center">
               <dt className="text-sm font-medium text-gray-500">Photo</dt>
-              <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2 items-center">
                 <span className="flex-grow">
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
-                  />
+                  <div className="inline-block h-9 w-9 rounded-full overflow-hidden bg-gray-200">
+                    <svg
+                      className="h-full w-full text-gray-300"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
                 </span>
                 <span className="ml-4 flex-shrink-0 flex items-start space-x-4">
                   <button
@@ -96,10 +102,10 @@ export default function GeneralSettings() {
                 </span>
               </dd>
             </div>
-            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5">
+            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5 items-center">
               <dt className="text-sm font-medium text-gray-500">Email</dt>
               <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                <span className="flex-grow">chelsea.hagon@example.com</span>
+                <span className="flex-grow">{userRecord?.email}</span>
                 <span className="ml-4 flex-shrink-0">
                   <button
                     type="button"
@@ -127,7 +133,7 @@ export default function GeneralSettings() {
           <dl className="divide-y divide-gray-200">
             <Switch.Group
               as="div"
-              className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5"
+              className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5 items-center"
             >
               <Switch.Label
                 as="dt"

@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/outline';
 import { Link } from 'react-router-dom';
 
-// import { useUserContext } from '../../contexts/UserContext';
+import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import logo from '../../assets/wya-logo.png';
 
@@ -39,8 +39,7 @@ function classNames(...classes) {
 }
 
 const Sidebar: React.FC = ({ children }): JSX.Element => {
-  // left here to be used for sidebar user name
-  // const { user } = useUserContext();
+  const { userRecord } = useUserRecordContext();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -143,7 +142,7 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
                     </div>
                     <div className="ml-3 text-left">
                       <p className="text-base font-medium text-gray-700 group-hover:text-gray-900 mb-0">
-                        Whitney Francis
+                        {userRecord?.firstName} {userRecord?.lastName}
                       </p>
                       <p className="text-sm font-medium text-gray-500 group-hover:text-gray-700 mb-0">
                         View profile
@@ -214,7 +213,7 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
                   </div>
                   <div className="ml-3 text-left">
                     <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 mb-0">
-                      Whitney Francis
+                      {userRecord?.firstName} {userRecord?.lastName}
                     </p>
                     <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700 mb-0">
                       View profile
