@@ -15,7 +15,7 @@ import logo from '../../assets/wya-logo.png';
 const content = {
   DASHBOARD: '/dashboard',
   FRIENDS: '/friends',
-  SETTINGS: '/settings',
+  SETTINGS: '/settings/general',
 };
 
 const navigation = [

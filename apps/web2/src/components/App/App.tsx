@@ -51,7 +51,10 @@ export default function App(): JSX.Element {
             {/* legacy page */}
             <PrivateRoute path="/calendar" component={CalendarPage} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
-            <PrivateRoute path="/settings" component={SettingsPage} />
+
+            <PrivateRoute path="/settings/general" component={SettingsPage} />
+            <PrivateRoute path="/settings/password" component={SettingsPage} />
+
             {/* legacy page */}
             <PrivateRoute path="/profile" component={ProfilePage} />
             {/* legacy page */}
