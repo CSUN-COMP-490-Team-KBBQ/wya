@@ -63,23 +63,25 @@ export const etlEventsDelete = async (
         { debug }
       );
 
-      // Remove user events
       for (const userId of [
         ...((event.guestsByUserId ?? []) as UserId[]),
         ...(([event.hostId] ?? []) as UserId[]),
       ]) {
+        // Remove user events
         const userEventDocRef = firebaseFirestore.doc(
           `/users/${userId}/events/${params.eventId}`
         );
         transaction.delete(userEventDocRef);
+
+        // Remove the event guests
+        const eventGuestsDocRef = firebaseFirestore.doc(
+          `/events/${params.eventId}/guests/${userId}`
+        );
+        transaction.delete(eventGuestsDocRef);
       }
 
       // Remove the actual event
-
-      // Not actually sure if this is safe to do or not. Unsure how nicely
-      // a recursive delete does inside of a transaction. Seems safe because
-      // we already got all the info we want out of the event
-      await firebaseFirestore.recursiveDelete(eventDocRef);
+      transaction.delete(eventDocRef);
     });
   } catch (err: any) {
     debug(err);

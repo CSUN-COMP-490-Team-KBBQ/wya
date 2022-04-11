@@ -52,23 +52,25 @@ export const etlEventPlansDelete = async (
         makeApiError(401, 'Unauthorized')
       );
 
-      // Remove user event-plans
       for (const userId of [
         ...((eventPlan.inviteesByUserId ?? []) as UserId[]),
         ...(([eventPlan.hostId] ?? []) as UserId[]),
       ]) {
+        // Remove user event-plans
         const userEventPlanDocRef = firebaseFirestore.doc(
           `/users/${userId}/event-plans/${params.eventPlanId}`
         );
         transaction.delete(userEventPlanDocRef);
+
+        // Remove event-plan availabilities
+        const eventPlanAvailabilitiesDocRef = firebaseFirestore.doc(
+          `/event-plans/${params.eventPlanId}/availabilities/${userId}`
+        );
+        transaction.delete(eventPlanAvailabilitiesDocRef);
       }
 
       // Remove the actual event plan
-
-      // Not actually sure if this is safe to do or not. Unsure how nicely
-      // a recursive delete does inside of a transaction. Seems safe because
-      // we already got all the info we want out of the event-plan
-      await firebaseFirestore.recursiveDelete(eventPlanDocRef);
+      transaction.delete(eventPlanDocRef);
     });
   } catch (err: any) {
     debug(err);
