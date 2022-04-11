@@ -4,15 +4,18 @@ import { Row, Col, Container, Modal, Button } from 'react-bootstrap';
 import AvailabilityHeatMap from '../../components/AvailabilityHeatMap/AvailabilityHeatMap';
 import ConfirmEventModal from '../../components/ConfirmEventModal/ConfirmEventModal';
 import AvailabilityScheduleSelector from '../../components/AvailabilityScheduleSelector/AvailabilityScheduleSelector';
+import { useHistory } from 'react-router-dom';
 
 import { appendUserAvailabilityToGroupEventPlanAvailability } from '../../lib/availability';
-import { updateEventAvailability } from '../../lib/firestore';
+import { deleteEventPlan, updateEventAvailability } from '../../lib/firestore';
 import { transformStartTime, transformEndTime } from '../../lib/eventHelpers';
 import {
   EventPlanAvailabilityDocument,
   EventPlanDocument,
+  EventPlanId,
   HeatMapData,
   ScheduleSelectorData,
+  UserId,
 } from '../../interfaces';
 
 import './EventPlanPage.css';
@@ -127,6 +130,23 @@ export default function EventPlanning({
   isHost,
 }: EventPlanningProps): JSX.Element {
   const [modalShow, setModalShow] = React.useState<boolean>(false);
+  const history = useHistory();
+
+  const deleteEventPlanHandler = async () => {
+    const dataNeededToDelete: { eventPlanId: EventPlanId } & {
+      userId: UserId;
+    } & {
+      hostId: UserId;
+    } = {
+      eventPlanId: eventPlanData.eventPlanId,
+      userId,
+      hostId: eventPlanData.hostId,
+    };
+    await deleteEventPlan(dataNeededToDelete);
+
+    console.log('Event Plan deleted');
+    history.push('/calendar');
+  };
 
   return (
     <Container fluid id="eventPlanningContainer">
@@ -149,6 +169,13 @@ export default function EventPlanning({
         </Row>
         <Row>
           <div id="buttonsRow">
+            <Button
+              className="eventDeleteEventPlanButton"
+              type="button"
+              onClick={() => deleteEventPlanHandler()}
+            >
+              Delete Event-Plan
+            </Button>
             <Button
               className="eventAddAvailabilityButton"
               type="button"

@@ -70,7 +70,7 @@ export const createEventPlan = (
 
 export const createEventFinalized = (
   data: EventInfo & { eventPlanId: EventPlanId } & {
-    invitees: UserId[];
+    inviteesByUserId: UserId[];
   }
 ) => {
   return new Promise((resolve, reject) => {
