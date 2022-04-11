@@ -289,119 +289,124 @@ export default function CalendarPage(): JSX.Element {
       {userRecord && scheduleSelectorData !== undefined ? (
         <>
           {/* 3 column wrapper */}
-          <div className="flex-grow w-full max-w-full mx-auto xl:px-8 lg:flex">
+          <div className="flex-grow w-full max-w-full mx-auto xl:px-8 lg:flex bg-white">
             {/* main wrapper */}
-            <div className="flex-1 min-w-0 bg-white xl:flex">
+            <div className="flex-1 min-w-0 bg-white lg:flex">
               <div className="bg-white lg:min-w-0 lg:flex-1">
-                <div className="h-full py-6 px-4 sm:px-6 lg:px-8">
+                <div className="h-full py-6 px-4 sm:px-6 lg:px-8 bg-white">
                   {/* Start main area*/}
                   <div
                     className="relative h-full"
                     style={{ minHeight: '36rem' }}
                   >
-                    <div className="absolute inset-0 border-2 border-gray-200 border-dashed rounded-lg" />
-                    <h1 className="py-4 flex justify-center">Calendar</h1>
-                    {/* Calendar */}
-                    <div className="flex justify-center px-8">
-                      <div className="mt-10 w-full text-center">
-                        <div className="flex items-center text-gray-900">
-                          <button
-                            type="button"
-                            className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
-                          >
-                            <span className="sr-only">Previous month</span>
-                            <ChevronLeftIcon
-                              className="h-5 w-5"
-                              aria-hidden="true"
-                            />
-                          </button>
-                          <div className="flex-auto font-semibold">January</div>
-                          <button
-                            type="button"
-                            className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
-                          >
-                            <span className="sr-only">Next month</span>
-                            <ChevronRightIcon
-                              className="h-5 w-5"
-                              aria-hidden="true"
-                            />
-                          </button>
-                        </div>
-                        <div className="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-500">
-                          <div>M</div>
-                          <div>T</div>
-                          <div>W</div>
-                          <div>T</div>
-                          <div>F</div>
-                          <div>S</div>
-                          <div>S</div>
-                        </div>
-                        <div className="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
-                          {days.map((day, dayIdx) => (
+                    <div className="absolute inset-0 border-2 border-gray-200 border-dashed rounded-lg overflow-y-auto bg-white">
+                      <h1 className="pt-4 flex justify-center">Calendar</h1>
+                      {/* Calendar */}
+                      <div className="flex justify-center px-8">
+                        <div className="mt-10 w-full text-center">
+                          <div className="flex items-center text-gray-900">
                             <button
-                              key={day.date}
                               type="button"
-                              className={classNames(
-                                'py-1.5 hover:bg-gray-100 focus:z-10',
-                                day.isCurrentMonth ? 'bg-white' : 'bg-gray-50',
-                                (day.isSelected || day.isToday) &&
-                                  'font-semibold',
-                                day.isSelected && 'text-white',
-                                !day.isSelected &&
-                                  day.isCurrentMonth &&
-                                  !day.isToday &&
-                                  'text-gray-900',
-                                !day.isSelected &&
-                                  !day.isCurrentMonth &&
-                                  !day.isToday &&
-                                  'text-gray-400',
-                                day.isToday &&
-                                  !day.isSelected &&
-                                  'text-indigo-600',
-                                dayIdx === 0 && 'rounded-tl-lg',
-                                dayIdx === 6 && 'rounded-tr-lg',
-                                dayIdx === days.length - 7 && 'rounded-bl-lg',
-                                dayIdx === days.length - 1 && 'rounded-br-lg'
-                              )}
+                              className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
                             >
-                              <time
-                                dateTime={day.date}
+                              <span className="sr-only">Previous month</span>
+                              <ChevronLeftIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            </button>
+                            <div className="flex-auto font-semibold">
+                              January
+                            </div>
+                            <button
+                              type="button"
+                              className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
+                            >
+                              <span className="sr-only">Next month</span>
+                              <ChevronRightIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            </button>
+                          </div>
+                          <div className="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-500">
+                            <div>M</div>
+                            <div>T</div>
+                            <div>W</div>
+                            <div>T</div>
+                            <div>F</div>
+                            <div>S</div>
+                            <div>S</div>
+                          </div>
+                          <div className="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
+                            {days.map((day, dayIdx) => (
+                              <button
+                                key={day.date}
+                                type="button"
                                 className={classNames(
-                                  'mx-auto flex h-7 w-7 items-center justify-center rounded-full',
-                                  day.isSelected &&
-                                    day.isToday &&
-                                    'bg-indigo-600',
-                                  day.isSelected &&
+                                  'py-1.5 hover:bg-gray-100 focus:z-10',
+                                  day.isCurrentMonth
+                                    ? 'bg-white'
+                                    : 'bg-gray-50',
+                                  (day.isSelected || day.isToday) &&
+                                    'font-semibold',
+                                  day.isSelected && 'text-white',
+                                  !day.isSelected &&
+                                    day.isCurrentMonth &&
                                     !day.isToday &&
-                                    'bg-gray-900'
+                                    'text-gray-900',
+                                  !day.isSelected &&
+                                    !day.isCurrentMonth &&
+                                    !day.isToday &&
+                                    'text-gray-400',
+                                  day.isToday &&
+                                    !day.isSelected &&
+                                    'text-indigo-600',
+                                  dayIdx === 0 && 'rounded-tl-lg',
+                                  dayIdx === 6 && 'rounded-tr-lg',
+                                  dayIdx === days.length - 7 && 'rounded-bl-lg',
+                                  dayIdx === days.length - 1 && 'rounded-br-lg'
                                 )}
                               >
-                                {day.date.split('-').pop()!.replace(/^0/, '')}
-                              </time>
-                            </button>
-                          ))}
+                                <time
+                                  dateTime={day.date}
+                                  className={classNames(
+                                    'mx-auto flex h-7 w-7 items-center justify-center rounded-full',
+                                    day.isSelected &&
+                                      day.isToday &&
+                                      'bg-indigo-600',
+                                    day.isSelected &&
+                                      !day.isToday &&
+                                      'bg-gray-900'
+                                  )}
+                                >
+                                  {day.date.split('-').pop()!.replace(/^0/, '')}
+                                </time>
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    {/* Calendar End */}
-                    {/* Main Area Divider */}
-                    <div className="relative py-4">
-                      <div
-                        className="absolute inset-0 flex items-center"
-                        aria-hidden="true"
-                      >
-                        <div className="w-full border-t border-gray-300" />
+                      {/* Calendar End */}
+                      {/* Main Area Divider */}
+                      <div className="relative py-4">
+                        <div
+                          className="absolute inset-0 flex items-center"
+                          aria-hidden="true"
+                        >
+                          <div className="w-full border-t border-gray-300" />
+                        </div>
+                        <div className="relative flex justify-center">
+                          <span className="px-3 bg-white text-lg font-medium text-gray-900"></span>
+                        </div>
                       </div>
-                      <div className="relative flex justify-center">
-                        <span className="px-3 bg-white text-lg font-medium text-gray-900"></span>
+                      {/* End Main Area Divider */}
+                      <div className="pb-4">
+                        <EventList
+                          elementId="calendar-event-plan-list"
+                          events={events}
+                        />
                       </div>
-                    </div>
-                    {/* End Main Area Divider */}
-                    <div className="pb-4">
-                      <EventList
-                        elementId="calendar-event-plan-list"
-                        events={events}
-                      />
                     </div>
                   </div>
                   {/* End main area */}
@@ -409,13 +414,14 @@ export default function CalendarPage(): JSX.Element {
               </div>
             </div>
 
-            <div className="bg-gray-50 pr-4 sm:pr-6 lg:pr-8 lg:flex-shrink-0 lg:border-l lg:border-gray-200 xl:pr-0">
-              <div className="h-full pl-6 py-6 lg:w-80">
+            <div className="bg-[#00416d] pr-4 sm:pr-6 lg:pr-8 lg:flex-shrink-0 lg:border-l lg:border-gray-200 xl:pr-0">
+              <div className="h-full pl-6 py-6 lg:w-80 bg-white">
                 {/* Start right column area */}
                 <div className="h-full relative" style={{ minHeight: '16rem' }}>
-                  <div className="absolute inset-0 border-2 border-gray-200 border-dashed rounded-lg" />
-                  <div>
-                    <EventPlanList elementId="" eventPlans={eventPlans} />
+                  <div className="absolute inset-0 border-2 border-gray-200 border-dashed rounded-lg overflow-y-auto bg-white">
+                    <div>
+                      <EventPlanList elementId="" eventPlans={eventPlans} />
+                    </div>
                   </div>
                 </div>
                 {/* End right column area */}
