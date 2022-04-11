@@ -117,3 +117,6 @@ dist/
 
 # firebase service account
 kbbq-wya*.json
+
+# tailwind generated output
+apps/web2/src/tailwind.output.css
