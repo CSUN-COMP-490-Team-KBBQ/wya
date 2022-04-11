@@ -27,15 +27,23 @@ export default function EventList(props: EventListProps): JSX.Element {
 
   return (
     <div id={elementId}>
-      <h1 className='pb-4'>Upcoming Events</h1>
-      <ul role="list" className="space-y-3 pr-8">
-        {eventList.map(({ eventId, name}) => (
-            <li key={eventId} onClick={() => history.push(`/events/${eventId}`)} className="bg-white shadow overflow-hidden rounded-md px-6 py-4">
-            {/* Your content */}
-            {name}
+      <h1 className="pb-4">Upcoming Events</h1>
+      <ul role="list" className="space-y-3 px-20">
+        {eventList.map(
+          ({ eventId, name, startDate, dailyStartTime, dailyEndTime }) => (
+            <li
+              key={eventId}
+              onClick={() => history.push(`/events/${eventId}`)}
+              className="bg-white shadow overflow-hidden rounded-md px-6 py-4 text-center"
+            >
+              {/* Your content */}
+              {name} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {startDate} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {dailyStartTime} - {dailyEndTime}
             </li>
-        ))}
-        </ul>
+          )
+        )}
+      </ul>
       {/* <ListGroup className="event-plan-list">
         {eventList.map(({ eventId, name }) => {
           return (
