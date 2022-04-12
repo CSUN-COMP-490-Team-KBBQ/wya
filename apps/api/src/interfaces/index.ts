@@ -58,6 +58,9 @@ export enum EVENT_PLAN_ROLE {
   HOST = 'HOST',
   INVITEE = 'INVITEE',
 }
+
+export type EventPlanFinalizedFlag = boolean;
+
 export type EventPlanInfo = {
   name: string;
   description: string;

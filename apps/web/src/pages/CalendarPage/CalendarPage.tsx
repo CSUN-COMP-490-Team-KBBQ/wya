@@ -23,6 +23,7 @@ import {
 } from '../../lib/availability';
 
 import {
+  EventPlanFinalizedFlag,
   EventPlanId,
   EventPlanInfo,
   ScheduleSelectorData,
@@ -128,7 +129,9 @@ export default function CalendarPage(): JSX.Element {
   const [scheduleSelectorData, setScheduleSelectorData] =
     React.useState<ScheduleSelectorData>();
   const [eventPlans, setEventPlans] = React.useState<
-    Array<EventPlanInfo & { eventPlanId: EventPlanId }>
+    (EventPlanInfo & { eventPlanId: EventPlanId } & {
+      isFinalized: EventPlanFinalizedFlag;
+    })[]
   >([]);
 
   // Observe user availability
@@ -156,28 +159,28 @@ export default function CalendarPage(): JSX.Element {
       getAllSubCollDocsSnapshot$(`/users/${uid}/event-plans`, {
         next: (eventPlansSnapshot) => {
           if (!eventPlansSnapshot.empty) {
-            const eventPlanInfoAndEventPlanId: Array<
-              EventPlanInfo & { eventPlanId: EventPlanId }
-            > = [];
+            const eventPlanInfoArray: (EventPlanInfo & {
+              eventPlanId: EventPlanId;
+            } & {
+              isFinalized: EventPlanFinalizedFlag;
+            })[] = [];
 
             eventPlansSnapshot.forEach((doc) => {
               // now get document object by using eventPlanId
               getDocSnapshot$(`/users/${uid}/event-plans/${doc.id}`, {
                 next: (eventPlanDocSnapshot) => {
                   if (eventPlanDocSnapshot.exists()) {
-                    const eventPlanInfo: EventPlanInfo =
-                      eventPlanDocSnapshot.data() as EventPlanInfo;
+                    const eventPlan: EventPlanInfo & {
+                      eventPlanId: EventPlanId;
+                    } & { isFinalized: EventPlanFinalizedFlag } =
+                      eventPlanDocSnapshot.data() as EventPlanInfo & {
+                        eventPlanId: EventPlanId;
+                      } & { isFinalized: EventPlanFinalizedFlag };
 
-                    eventPlanInfoAndEventPlanId.push({
-                      eventPlanId: doc.id,
-                      ...eventPlanInfo,
-                    });
+                    eventPlanInfoArray.push({ ...eventPlan });
 
-                    if (
-                      eventPlanInfoAndEventPlanId.length ===
-                      eventPlansSnapshot.size
-                    ) {
-                      setEventPlans(eventPlanInfoAndEventPlanId);
+                    if (eventPlanInfoArray.length === eventPlansSnapshot.size) {
+                      setEventPlans(eventPlanInfoArray);
                     }
                   }
                 },
