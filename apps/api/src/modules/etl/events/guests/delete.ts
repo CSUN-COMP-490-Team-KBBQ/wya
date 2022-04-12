@@ -21,8 +21,8 @@ export const etlEventsGuestsDelete = async (
   context: Context,
   { debug = Debug('api:etl/events/guests/delete') as any } = {}
 ) => {
-  assert(params.eventId, makeApiError(409, 'Event is required'));
-  assert(params.userId, makeApiError(409, 'User is required'));
+  assert(params.eventId, makeApiError(400, 'Event is required'));
+  assert(params.userId, makeApiError(400, 'User is required'));
 
   debug(`Deleting an event: ${JSON.stringify(params, null, 4)}`);
 
@@ -46,7 +46,7 @@ export const etlEventsGuestsDelete = async (
       // Assert that the params.userId is a guest in the event doc
       assert(
         guestsByUserId.includes(params.userId),
-        makeApiError(409, `User: ${params.userId} is not a guest`)
+        makeApiError(400, `User: ${params.userId} is not a guest`)
       );
 
       // Remove user from event
