@@ -10,7 +10,6 @@ import { etlEventPlansDelete } from '../event-plans/delete';
 
 type Params = {
   eventId: EventId;
-  userId: UserId;
   hostId: UserId;
 };
 
@@ -56,7 +55,6 @@ export const etlEventsDelete = async (
       await etlEventPlansDelete(
         {
           eventPlanId: params.eventId,
-          userId: params.userId,
           hostId: params.hostId,
         },
         { firebaseClientInjection: context.firebaseClientInjection },

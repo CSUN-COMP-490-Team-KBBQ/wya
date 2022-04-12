@@ -9,7 +9,6 @@ import { ApiError, makeApiError } from '../../../../lib/errors';
 
 type Params = {
   eventPlanId: EventPlanId;
-  userId: UserId;
   hostId: UserId;
 };
 

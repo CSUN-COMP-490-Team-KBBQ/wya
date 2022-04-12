@@ -70,7 +70,7 @@ export const createEventPlan = (
 };
 
 export const deleteEventPlan = (
-  data: { eventPlanId: EventPlanId } & { userId: UserId } & { hostId: UserId }
+  data: { eventPlanId: EventPlanId } & { hostId: UserId }
 ) => {
   return new Promise((resolve, reject) => {
     axios
@@ -121,12 +121,34 @@ export const createEventFinalized = (
 };
 
 export const deleteEventFinalized = (
-  data: { eventId: EventId } & { userId: UserId } & { hostId: UserId }
+  data: { eventId: EventId } & { hostId: UserId }
 ) => {
   return new Promise((resolve, reject) => {
     axios
       .post(
         `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/events/delete`,
+        JSON.stringify(data),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        resolve(res);
+      })
+      .catch(reject);
+  });
+};
+
+export const deleteEventGuest = (
+  data: { eventId: EventId } & { userId: UserId }
+) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/events/guests/delete`,
         JSON.stringify(data),
         {
           headers: {
