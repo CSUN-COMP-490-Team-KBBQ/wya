@@ -4,6 +4,7 @@ import { functions, firebaseClient } from '../../firebase';
 import { etlEventsCreate } from '../../etl/events/create';
 import { etlEventsDelete } from '../../etl/events/delete';
 import guestsRouter from './guests';
+import hostRouter from './host';
 
 const router = Router();
 
@@ -59,5 +60,6 @@ router.post('/delete', async (req, res, next) => {
 });
 
 router.use('/guests', guestsRouter);
+router.use('/host', hostRouter);
 
 export default router;
