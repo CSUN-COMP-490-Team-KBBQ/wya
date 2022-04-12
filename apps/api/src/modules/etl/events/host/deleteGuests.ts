@@ -41,8 +41,12 @@ export const etlEventsHostDeleteGuests = async (
     await firebaseFirestore.runTransaction(async (transaction) => {
       const eventDocRef = firebaseFirestore.doc(`/events/${params.eventId}`);
       const event = (await transaction.get(eventDocRef)).data();
-
+      const eventPlanDocRef = firebaseFirestore.doc(
+        `/event-plans/${params.eventId}`
+      );
+      const eventPlan = (await transaction.get(eventPlanDocRef)).data();
       assert(event, makeApiError(422, 'Invalid event'));
+      assert(eventPlan, makeApiError(422, 'Invalid event-plan'));
 
       // Assert that the params.hostId matches whats in the event doc
       assert(
@@ -60,7 +64,7 @@ export const etlEventsHostDeleteGuests = async (
       }
 
       for (const userId of [...((params.guestsByUserId ?? []) as UserId[])]) {
-        // Remove user from event
+        // Remove event guests user
         const eventGuestsDocRef = firebaseFirestore.doc(
           `/events/${params.eventId}/guests/${userId}`
         );
@@ -71,11 +75,22 @@ export const etlEventsHostDeleteGuests = async (
         guestsByUserId.splice(index, 1);
         transaction.update(eventDocRef, { guestsByUserId: guestsByUserId });
 
-        // Remove event from user
+        // Remove user event
         const userEventDocRef = firebaseFirestore.doc(
           `/users/${userId}/events/${params.eventId}`
         );
         transaction.delete(userEventDocRef);
+
+        // Updating event-plan invitee in event-plans/eventId: { inviteesByUserId }
+        transaction.update(eventPlanDocRef, {
+          inviteesByUserId: guestsByUserId,
+        });
+
+        // Remove user event-plan
+        const userEventPlanDocRef = firebaseFirestore.doc(
+          `/users/${userId}/event-plans/${params.eventId}`
+        );
+        transaction.delete(userEventPlanDocRef);
       }
     });
   } catch (err: any) {
