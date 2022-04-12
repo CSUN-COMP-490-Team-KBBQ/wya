@@ -46,7 +46,7 @@ export const etlEventsGuestsDelete = async (
       // Assert that the params.userId is a guest in the event doc
       assert(
         guestsByUserId.includes(params.userId),
-        makeApiError(400, `User: ${params.userId} is not a guest`)
+        makeApiError(422, `User: ${params.userId} is not a guest`)
       );
 
       // Remove user from event
