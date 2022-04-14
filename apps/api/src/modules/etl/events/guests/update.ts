@@ -20,7 +20,7 @@ type Context = {
 export const etlEventsGuestsUpdate = async (
   params: Params,
   context: Context,
-  { debug = Debug('api:etl/events/guests/delete') as any } = {}
+  { debug = Debug('api:etl/events/guests/update') as any } = {}
 ) => {
   assert(params.eventId, makeApiError(400, 'Event is required'));
   assert(params.hostId, makeApiError(400, 'Host is required'));

@@ -19,7 +19,7 @@ type Context = {
 
 const _validate = (params: Params) => {
   for (const [key, value] of Object.entries(params)) {
-    assert(value || value === '', makeApiError(409, `${key} is required`));
+    assert(value || value === '', makeApiError(400, `${key} is required`));
   }
 };
 
