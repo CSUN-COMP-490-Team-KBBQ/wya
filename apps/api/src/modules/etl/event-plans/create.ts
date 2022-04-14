@@ -123,6 +123,7 @@ export const etlEventPlansCreate = async (
         ...restOfParams,
         eventPlanId,
         role: EVENT_PLAN_ROLE.HOST,
+        isFinalized: false,
       };
 
       transaction.create(hostUserEventPlansDocRef, hostUserEventPlansDocPatch);
@@ -140,6 +141,7 @@ export const etlEventPlansCreate = async (
           ...restOfParams,
           eventPlanId,
           role: EVENT_PLAN_ROLE.INVITEE,
+          isFinalized: false,
         };
 
         transaction.create(userEventPlansDocRef, userEventPlansDocPatch);

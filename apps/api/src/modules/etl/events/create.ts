@@ -140,6 +140,14 @@ export const etlEventsCreate = async (
 
       transaction.create(hostUserEventsDocRef, hostUserEventsDocPatch);
 
+      // Update user event-plan isFinalized field
+      for (const userId of [...inviteesByUserId, hostId]) {
+        const userEventPlanDocRef = firebaseFirestore.doc(
+          `/users/${userId}/event-plans/${eventPlanId}`
+        );
+        transaction.update(userEventPlanDocRef, { isFinalized: true });
+      }
+
       patches.usersEvents.push({ [eventId]: hostUserEventsDocPatch });
     });
 

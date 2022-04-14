@@ -3,16 +3,26 @@ import './EventPlanList.css';
 import { ListGroup } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-import { EventPlanInfo, EventPlanId } from '../../interfaces';
+import {
+  EventPlanInfo,
+  EventPlanId,
+  EventPlanFinalizedFlag,
+} from '../../interfaces';
 
 interface EventPlanListProps {
   elementId: string;
-  eventPlans: Array<EventPlanInfo & { eventPlanId: EventPlanId }>;
+  eventPlans: (EventPlanInfo & { eventPlanId: EventPlanId } & {
+    isFinalized: EventPlanFinalizedFlag;
+  })[];
 }
 
 function sortEvents(
-  events: Array<EventPlanInfo & { eventPlanId: EventPlanId }>
-): Array<EventPlanInfo & { eventPlanId: EventPlanId }> {
+  events: (EventPlanInfo & { eventPlanId: EventPlanId } & {
+    isFinalized: EventPlanFinalizedFlag;
+  })[]
+): (EventPlanInfo & { eventPlanId: EventPlanId } & {
+  isFinalized: EventPlanFinalizedFlag;
+})[] {
   return events.sort((a, b) => {
     const aStart = Date.parse(a.startDate);
     const bStart = Date.parse(b.startDate);
@@ -29,16 +39,19 @@ export default function EventPlanList(props: EventPlanListProps): JSX.Element {
     <div id={elementId}>
       <h1>Event Plans</h1>
       <ListGroup className="event-plan-list">
-        {eventList.map(({ eventPlanId, name }) => {
-          return (
-            <ListGroup.Item
-              key={eventPlanId}
-              action
-              onClick={() => history.push(`/event-plans/${eventPlanId}`)}
-            >
-              {name}
-            </ListGroup.Item>
-          );
+        {eventList.map(({ isFinalized, eventPlanId, name }) => {
+          if (!isFinalized) {
+            return (
+              <ListGroup.Item
+                key={eventPlanId}
+                action
+                onClick={() => history.push(`/event-plans/${eventPlanId}`)}
+              >
+                {name}
+              </ListGroup.Item>
+            );
+          }
+          return <></>;
         })}
       </ListGroup>
     </div>

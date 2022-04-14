@@ -12,6 +12,7 @@ const FAKE_USER_EVENT_PLANS = [
     endDate: '2021-11-02',
     hostId: 'host1',
     invitees: ['invitee1', 'invitee2'],
+    isFinalized: false,
     eventPlanId: 'u8aaed22-c7a5-441c-9d68-52f5d30v2f602',
   },
 ];

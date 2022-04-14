@@ -86,12 +86,7 @@ export default function CreateEventPlanForm(): JSX.Element {
       'g-recaptcha-response': token,
     };
 
-    const eventPlanId = await createEventPlan(
-      eventPlanData as EventPlanInfo & {
-        invitees: Email[];
-        'g-recaptcha-response': string;
-      }
-    );
+    const eventPlanId = await createEventPlan(eventPlanData);
     console.log('Event plan created: ', eventPlanId);
     history.push(`/event-plans/${eventPlanId}`);
   };
