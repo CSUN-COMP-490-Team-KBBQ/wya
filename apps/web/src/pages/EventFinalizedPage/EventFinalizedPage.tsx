@@ -14,6 +14,7 @@ import {
   getAllSubCollDocsSnapshot$,
   deleteEventFinalized,
   deleteEventGuest,
+  updateEventGuests,
 } from '../../lib/firestore';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import { useHistory } from 'react-router-dom';
@@ -134,6 +135,26 @@ export default function EventFinalizedPage({
     }
   };
 
+  const handleUpdateGuests = async () => {
+    if (eventData !== undefined && userRecord) {
+      const dataNeededToDelete: { eventId: EventId } & {
+        hostId: UserId;
+      } & { eventGuests: EventGuest[] } = {
+        eventId: eventData.eventId,
+        hostId: userRecord.uid as UserId,
+        eventGuests: eventGuests.filter(
+          (value) =>
+            value.status === EVENT_GUEST_STATUS.ACCEPTED ||
+            value.status === EVENT_GUEST_STATUS.PENDING
+        ),
+      };
+
+      await updateEventGuests(dataNeededToDelete);
+
+      console.log('Guests Updated');
+    }
+  };
+
   if (userRecord && eventData && eventGuests) {
     return (
       <Page>
@@ -158,13 +179,16 @@ export default function EventFinalizedPage({
             <Button onClick={handleDelete} variant="danger">
               Delete Event
             </Button>
-            <Button onClick={handleRemove} variant="danger">
-              Leave Event
+            <Button onClick={handleUpdateGuests} variant="danger">
+              Update Guests
             </Button>
           </div>
           {/* render for a guest only */}
           {eventData.hostId !== userRecord.uid && (
             <div id="eventFinalizedButtons">
+              <Button onClick={handleRemove} variant="danger">
+                Leave Event
+              </Button>
               <Button onClick={handleDecline} variant="danger">
                 Decline
               </Button>

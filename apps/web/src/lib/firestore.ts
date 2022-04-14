@@ -142,6 +142,30 @@ export const deleteEventFinalized = (
   });
 };
 
+export const updateEventGuests = (
+  data: { eventId: EventId } & { hostId: UserId } & {
+    eventGuests: EventGuest[];
+  }
+) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/events/guests/update`,
+        JSON.stringify(data),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        resolve(res);
+      })
+      .catch(reject);
+  });
+};
+
 export const deleteEventGuest = (
   data: { eventId: EventId } & { userId: UserId }
 ) => {

@@ -4,23 +4,17 @@ import { App } from 'firebase-admin/app';
 import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
-import { UserId, EVENT_GUEST_STATUS, EventId } from '../../../../interfaces';
+import { EventGuest, EventId, UserId } from '../../../../interfaces';
 import { ApiError, makeApiError } from '../../../../../lib/errors';
 
 type Params = {
-  status: EVENT_GUEST_STATUS;
-  uid: UserId;
   eventId: EventId;
+  hostId: UserId;
+  eventGuests: EventGuest[];
 };
 
 type Context = {
   firebaseClientInjection: App;
-};
-
-const _validate = (params: Params) => {
-  for (const [key, value] of Object.entries(params)) {
-    assert(value || value === '', makeApiError(409, `${key} is required`));
-  }
 };
 
 export const etlEventsGuestsUpdate = async (
@@ -28,7 +22,10 @@ export const etlEventsGuestsUpdate = async (
   context: Context,
   { debug = Debug('api:etl/events/guests/update') as any } = {}
 ) => {
-  _validate(params);
+  assert(params.eventId, makeApiError(400, 'Event is required'));
+  assert(params.hostId, makeApiError(400, 'Host is required'));
+
+  debug(`Updating event guests: ${JSON.stringify(params, null, 4)}`);
 
   const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
   const firebaseFirestore = getFirebaseFirestore(
@@ -39,75 +36,69 @@ export const etlEventsGuestsUpdate = async (
     makeApiError(422, 'Invalid context')
   );
 
-  debug('Updating event guests');
-  debug(params);
-
   try {
     await firebaseFirestore.runTransaction(async (transaction) => {
       const eventDocRef = firebaseFirestore.doc(`/events/${params.eventId}`);
-      const eventDoc = (await transaction.get(eventDocRef)).data();
-      assert(eventDoc, makeApiError(422, 'Invalid event'));
+      const event = (await transaction.get(eventDocRef)).data();
 
-      const eventGuestDocRef = firebaseFirestore.doc(
-        `/events/${params.eventId}/guests/${params.uid}`
+      assert(event, makeApiError(422, 'Invalid event'));
+
+      const guestsByUserId = event.guestsByUserId as UserId[];
+
+      const removedGuestsByUserId = guestsByUserId.filter(
+        (uid) =>
+          !params.eventGuests.map((eventGuest) => eventGuest.uid).includes(uid)
       );
-      const eventGuestDoc = (await transaction.get(eventGuestDocRef)).data();
-      assert(eventGuestDoc, makeApiError(422, 'Invalid event guest'));
 
-      // Make sure user is a guest in the event
-      const isGuest =
-        ((eventDoc.guestsByUserId as UserId[]) || []).includes(params.uid) &&
-        eventGuestDoc.uid === params.uid;
-      assert(isGuest, makeApiError(422, 'User must be a guest'));
-
-      const { status: currentStatus } = eventGuestDoc;
-      const { status: intendedStatus } = params;
-
-      if (currentStatus === intendedStatus) {
-        return;
-      }
-
-      // Explicitly enumerating the valid status updates that are allowed
-      if (
-        currentStatus === EVENT_GUEST_STATUS.PENDING &&
-        intendedStatus === EVENT_GUEST_STATUS.ACCEPTED
-      ) {
-        // Ok
-      } else if (
-        currentStatus === EVENT_GUEST_STATUS.PENDING &&
-        intendedStatus === EVENT_GUEST_STATUS.DECLINED
-      ) {
-        // Ok
-      } else if (
-        currentStatus === EVENT_GUEST_STATUS.ACCEPTED &&
-        intendedStatus === EVENT_GUEST_STATUS.DECLINED
-      ) {
-        // Ok
-      } else if (
-        currentStatus === EVENT_GUEST_STATUS.DECLINED &&
-        intendedStatus === EVENT_GUEST_STATUS.ACCEPTED
-      ) {
-        // Ok
-      } else {
-        throw makeApiError(
-          422,
-          `Unable to set status from ${currentStatus} to ${intendedStatus}`
+      for (const userId of [...removedGuestsByUserId]) {
+        // Remove event guest
+        const eventGuestsDocRef = firebaseFirestore.doc(
+          `/events/${params.eventId}/guests/${userId}`
         );
-      }
-      const statusPatch = { status: intendedStatus };
-      transaction.update(eventGuestDocRef, statusPatch);
+        transaction.delete(eventGuestsDocRef);
 
-      // Update in the users/events doc as well
-      const usersEventsDocRef = firebaseFirestore.doc(
-        `/users/${params.uid}/events/${params.eventId}`
+        // Remove user event
+        const userEventDocRef = firebaseFirestore.doc(
+          `/users/${userId}/events/${params.eventId}`
+        );
+        transaction.delete(userEventDocRef);
+
+        // Remove user event-plan
+        const userEventPlanDocRef = firebaseFirestore.doc(
+          `/users/${userId}/event-plans/${params.eventId}`
+        );
+        transaction.delete(userEventPlanDocRef);
+
+        // Remove user event-plan availabilities
+        const eventPlanAvailabilitiesDocRef = firebaseFirestore.doc(
+          `/event-plans/${params.eventId}/availabilities/${userId}`
+        );
+        transaction.delete(eventPlanAvailabilitiesDocRef);
+      }
+
+      // Updating event guestByUserId field
+      const updatedGuestsByUserId = params.eventGuests.map(
+        (eventGuest) => eventGuest.uid
       );
-      transaction.update(usersEventsDocRef, statusPatch);
+      transaction.update(eventDocRef, {
+        guestsByUserId: updatedGuestsByUserId,
+      });
+
+      // update event-plan inviteesByUserId field
+      const eventPlanDocRef = firebaseFirestore.doc(
+        `/event-plans/${params.eventId}`
+      );
+      transaction.update(eventPlanDocRef, {
+        inviteesByUserId: updatedGuestsByUserId,
+      });
     });
   } catch (err: any) {
     debug(err);
     if (err instanceof ApiError) {
       throw err;
     }
-    throw makeApiError(500, 'Unable to update event guests', err);
+    throw makeApiError(500, 'Unable to get event', err);
   }
+
+  debug('Done');
 };
