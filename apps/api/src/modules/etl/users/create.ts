@@ -12,6 +12,8 @@ import {
   UserId,
 } from '../../../interfaces';
 import { ApiError, makeApiError } from '../../../../lib/errors';
+import { validate } from '../../../../lib/validate';
+import { authorize, AuthContext } from '../../../auth';
 
 type Params = {
   email: Email;
@@ -21,25 +23,44 @@ type Params = {
   lastName?: string;
 };
 
-type Context = {
-  firebaseClientInjection: App;
-};
-
 export const etlUsersCreate = async (
   params: Params,
-  context: Context,
-  { debug = Debug('api:etl/users/create') as any } = {}
+  context: AuthContext,
+  {
+    debug = Debug('api:etl/users/create') as any,
+    firebaseClientInjection = undefined as App | undefined,
+  } = {}
 ) => {
-  assert(params.email, makeApiError(409, 'Email is required'));
-  assert(params.password, makeApiError(409, 'Password is required'));
-
-  const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
-  const firebaseFirestore = getFirebaseFirestore(
-    context.firebaseClientInjection
+  validate(
+    {
+      type: 'object',
+      required: ['email', 'password'],
+      properties: {
+        email: {
+          type: 'string',
+        },
+        password: {
+          type: 'string',
+        },
+        firstName: {
+          type: 'string',
+        },
+        lastName: {
+          type: 'string',
+        },
+      },
+    },
+    params,
+    makeApiError(400, 'Bad request')
   );
+
+  authorize('etl/users/create', context);
+
+  const firebaseAuth = getFirebaseAuth(firebaseClientInjection);
+  const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
   assert(
     firebaseAuth && firebaseFirestore,
-    makeApiError(422, 'Invalid context')
+    makeApiError(422, 'Bad firebase client')
   );
 
   debug(`Creating a new user: ${JSON.stringify(params, null, 4)}`);

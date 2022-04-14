@@ -8,18 +8,18 @@ import { makeApiError } from '../lib/errors';
 
 const _firebaseAuth = getFirebaseAuth(firebaseClient);
 
-export type Context = {
+export type AuthContext = {
   token?: string;
   user?: Partial<User>;
 };
 
-const _capabilities = (context: Context, document: any): string[] => {
+const _capabilities = (context: AuthContext, document: any): string[] => {
   /** PLEASE KEEP CAPABILITIES IN ALPHABETICAL ORDER */
 
   const baseCapabilities = ['etl/event-plans/create', 'etl/users/create'];
 
   // Check that the document belongs to the user
-  if (document.uid && context.user?.uid === document.uid) {
+  if (document && document.uid && context.user?.uid === document.uid) {
     return [
       ...baseCapabilities,
       'etl/events/guests/update',
@@ -29,7 +29,7 @@ const _capabilities = (context: Context, document: any): string[] => {
   }
 
   // Check that the document belongs to the host user
-  if (document.hostId && context.user?.uid === document.hostId) {
+  if (document && document.hostId && context.user?.uid === document.hostId) {
     return [...baseCapabilities];
   }
 
@@ -43,7 +43,7 @@ const _capabilities = (context: Context, document: any): string[] => {
  */
 export const authorize = (
   capability: string,
-  context: Context,
+  context: AuthContext,
   document?: any
 ) => {
   const authorized = _capabilities(context, document).includes(capability);
@@ -59,12 +59,14 @@ export const authorize = (
  * @returns
  */
 export const authenticate = async (req: Request) => {
-  const context: Context = {};
+  const context: AuthContext = {};
 
   const [type, token] = (req.headers['authorization'] ?? '').split(' ');
 
   assert(type === 'Bearer', makeApiError(400, 'Bad request'));
-  assert(token, makeApiError(400, 'Bad request'));
+
+  // Token may be empty string intended for new users
+  assert(token || token === '', makeApiError(400, 'Bad request'));
 
   // Validate token
   try {
