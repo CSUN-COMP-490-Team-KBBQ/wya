@@ -44,7 +44,7 @@ const _capabilities = (context: AuthContext, document: any): string[] => {
 export const authorize = (
   capability: string,
   context: AuthContext,
-  document?: any
+  document: any
 ) => {
   const authorized = _capabilities(context, document).includes(capability);
   if (!authorized) {

@@ -54,7 +54,7 @@ export const etlUsersCreate = async (
     makeApiError(400, 'Bad request')
   );
 
-  authorize('etl/users/create', context);
+  authorize('etl/users/create', context, {});
 
   const firebaseAuth = getFirebaseAuth(firebaseClientInjection);
   const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
