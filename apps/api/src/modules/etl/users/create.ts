@@ -49,6 +49,7 @@ export const etlUsersCreate = async (
           type: 'string',
         },
       },
+      additionalProperties: false,
     },
     params,
     makeApiError(400, 'Bad request')

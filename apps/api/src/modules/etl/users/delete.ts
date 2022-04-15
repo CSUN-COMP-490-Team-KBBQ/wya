@@ -28,6 +28,7 @@ export const etlUsersDelete = async (
       properties: {
         uid: { type: 'string' },
       },
+      additionalProperties: false,
     },
     params,
     makeApiError(400, 'Bad request')
