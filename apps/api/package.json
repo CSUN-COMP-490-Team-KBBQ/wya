@@ -49,5 +49,47 @@
     "moment": "^2.29.1",
     "nodemailer": "^6.7.3",
     "uuid": "^8.3.2"
+  },
+  "jest": {
+    "verbose": true,
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "./tsconfig.json"
+      }
+    },
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/",
+      "\\.pnp\\.[^\\/]+$"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.[jt]s?(x)",
+      "**/?(*.)+(spec|test).[tj]s?(x)"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "roots": [
+      "<rootDir>/src/",
+      "<rootDir>/lib/"
+    ],
+    "moduleDirectories": [
+      "<rootDir>/../../node_modules",
+      "<rootDir>/node_modules"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "ts",
+      "tsx",
+      "json",
+      "node"
+    ],
+    "moduleNameMapper": {
+      "firebase-admin": "<rootDir>/../../node_modules/firebase-admin",
+      "firebase-functions": "<rootDir>/../../node_modules/firebase-functions"
+    }
   }
 }

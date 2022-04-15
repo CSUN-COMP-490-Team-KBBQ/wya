@@ -15,5 +15,5 @@ export const makeFirebaseClient = (
 };
 
 export const firebaseClient = makeFirebaseClient();
-export const auth = getFirebaseAuth(firebaseClient);
-export const firestore = getFirebaseFirestore(firebaseClient);
+export const firebaseAuth = getFirebaseAuth(firebaseClient);
+export const firebaseFirestore = getFirebaseFirestore(firebaseClient);
