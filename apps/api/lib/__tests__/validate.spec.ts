@@ -26,3 +26,17 @@ it('throws given error', () => {
     validate({}, {}, testError);
   }).toThrow(ERROR);
 });
+
+it(`does not throw with emtpy string`, () => {
+  validate(
+    {
+      type: 'object',
+      properties: { 'g-recaptcha-response': { type: 'string' } },
+    },
+    {
+      'g-recaptcha-response': '',
+    }
+  );
+
+  expect(true).toBeTruthy();
+});
