@@ -28,7 +28,7 @@ const _getAuthToken = async () => {
 };
 
 api.interceptors.request.use(async (config) => {
-  if (config.method === 'POST') {
+  if (config.method === 'post') {
     const token = await _getAuthToken();
     config.headers = { ...config.headers, authorization: `Bearer ${token}` };
   }

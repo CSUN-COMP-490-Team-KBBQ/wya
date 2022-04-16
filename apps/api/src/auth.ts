@@ -70,9 +70,12 @@ export const authenticate = async (req: Request) => {
 
   // Validate token
   try {
-    const { uid, email } = await _firebaseAuth.verifyIdToken(token, true);
+    if (token) {
+      const { uid, email } = await _firebaseAuth.verifyIdToken(token, true);
+      context.user = { uid, email };
+    }
+
     context.token = token;
-    context.user = { uid, email };
   } catch (err: any) {
     if (err?.code === 'auth/user-disabled') {
       throw makeApiError(422, 'User is disabled');
