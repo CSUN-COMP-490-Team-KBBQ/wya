@@ -61,7 +61,7 @@ export const authorize = (
 export const authenticate = async (req: Request) => {
   const context: AuthContext = {};
 
-  const [type, token] = (req.headers['authorization'] ?? '').split(' ');
+  const [type, token] = (req.get('authorization') ?? '').split(' ');
 
   assert(type === 'Bearer', makeApiError(400, 'Bad request'));
 
