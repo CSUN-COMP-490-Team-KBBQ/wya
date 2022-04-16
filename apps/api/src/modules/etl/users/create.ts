@@ -21,6 +21,7 @@ type Params = {
 
   firstName?: string;
   lastName?: string;
+  'g-recaptcha-response': string;
 };
 
 export const etlUsersCreate = async (
@@ -46,6 +47,9 @@ export const etlUsersCreate = async (
           type: 'string',
         },
         lastName: {
+          type: 'string',
+        },
+        'g-recaptcha-response': {
           type: 'string',
         },
       },
