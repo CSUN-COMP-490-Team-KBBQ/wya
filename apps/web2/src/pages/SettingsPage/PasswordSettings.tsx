@@ -106,7 +106,7 @@ export default function PasswordSettings() {
 
         <div className="mt-6">
           <form onSubmit={onSubmitHandler}>
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:py-5">
+            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:py-5 items-baseline">
               <label
                 htmlFor="current-password"
                 className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
@@ -125,7 +125,7 @@ export default function PasswordSettings() {
               </div>
             </div>
 
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:py-5">
+            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:py-5 items-baseline">
               <label
                 htmlFor="current-password"
                 className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
@@ -144,7 +144,7 @@ export default function PasswordSettings() {
               </div>
             </div>
 
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:py-5">
+            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:py-5 items-baseline">
               <label
                 htmlFor="current-password"
                 className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
