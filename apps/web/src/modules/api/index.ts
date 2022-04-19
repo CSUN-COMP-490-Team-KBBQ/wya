@@ -12,25 +12,22 @@ const api = axios.create({
   timeout: TIMEOUT_IN_MINS * 60 * 1000,
   headers: {
     // Required by firebase when using an HTTP callable cloud function trigger
-    'content-type': 'application/json',
+    'Content-Type': 'application/json',
   },
 });
 
 const _getAuthToken = async () => {
-  let token = '';
-
   if (!firebaseAuth.currentUser) {
-    return token;
+    return '';
   }
 
-  token = await firebaseAuth.currentUser.getIdToken();
-  return token;
+  return await firebaseAuth.currentUser.getIdToken();
 };
 
 api.interceptors.request.use(async (config) => {
   if (config.method === 'post') {
     const token = await _getAuthToken();
-    config.headers = { ...config.headers, authorization: `Bearer ${token}` };
+    config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
   }
 
   return config;

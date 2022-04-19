@@ -9,7 +9,10 @@ const router = Router();
 
 router.post('/create', async (req, res, next) => {
   try {
-    const { data } = await etlUsersCreate(req.body, await authenticate(req), {
+    const params = req.body;
+    const context = await authenticate(req);
+
+    const { data } = await etlUsersCreate(params, context, {
       debug: functions.logger.info,
       firebaseClientInjection: firebaseClient,
     });
@@ -22,7 +25,10 @@ router.post('/create', async (req, res, next) => {
 
 router.post('/delete', async (req, res, next) => {
   try {
-    await etlUsersDelete(req.body, await authenticate(req), {
+    const params = req.body;
+    const context = await authenticate(req);
+
+    await etlUsersDelete(params, context, {
       debug: functions.logger.info,
       firebaseClientInjection: firebaseClient,
     });

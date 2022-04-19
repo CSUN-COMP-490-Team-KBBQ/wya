@@ -1,4 +1,3 @@
-import assert from 'assert';
 import { Request } from 'express';
 import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 
@@ -61,14 +60,8 @@ export const authorize = (
 export const authenticate = async (req: Request) => {
   const context: AuthContext = {};
 
-  const [type, token] = (req.get('authorization') ?? '').split(' ');
+  const [_type, token] = (req.get('authorization') ?? ' ').split(' ');
 
-  assert(type === 'Bearer', makeApiError(400, 'Bad request'));
-
-  // Token may be empty string intended for new users
-  assert(token || token === '', makeApiError(400, 'Bad request'));
-
-  // Validate token
   try {
     if (token) {
       const { uid, email } = await _firebaseAuth.verifyIdToken(token, true);

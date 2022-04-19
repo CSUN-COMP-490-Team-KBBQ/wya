@@ -32,8 +32,6 @@ export const etlUsersCreate = async (
     firebaseClientInjection = undefined as App | undefined,
   } = {}
 ) => {
-  debug(`params: ${JSON.stringify(params, null, 4)}`);
-
   validate(
     {
       type: 'object',
@@ -60,8 +58,6 @@ export const etlUsersCreate = async (
     params,
     makeApiError(400, 'Bad request')
   );
-
-  debug(`auth context: ${JSON.stringify(context, null, 4)}`);
 
   authorize('etl/users/create', context, {});
 
