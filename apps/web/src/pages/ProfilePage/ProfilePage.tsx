@@ -9,7 +9,7 @@ import ChangePasswordForm from '../../components/ChangePasswordForm/ChangePasswo
 import Page from '../../components/Page/Page';
 import { useUserContext } from '../../contexts/UserContext';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
-import { logIn, changePassword } from '../../lib/auth';
+import { logIn, changePassword } from '../../modules/firebase/auth';
 import { updateUserTimeFormat } from '../../lib/firestore';
 import { TIME_FORMAT } from '../../interfaces';
 

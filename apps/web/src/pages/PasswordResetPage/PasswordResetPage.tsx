@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useHistory } from 'react-router-dom';
 
-import { passwordReset } from '../../lib/auth';
+import { passwordReset } from '../../modules/firebase/auth';
 import Page from '../../components/Page/Page';
 import './PasswordResetPage.css';
 

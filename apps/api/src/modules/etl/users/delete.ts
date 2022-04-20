@@ -6,31 +6,43 @@ import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
 import { UserId } from '../../../interfaces';
 import { ApiError, makeApiError } from '../../../../lib/errors';
+import { validate } from '../../../../lib/validate';
+import { authorize, AuthContext } from '../../../auth';
 
 type Params = {
   uid: UserId;
 };
 
-type Context = {
-  firebaseClientInjection: App;
-};
-
 export const etlUsersDelete = async (
   params: Params,
-  context: Context,
-  { debug = Debug('api:etl/users/delete') as any } = {}
+  context: AuthContext,
+  {
+    debug = Debug('api:etl/users/delete') as any,
+    firebaseClientInjection = undefined as App | undefined,
+  } = {}
 ) => {
-  assert(params.uid, makeApiError(409, 'User is required'));
+  validate(
+    {
+      type: 'object',
+      required: ['uid'],
+      properties: {
+        uid: { type: 'string' },
+      },
+      additionalProperties: false,
+    },
+    params,
+    makeApiError(400, 'Bad request')
+  );
+
+  authorize('etl/users/delete', context, { uid: params.uid });
 
   debug(`Deleting a user: ${JSON.stringify(params, null, 4)}`);
 
-  const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
-  const firebaseFirestore = getFirebaseFirestore(
-    context.firebaseClientInjection
-  );
+  const firebaseAuth = getFirebaseAuth(firebaseClientInjection);
+  const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
   assert(
     firebaseAuth && firebaseFirestore,
-    makeApiError(422, 'Invalid context')
+    makeApiError(422, 'Bad firebase client')
   );
 
   try {

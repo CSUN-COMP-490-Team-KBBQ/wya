@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import { useHistory, Link } from 'react-router-dom';
-import { logIn } from '../../lib/auth';
+import { logIn } from '../../modules/firebase/auth';
 import { useUserContext } from '../../contexts/UserContext';
 
 import './LoginForm.css';

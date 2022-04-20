@@ -9,7 +9,8 @@ import { useHistory, Link } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 import Recaptcha from '../Recaptcha/Recaptcha';
-import { registerUser, logIn } from '../../lib/auth';
+import { logIn } from '../../modules/firebase/auth';
+import api from '../../modules/api';
 import { useUserContext } from '../../contexts/UserContext';
 
 import './RegisterForm.css';
@@ -42,7 +43,7 @@ export default function RegisterForm(): JSX.Element {
 
     assert(token, 'Missing ReCAPTCHA token');
 
-    await registerUser(formValue);
+    await api.post('/users/create', JSON.stringify(formValue));
     await logIn(email, password);
     history.push('/calendar');
   };
