@@ -5,10 +5,12 @@ import {
   MenuIcon,
   UserGroupIcon,
   XIcon,
+  LogoutIcon,
 } from '@heroicons/react/outline';
 import { Link } from 'react-router-dom';
 
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
+import { logOut } from '../../lib/auth';
 
 import logo from '../../assets/wya-logo.png';
 
@@ -121,6 +123,16 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
                         {item.name}
                       </Link>
                     ))}
+                    <button
+                      className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md no-underline w-full"
+                      onClick={logOut}
+                    >
+                      <LogoutIcon
+                        className="text-gray-400 group-hover:text-gray-500 mr-4 h-6 w-6"
+                        aria-hidden="true"
+                      />
+                      Sign Out
+                    </button>
                   </div>
                 </nav>
               </div>
@@ -193,6 +205,16 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
                       {item.name}
                     </Link>
                   ))}
+                  <button
+                    className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md no-underline w-full"
+                    onClick={logOut}
+                  >
+                    <LogoutIcon
+                      className="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6"
+                      aria-hidden="true"
+                    />
+                    Sign Out
+                  </button>
                 </div>
               </nav>
             </div>
