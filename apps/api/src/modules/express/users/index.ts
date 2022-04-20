@@ -4,6 +4,7 @@ import { functions, firebaseClient } from '../../firebase';
 import { etlUsersCreate } from '../../etl/users/create';
 import { etlUsersDelete } from '../../etl/users/delete';
 import { authenticate } from '../../../auth';
+import { etlUsersUpdateTimeFormat } from '../../etl/users/update-time-format';
 
 const router = Router();
 
@@ -19,7 +20,7 @@ router.post('/create', async (req, res, next) => {
 
     res.status(200).json({ data });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 });
 
@@ -33,10 +34,26 @@ router.post('/delete', async (req, res, next) => {
       firebaseClientInjection: firebaseClient,
     });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 
   res.sendStatus(200);
+});
+
+router.post('/update-time-format', async (req, res, next) => {
+  try {
+    const params = req.body;
+    const context = await authenticate(req);
+
+    const data = await etlUsersUpdateTimeFormat(params, context, {
+      debug: functions.logger.info,
+      firebaseClientInjection: firebaseClient,
+    });
+
+    res.status(200).json(data);
+  } catch (err) {
+    return next(err);
+  }
 });
 
 export default router;
