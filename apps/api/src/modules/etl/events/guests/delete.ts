@@ -69,7 +69,6 @@ export const etlEventsGuestsDelete = async (
       transaction.delete(userEventDocRef);
     });
   } catch (err: any) {
-    debug(err);
     if (err instanceof ApiError) {
       throw err;
     }

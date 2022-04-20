@@ -104,7 +104,6 @@ export const etlEventsGuestsUpdateStatus = async (
       transaction.update(usersEventsDocRef, statusPatch);
     });
   } catch (err: any) {
-    debug(err);
     if (err instanceof ApiError) {
       throw err;
     }

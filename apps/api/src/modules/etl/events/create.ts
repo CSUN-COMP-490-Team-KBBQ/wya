@@ -157,7 +157,6 @@ export const etlEventsCreate = async (
       data: [eventId],
     };
   } catch (err: any) {
-    debug(err);
     if (err instanceof ApiError) {
       throw err;
     }

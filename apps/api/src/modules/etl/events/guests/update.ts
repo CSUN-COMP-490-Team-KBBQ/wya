@@ -93,7 +93,6 @@ export const etlEventsGuestsUpdate = async (
       });
     });
   } catch (err: any) {
-    debug(err);
     if (err instanceof ApiError) {
       throw err;
     }

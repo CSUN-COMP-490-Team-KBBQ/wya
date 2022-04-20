@@ -72,7 +72,6 @@ export const etlEventPlansDelete = async (
       transaction.delete(eventPlanDocRef);
     });
   } catch (err: any) {
-    debug(err);
     if (err instanceof ApiError) {
       throw err;
     }

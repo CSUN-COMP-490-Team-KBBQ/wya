@@ -22,7 +22,7 @@ router.post('/update-status', async (req, res, next) => {
 
     res.sendStatus(200);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 });
 
@@ -40,7 +40,7 @@ router.post('/update', async (req, res, next) => {
 
     res.sendStatus(200);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 });
 
@@ -57,7 +57,7 @@ router.post('/delete', async (req, res, next) => {
     );
     res.sendStatus(200);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 });
 

@@ -262,11 +262,6 @@ export const updateCalendarAvailability = (data: number[], uid: string) => {
   });
 };
 
-export const updateUserTimeFormat = (uid: UserId, timeFormat: string) => {
-  const userDocRef = getDocRef(`/users/${uid}`);
-  return updateDoc(userDocRef, { timeFormat });
-};
-
 export const updateEventAvailability = (
   data: EventPlanAvailabilityDocument,
   eventPlanId: string,

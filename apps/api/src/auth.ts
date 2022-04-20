@@ -2,14 +2,14 @@ import { Request } from 'express';
 import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 
 import { firebaseClient } from './modules/firebase';
-import { User } from './interfaces';
+import { UserId, Email } from './interfaces';
 import { makeApiError } from '../lib/errors';
 
 const _firebaseAuth = getFirebaseAuth(firebaseClient);
 
 export type AuthContext = {
   token?: string;
-  user?: Partial<User>;
+  user?: { uid: UserId; email: Email | undefined };
 };
 
 const _capabilities = (context: AuthContext, document: any): string[] => {
@@ -23,7 +23,7 @@ const _capabilities = (context: AuthContext, document: any): string[] => {
       ...baseCapabilities,
       'etl/events/guests/update',
       'etl/users/delete',
-      'etl/users/update',
+      'etl/users/update-time-format',
     ];
   }
 

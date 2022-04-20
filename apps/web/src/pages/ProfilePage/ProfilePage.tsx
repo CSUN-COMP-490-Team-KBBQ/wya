@@ -10,7 +10,7 @@ import Page from '../../components/Page/Page';
 import { useUserContext } from '../../contexts/UserContext';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import { logIn, changePassword } from '../../modules/firebase/auth';
-import { updateUserTimeFormat } from '../../lib/firestore';
+import api from '../../modules/api';
 import { TIME_FORMAT } from '../../interfaces';
 
 import './ProfilePage.css';
@@ -60,12 +60,14 @@ export default function ProfilePage(): JSX.Element {
 
   const handleTimeFormatToggle = () => {
     if (userRecord) {
-      const { uid, timeFormat } = userRecord;
+      const { timeFormat } = userRecord;
       const intendedTimeFormat =
         timeFormat === TIME_FORMAT.TWELVE_HOURS
           ? TIME_FORMAT.TWENTY_FOUR_HOURS
           : TIME_FORMAT.TWELVE_HOURS;
-      updateUserTimeFormat(uid, intendedTimeFormat)
+
+      api
+        .post('/users/update-time-format', { intendedTimeFormat })
         .then(() => {
           setTimeFormat(intendedTimeFormat);
         })
