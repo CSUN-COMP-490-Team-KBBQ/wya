@@ -98,13 +98,13 @@ export const etlUsersCreate = async (
     await firebaseFirestore.runTransaction(async (transaction) => {
       // Create the user document
       const userDocumentRef = firebaseFirestore.doc(`/users/${uid}`);
-      await transaction.create(userDocumentRef, userDocumentPatch);
+      transaction.create(userDocumentRef, userDocumentPatch);
 
       // Create the user availabilites schedule-selector
       const userAvailabilityHeatMapDocRef = firebaseFirestore.doc(
         `/users/${uid}/availabilities/schedule-selector`
       );
-      await transaction.create(
+      transaction.create(
         userAvailabilityHeatMapDocRef,
         userAvailabilityHeatMapDocumentPatch
       );
@@ -113,7 +113,6 @@ export const etlUsersCreate = async (
       // create an emtpy subcollection.
     });
   } catch (err: any) {
-    debug(err);
     if (err instanceof ApiError) {
       throw err;
     }
@@ -124,8 +123,6 @@ export const etlUsersCreate = async (
   return {
     data: {
       uid,
-      userDocument: userDocumentPatch,
-      userAvailabilityHeatMapDocument: userAvailabilityHeatMapDocumentPatch,
     },
   };
 };

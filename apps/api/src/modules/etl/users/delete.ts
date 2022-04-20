@@ -53,7 +53,6 @@ export const etlUsersDelete = async (
     const userDocumentRef = firebaseFirestore.doc(`/users/${params.uid}`);
     await firebaseFirestore.recursiveDelete(userDocumentRef);
   } catch (err: any) {
-    debug(err);
     if (err instanceof ApiError) {
       throw err;
     }

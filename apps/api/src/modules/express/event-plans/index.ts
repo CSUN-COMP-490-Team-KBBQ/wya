@@ -38,7 +38,7 @@ router.post('/create', async (req, res, next) => {
 
     res.status(200).json({ data });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 });
 
@@ -55,7 +55,7 @@ router.post('/delete', async (req, res, next) => {
     );
     res.sendStatus(200);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 });
 
