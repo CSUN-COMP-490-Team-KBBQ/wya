@@ -77,7 +77,7 @@ export type EventPlanDocument = {
   startDate: string;
   endDate: string;
   hostId: UserId;
-  invitees: UserId[] | Email[];
+  inviteesByUserId: UserId[];
   eventPlanId: EventPlanId;
 };
 
@@ -115,8 +115,8 @@ export type EventDocument = {
   day: string;
   startDate: string;
   endDate: string;
-  startTime: string;
-  endTime: string;
+  dailyStartTime: string;
+  dailyEndTime: string;
   eventId: EventId;
 };
 

@@ -19,6 +19,7 @@ import LandingPage from '../../pages/LandingPage/LandingPage';
 import EventPlanPage from '../../pages/EventPlanPage/EventPlanPage';
 import EventFinalizedPage from '../../pages/EventFinalizedPage/EventFinalizedPage';
 import DashboardPage from '../../pages/DashboardPage/DashboardPage';
+import SettingsPage from '../../pages/SettingsPage/SettingsPage';
 
 export default function App(): JSX.Element {
   return (
@@ -31,20 +32,32 @@ export default function App(): JSX.Element {
             <Route path="/register" exact component={RegisterPage} />
             <Route path="/password-reset" exact component={PasswordResetPage} />
 
+            {/* legacy page */}
             <PrivateRoute path="/create-event" component={CreateEventPage} />
+            {/* legacy page */}
             <PrivateRoute
               path="/create-event-plan"
               component={CreateEventPlanPage}
             />
+            {/* legacy page */}
             <PrivateRoute path="/event/:id" component={EventPage} />
+            {/* legacy page */}
             <PrivateRoute path="/event-plans/:id" component={EventPlanPage} />
+            {/* legacy page */}
             <PrivateRoute
               path="/events-finalized/:id"
               component={EventFinalizedPage}
             />
+            {/* legacy page */}
             <PrivateRoute path="/calendar" component={CalendarPage} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
+
+            <PrivateRoute path="/settings/general" component={SettingsPage} />
+            <PrivateRoute path="/settings/password" component={SettingsPage} />
+
+            {/* legacy page */}
             <PrivateRoute path="/profile" component={ProfilePage} />
+            {/* legacy page */}
             <Route path="*" exact component={NotFoundPage} />
           </Switch>
         </BrowserRouter>
