@@ -68,7 +68,6 @@ export type EventPlanInfo = {
   dailyEndTime: string;
   startDate: string;
   endDate: string;
-  hostId: UserId;
 };
 
 export type EventPlanId = string;

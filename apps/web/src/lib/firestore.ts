@@ -17,12 +17,10 @@ import app from './firebase';
 
 import EventData from '../interfaces/EventData';
 import {
-  EventPlanInfo,
   EventInfo,
   UserDocument,
   EventPlanAvailabilityDocument,
   EventPlanDocument,
-  Email,
   UserId,
   EventGuest,
   EventPlanId,
@@ -38,58 +36,6 @@ function getDocRef(path: string) {
 function getCollRef(path: string) {
   return collection(firestore, path);
 }
-
-export const createEventPlan = (
-  data: EventPlanInfo & {
-    invitees: Email[];
-    'g-recaptcha-response': string;
-  }
-) => {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(
-        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/event-plans/create`,
-        JSON.stringify(data),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-        const {
-          data: {
-            data: [eventPlanId],
-          },
-        } = res;
-        resolve(eventPlanId);
-      })
-      .catch(reject);
-  });
-};
-
-export const deleteEventPlan = (
-  data: { eventPlanId: EventPlanId } & { hostId: UserId }
-) => {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(
-        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/event-plans/delete`,
-        JSON.stringify(data),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-        resolve(res);
-      })
-      .catch(reject);
-  });
-};
 
 export const createEventFinalized = (
   data: EventInfo & { eventPlanId: EventPlanId } & {

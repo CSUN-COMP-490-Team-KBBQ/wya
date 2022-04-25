@@ -7,7 +7,7 @@ import AvailabilityScheduleSelector from '../../components/AvailabilityScheduleS
 import { useHistory } from 'react-router-dom';
 
 import { appendUserAvailabilityToGroupEventPlanAvailability } from '../../lib/availability';
-import { deleteEventPlan, updateEventAvailability } from '../../lib/firestore';
+import { updateEventAvailability } from '../../lib/firestore';
 import { transformStartTime, transformEndTime } from '../../lib/eventHelpers';
 import {
   EventPlanAvailabilityDocument,
@@ -19,6 +19,7 @@ import {
 } from '../../interfaces';
 
 import './EventPlanPage.css';
+import api from '../../modules/api';
 
 type AddAvailabilityModalProps = {
   scheduleSelectorData: ScheduleSelectorData;
@@ -133,13 +134,10 @@ export default function EventPlanning({
   const history = useHistory();
 
   const deleteEventPlanHandler = async () => {
-    const dataNeededToDelete: { eventPlanId: EventPlanId } & {
-      hostId: UserId;
-    } = {
-      eventPlanId: eventPlanData.eventPlanId,
-      hostId: userId,
-    };
-    await deleteEventPlan(dataNeededToDelete);
+    await api.post(
+      '/event-plans/delete',
+      JSON.stringify({ eventPlanId: eventPlanData.eventPlanId })
+    );
 
     console.log('Event Plan deleted');
     history.push('/calendar');

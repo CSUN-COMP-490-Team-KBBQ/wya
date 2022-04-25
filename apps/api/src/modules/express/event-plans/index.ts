@@ -1,40 +1,21 @@
 import { Router } from 'express';
 
 import { functions, firebaseClient } from '../../firebase';
+import { authenticate } from '../../../auth';
 import { etlEventPlansCreate } from '../../etl/event-plans/create';
 import { etlEventPlansDelete } from '../../etl/event-plans/delete';
 
 const router = Router();
 
 router.post('/create', async (req, res, next) => {
-  const logger = functions.logger;
-
-  const {
-    name,
-    description,
-    dailyStartTime,
-    dailyEndTime,
-    startDate,
-    endDate,
-    hostId,
-    invitees,
-  } = req.body;
-
   try {
-    const { data } = await etlEventPlansCreate(
-      {
-        name,
-        description,
-        dailyStartTime,
-        dailyEndTime,
-        startDate,
-        endDate,
-        hostId,
-        invitees,
-      },
-      { firebaseClientInjection: firebaseClient },
-      { debug: logger.info }
-    );
+    const params = req.body;
+    const context = await authenticate(req);
+
+    const { data } = await etlEventPlansCreate(params, context, {
+      debug: functions.logger.info,
+      firebaseClientInjection: firebaseClient,
+    });
 
     res.status(200).json({ data });
   } catch (err) {
@@ -43,17 +24,16 @@ router.post('/create', async (req, res, next) => {
 });
 
 router.post('/delete', async (req, res, next) => {
-  const logger = functions.logger;
-
-  const { eventPlanId, hostId } = req.body;
-
   try {
-    await etlEventPlansDelete(
-      { eventPlanId, hostId },
-      { firebaseClientInjection: firebaseClient },
-      { debug: logger.info }
-    );
-    res.sendStatus(200);
+    const params = req.body;
+    const context = await authenticate(req);
+
+    const { data } = await etlEventPlansDelete(params, context, {
+      debug: functions.logger.info,
+      firebaseClientInjection: firebaseClient,
+    });
+
+    res.status(200).json({ data });
   } catch (err) {
     return next(err);
   }

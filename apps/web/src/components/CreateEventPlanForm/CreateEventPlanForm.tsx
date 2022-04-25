@@ -12,12 +12,11 @@ import { useHistory } from 'react-router-dom';
 import Recaptcha from '../Recaptcha/Recaptcha';
 import GuestList from '../GuestList/GuestList';
 import { EventPlanInfo, TIME_FORMAT } from '../../interfaces';
-import { createEventPlan } from '../../lib/firestore';
-import { useUserContext } from '../../contexts/UserContext';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import './CreateEventPlanForm.css';
 import 'rc-time-picker/assets/index.css';
+import api from '../../modules/api';
 
 /** RO3: copied from wya-api/lib/format-time-string */
 const SUPPORTED_TIME_FORMATS = [
@@ -32,7 +31,6 @@ const SUPPORTED_TIME_FORMATS = [
 type Email = string;
 
 export default function CreateEventPlanForm(): JSX.Element {
-  const { user } = useUserContext();
   const { userRecord } = useUserRecordContext();
   const history = useHistory();
   const [invitees, updateInvitees] = React.useState<Email[]>([]);
@@ -86,8 +84,12 @@ export default function CreateEventPlanForm(): JSX.Element {
       'g-recaptcha-response': token,
     };
 
-    const eventPlanId = await createEventPlan(eventPlanData);
+    const {
+      data: [eventPlanId],
+    } = await api.post('/event-plans/create', JSON.stringify(eventPlanData));
+
     console.log('Event plan created: ', eventPlanId);
+
     history.push(`/event-plans/${eventPlanId}`);
   };
 
@@ -99,7 +101,6 @@ export default function CreateEventPlanForm(): JSX.Element {
           onSubmit={onSubmitHandler}
           className="form-create-event-plan"
         >
-          <input type="hidden" name="hostId" value={user?.uid} />
           <h2
             style={{
               textAlign: 'left',
