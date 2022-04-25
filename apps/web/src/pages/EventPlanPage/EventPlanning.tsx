@@ -12,10 +12,8 @@ import { transformStartTime, transformEndTime } from '../../lib/eventHelpers';
 import {
   EventPlanAvailabilityDocument,
   EventPlanDocument,
-  EventPlanId,
   HeatMapData,
   ScheduleSelectorData,
-  UserId,
 } from '../../interfaces';
 
 import './EventPlanPage.css';
