@@ -4,6 +4,7 @@ import { functions, firebaseClient } from '../../firebase';
 import { authenticate } from '../../../auth';
 import { etlEventPlansCreate } from '../../etl/event-plans/create';
 import { etlEventPlansDelete } from '../../etl/event-plans/delete';
+import { etlEventPlansUpdate } from '../../etl/event-plans/update';
 
 const router = Router();
 
@@ -34,6 +35,22 @@ router.post('/delete', async (req, res, next) => {
     });
 
     res.status(200).json({ data });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.post('/update', async (req, res, next) => {
+  try {
+    const params = req.body;
+    const context = await authenticate(req);
+
+    const { data, errors } = await etlEventPlansUpdate(params, context, {
+      debug: functions.logger.info,
+      firebaseClientInjection: firebaseClient,
+    });
+
+    res.status(200).json({ data, errors });
   } catch (err) {
     return next(err);
   }

@@ -45,12 +45,12 @@ router.post('/update-time-format', async (req, res, next) => {
     const params = req.body;
     const context = await authenticate(req);
 
-    const data = await etlUsersUpdateTimeFormat(params, context, {
+    const { data, errors } = await etlUsersUpdateTimeFormat(params, context, {
       debug: functions.logger.info,
       firebaseClientInjection: firebaseClient,
     });
 
-    res.status(200).json(data);
+    res.status(200).json({ data, errors });
   } catch (err) {
     return next(err);
   }
