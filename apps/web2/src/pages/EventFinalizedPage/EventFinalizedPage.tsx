@@ -17,6 +17,9 @@ import CreateEventPlanPage from '../CreateEventPlanPage/CreateEventPlanPage';
 
 import PageSpinner from '../../components/PageSpinner/PageSpinner';
 import logo from '../../assets/wya-logo.png';
+import Page from '../../components/Page/Page';
+
+import './EventFinalizedPage.css';
 
 import {
   EventDocument,
@@ -57,10 +60,6 @@ const navigation = [
     current: false,
   },
 ];
-
-import Page from '../../components/Page/Page';
-
-import './EventFinalizedPage.css';
 
 export default function EventFinalizedPage({
   match,
