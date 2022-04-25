@@ -18,7 +18,7 @@ router.post('/create', async (req, res, next) => {
       firebaseClientInjection: firebaseClient,
     });
 
-    res.status(200).json({ data });
+    return res.status(200).json({ data });
   } catch (err) {
     return next(err);
   }
@@ -34,7 +34,7 @@ router.post('/delete', async (req, res, next) => {
       firebaseClientInjection: firebaseClient,
     });
 
-    res.status(200).json({ data });
+    return res.status(200).json({ data });
   } catch (err) {
     return next(err);
   }
@@ -50,7 +50,7 @@ router.post('/update', async (req, res, next) => {
       firebaseClientInjection: firebaseClient,
     });
 
-    res.status(200).json({ data, errors });
+    return res.status(200).json({ data, errors });
   } catch (err) {
     return next(err);
   }

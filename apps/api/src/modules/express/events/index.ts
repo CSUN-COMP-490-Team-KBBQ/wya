@@ -52,7 +52,7 @@ router.post('/delete', async (req, res, next) => {
       firebaseClientInjection: firebaseClient,
     });
 
-    res.status(200).json({ data });
+    return res.status(200).json({ data });
   } catch (err) {
     return next(err);
   }

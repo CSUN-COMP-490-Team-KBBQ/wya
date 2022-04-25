@@ -2,6 +2,7 @@ import assert from 'assert';
 import Debug from 'debug';
 import { App } from 'firebase-admin/app';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
+import { omitBy, isNil } from 'lodash/fp';
 
 import { AuthContext, authorize } from '../../../auth';
 import { validate } from '../../../../lib/validate';
@@ -76,9 +77,6 @@ export const etlEventPlansUpdate = async (
 
       debug(`Updating event-plan: ${JSON.stringify(params, null, 4)}`);
 
-      transaction.update(eventPlanDocRef, params);
-
-      // TODO: Notify invitees of any changes to the date / times
       ({
         name: data.name,
         description: data.description,
@@ -88,6 +86,10 @@ export const etlEventPlansUpdate = async (
         endDate: data.endDate,
         eventPlanId: data.eventPlanId,
       } = params);
+
+      transaction.update(eventPlanDocRef, omitBy(isNil, data));
+
+      // TODO: Notify invitees of any changes to the date / times
     });
   } catch (err: any) {
     errors.push(parseApiError(err));
