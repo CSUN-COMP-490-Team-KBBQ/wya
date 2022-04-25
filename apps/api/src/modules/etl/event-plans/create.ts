@@ -19,6 +19,7 @@ type Params = {
   startDate: string;
   endDate: string;
   invitees: Email[];
+  'g-recaptcha-response': string;
 };
 
 const _customValidate = (params: Params) => {
