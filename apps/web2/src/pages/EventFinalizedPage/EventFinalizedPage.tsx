@@ -1,5 +1,22 @@
 import React from 'react';
+import { Fragment, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import {
+  HomeIcon,
+  MenuIcon,
+  UserGroupIcon,
+  XIcon,
+  PencilIcon,
+} from '@heroicons/react/outline';
 import { Button, ListGroup } from 'react-bootstrap';
+
+import LandingPage from '../LandingPage/LandingPage';
+import SettingsPage from '../SettingsPage/SettingsPage';
+import CalendarPage from '../CalendarPage/CalendarPage';
+import CreateEventPlanPage from '../CreateEventPlanPage/CreateEventPlanPage';
+
+import PageSpinner from '../../components/PageSpinner/PageSpinner';
+import logo from '../../assets/wya-logo.png';
 
 import {
   EventDocument,
@@ -12,6 +29,34 @@ import {
   getAllSubCollDocsSnapshot$,
 } from '../../lib/firestore';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
+
+const content = {
+  DASHBOARD: 'dashboard',
+  PLANEVENT: 'create-event',
+  FRIENDS: 'friends',
+  SETTINGS: 'settings',
+};
+
+const navigation = [
+  {
+    name: 'Dashboard',
+    icon: HomeIcon,
+    content: content.DASHBOARD,
+    current: true,
+  },
+  {
+    name: 'Plan An Event',
+    icon: PencilIcon,
+    content: content.PLANEVENT,
+    current: false,
+  },
+  {
+    name: 'Friends',
+    icon: UserGroupIcon,
+    content: content.FRIENDS,
+    current: false,
+  },
+];
 
 import Page from '../../components/Page/Page';
 
