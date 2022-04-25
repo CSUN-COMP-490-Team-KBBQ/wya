@@ -131,6 +131,7 @@ export const etlEventPlansCreate = async (
         hostId,
         inviteesByUserId,
         eventPlanId,
+        isFinalized: false,
       };
       transaction.create(eventPlanDocRef, eventPlanDocPatch);
       patches.eventPlans.push({ [eventPlanId]: eventPlanDocPatch });

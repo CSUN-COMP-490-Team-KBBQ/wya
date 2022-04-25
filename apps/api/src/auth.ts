@@ -30,7 +30,14 @@ const _capabilities = (context: AuthContext, document: any): string[] => {
 
   // Check that the document belongs to the host user
   if (document && document.hostId && context.user?.uid === document.hostId) {
-    return [...baseCapabilities, 'etl/events/delete', 'etl/event-plans/delete'];
+    return [
+      ...baseCapabilities,
+      'etl/events/delete',
+      'etl/event-plans/delete',
+      'etl/event-plans/update',
+      'etl/event-plans/delete-invitees',
+      'etl/event-plans/update-invitees',
+    ];
   }
 
   return [...baseCapabilities];
