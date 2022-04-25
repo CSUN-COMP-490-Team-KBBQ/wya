@@ -89,7 +89,9 @@ export type EventPlanAvailabilityDocument = {
       [date: string]: string[];
     };
   };
-  uid: UserId;
+  // Should always be included in this document but some web components don't
+  // need this. This is mainly used for api authorization.
+  uid?: UserId;
 };
 
 /** events */
