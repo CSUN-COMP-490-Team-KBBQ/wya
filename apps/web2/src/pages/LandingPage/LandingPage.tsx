@@ -3,6 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 
 import { useUserContext } from '../../contexts/UserContext';
 
+// Keep this for future reference
 // import logo from '../../assets/wya-logo.png';
 import image from '../../assets/background14.png';
 
