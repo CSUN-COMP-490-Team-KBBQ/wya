@@ -22,6 +22,7 @@ const _capabilities = (context: AuthContext, document: any): string[] => {
     return [
       ...baseCapabilities,
       'etl/events/guests/update',
+      'etl/event-plans/availabilities/update',
       'etl/users/delete',
       'etl/users/update-time-format',
     ];

@@ -40,3 +40,21 @@ it(`does not throw with emtpy string`, () => {
 
   expect(true).toBeTruthy();
 });
+
+it('does not throw with empty params object', () => {
+  validate(
+    {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'object',
+        },
+      },
+    },
+    {
+      data: {},
+    }
+  );
+
+  expect(true).toBeTruthy();
+});

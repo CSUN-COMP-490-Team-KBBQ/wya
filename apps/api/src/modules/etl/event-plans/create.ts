@@ -142,6 +142,7 @@ export const etlEventPlansCreate = async (
         );
         const eventPlanAvailabilitiesDocPatch = {
           data: {},
+          uid: userId,
         };
 
         transaction.create(

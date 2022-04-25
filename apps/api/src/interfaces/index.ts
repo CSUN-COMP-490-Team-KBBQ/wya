@@ -89,6 +89,7 @@ export type EventPlanAvailabilityDocument = {
       [date: string]: string[];
     };
   };
+  uid: UserId;
 };
 
 /** events */

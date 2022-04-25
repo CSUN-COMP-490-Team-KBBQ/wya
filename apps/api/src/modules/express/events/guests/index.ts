@@ -3,7 +3,6 @@ import { Router } from 'express';
 import { firebaseClient, functions } from '../../../firebase';
 import { etlEventsGuestsUpdateStatus } from '../../../etl/events/guests/update-status';
 import { etlEventsGuestsUpdate } from '../../../etl/events/guests/update';
-
 import { etlEventsGuestsDelete } from '../../../etl/events/guests/delete';
 
 const router = Router();
