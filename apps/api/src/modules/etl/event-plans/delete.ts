@@ -23,7 +23,7 @@ export const etlEventPlansDelete = async (
   validate(
     {
       type: 'object',
-      required: [],
+      required: ['eventPlanId'],
       properties: {
         eventPlanId: {
           type: 'string',
