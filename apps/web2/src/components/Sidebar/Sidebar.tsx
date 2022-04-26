@@ -16,7 +16,6 @@ import logo from '../../assets/wya-logo.png';
 
 const content = {
   DASHBOARD: '/dashboard',
-  EDITAVAILABILITY: '/edit-availability',
   FRIENDS: '/friends',
   SETTINGS: '/settings/general',
 };
