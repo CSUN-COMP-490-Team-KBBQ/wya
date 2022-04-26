@@ -1,7 +1,6 @@
 import React from 'react';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
 import './FriendsPage.css';
 
 export default function FriendsPage(): JSX.Element {
@@ -17,7 +16,6 @@ export default function FriendsPage(): JSX.Element {
                       <h1 className="pt-4 flex justify-center">Friends List</h1>
                         <div className="w-96 mx-auto sm:px-6 lg:px-8">
                             <div className="flow-root mt-6">
-                                <ul role="list" className="-my-5 divide-y divide-gray-200">
                                 <li className="py-4">
                                     <div className="flex items-center space-x-4">
                                     <div className="flex-shrink-0">
@@ -61,7 +59,6 @@ export default function FriendsPage(): JSX.Element {
                                 </div> */}
                             </div>
                         </li>
-                        </ul>
                     </div>
                     </div>
                     </div>
