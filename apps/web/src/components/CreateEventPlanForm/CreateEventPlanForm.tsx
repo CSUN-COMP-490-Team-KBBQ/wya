@@ -85,7 +85,9 @@ export default function CreateEventPlanForm(): JSX.Element {
     };
 
     const {
-      data: [eventPlanId],
+      data: {
+        data: [eventPlanId],
+      },
     } = await api.post('/event-plans/create', JSON.stringify(eventPlanData));
 
     console.log('Event plan created: ', eventPlanId);
