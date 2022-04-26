@@ -130,15 +130,16 @@ export default function EventPlanning({
 
   return (
     <Container fluid id="eventPlanningContainer">
-      <h1>{eventPlanData.name}</h1>
+      <br></br>
+      <h1 className="font-medium text-5xl mt-0 mb-2 text-black-600">{eventPlanData.name}</h1>
       <Col id="containerCol" sm={6}>
         <Row>
           <div id="eventDetails">
-            <h2>Description</h2>
-            <p>{eventPlanData.description}</p>
+          <h3 className="font-medium italic text-lg mt-0 mb-2 text-black-600">{eventPlanData.description}</h3>
           </div>
         </Row>
-        <h2>Group Availabilities</h2>
+        <br></br>
+        <h3 className="font-medium italic text-5xl mt-0 mb-2 text-black-600">Group Availability</h3>
         <Row>
           <AvailabilityHeatMap
             yLabels={heatMapData.yTimesHeatMapLabelsArray}
@@ -147,6 +148,7 @@ export default function EventPlanning({
             onClick={() => undefined}
           />
         </Row>
+        <br></br>
         <Row>
           <div id="buttonsRow">
             <Button
@@ -172,6 +174,7 @@ export default function EventPlanning({
             )}
           </div>
         </Row>
+        <br></br>
       </Col>
     </Container>
   );
