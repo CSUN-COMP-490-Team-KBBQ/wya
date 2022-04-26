@@ -141,7 +141,7 @@ const Calendar: FunctionComponent = () => {
 
   return (
     <>
-      <div className="container mx-auto py-4 px-6">
+      <div className="container py-4 px-6">
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4 border-b">
             <div>
