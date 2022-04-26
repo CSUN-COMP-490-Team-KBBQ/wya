@@ -28,12 +28,6 @@ const navigation = [
     current: true,
   },
   {
-    name: 'Edit Availability',
-    icon: HomeIcon,
-    content: content.EDITAVAILABILITY,
-    current: true,
-  },
-  {
     name: 'Friends',
     icon: UserGroupIcon,
     content: content.FRIENDS,
