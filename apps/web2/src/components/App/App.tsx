@@ -12,8 +12,10 @@ import FriendsPage from '../../pages/FriendsPage/FriendsPage';
 import CalendarPage from '../../pages/CalendarPage/CalendarPage';
 import ProfilePage from '../../pages/ProfilePage/ProfilePage';
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
+import EditAvailabilityPage from '../../pages/EditAvailabilityPage/EditAvailabilityPage';
 import { UserAuthProvider } from '../../contexts/UserContext';
 import { UserRecordProvider } from '../../contexts/UserRecordContext';
+
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LandingPage from '../../pages/LandingPage/LandingPage';
@@ -42,6 +44,8 @@ export default function App(): JSX.Element {
               path="/create-event-plan"
               component={CreateEventPlanPage}
             />
+            {/* legacy page */}
+            <PrivateRoute path="/edit-availability" component = {EditAvailabilityPage} />
             {/* legacy page */}
             <PrivateRoute path="/event/:id" component={EventPage} />
             {/* legacy page */}

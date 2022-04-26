@@ -16,6 +16,7 @@ import logo from '../../assets/wya-logo.png';
 
 const content = {
   DASHBOARD: '/dashboard',
+  EDITAVAILABILITY: '/edit-availability',
   FRIENDS: '/friends',
   SETTINGS: '/settings/general',
 };
@@ -25,6 +26,12 @@ const navigation = [
     name: 'Dashboard',
     icon: HomeIcon,
     content: content.DASHBOARD,
+    current: true,
+  },
+  {
+    name: 'Edit Availability',
+    icon: HomeIcon,
+    content: content.EDITAVAILABILITY,
     current: true,
   },
   {
