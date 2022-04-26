@@ -284,8 +284,8 @@ export default function CalendarPage(): JSX.Element {
               </div>
             </div>
 
-            <div className="bg-[#00416d] pr-4 sm:pr-6 lg:pr-8 lg:flex-shrink-0 lg:border-l lg:border-gray-200 xl:pr-0">
-              <div className="h-full pl-6 py-6 lg:w-80 bg-white">
+            {/* <div className="bg-[#00416d] pr-4 sm:pr-6 lg:pr-8 lg:flex-shrink-0 lg:border-l lg:border-gray-200 xl:pr-0"> */}
+              <div style={{width: '30rem'}} className="h-full pl-6 py-6 bg-white">
                 {/* Start right column area */}
                 <div className="h-full relative" style={{ minHeight: '16rem' }}>
                   <div className="absolute inset-0 border-2 border-gray-200 border-dashed rounded-lg overflow-y-auto bg-white">
@@ -296,7 +296,7 @@ export default function CalendarPage(): JSX.Element {
                 </div>
                 {/* End right column area */}
               </div>
-            </div>
+            {/* </div> */}
           </div>
         </>
       ) : (
