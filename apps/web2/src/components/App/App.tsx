@@ -8,6 +8,7 @@ import PasswordResetPage from '../../pages/PasswordResetPage/PasswordResetPage';
 import CreateEventPage from '../../pages/CreateEventPage/CreateEventPage';
 import CreateEventPlanPage from '../../pages/CreateEventPlanPage/CreateEventPlanPage';
 import EventPage from '../../pages/EventPage/EventPage';
+import FriendsPage from '../../pages/FriendsPage/FriendsPage';
 import CalendarPage from '../../pages/CalendarPage/CalendarPage';
 import ProfilePage from '../../pages/ProfilePage/ProfilePage';
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
@@ -34,6 +35,8 @@ export default function App(): JSX.Element {
 
             {/* legacy page */}
             <PrivateRoute path="/create-event" component={CreateEventPage} />
+            {/* legacy page */}
+            <PrivateRoute path="/friends" component={FriendsPage} />
             {/* legacy page */}
             <PrivateRoute
               path="/create-event-plan"
