@@ -17,13 +17,11 @@ import app from './firebase';
 
 import EventData from '../interfaces/EventData';
 import {
-  EventInfo,
   UserDocument,
   EventPlanAvailabilityDocument,
   EventPlanDocument,
   UserId,
   EventGuest,
-  EventPlanId,
   EventId,
 } from '../interfaces';
 
@@ -36,35 +34,6 @@ function getDocRef(path: string) {
 function getCollRef(path: string) {
   return collection(firestore, path);
 }
-
-export const createEventFinalized = (
-  data: EventInfo & { eventPlanId: EventPlanId } & {
-    inviteesByUserId: UserId[];
-  }
-) => {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(
-        `${process.env.REACT_APP_FIREBASE_CLOUD_FUNCTIONS_URL}/api/events/create`,
-        JSON.stringify(data),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-        const {
-          data: {
-            data: [eventFinalizedId],
-          },
-        } = res;
-        resolve(eventFinalizedId);
-      })
-      .catch(reject);
-  });
-};
 
 export const deleteEventFinalized = (
   data: { eventId: EventId } & { hostId: UserId }

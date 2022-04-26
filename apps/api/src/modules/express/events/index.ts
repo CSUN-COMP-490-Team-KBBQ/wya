@@ -9,34 +9,16 @@ import { authenticate } from '../../../auth';
 const router = Router();
 
 router.post('/create', async (req, res, next) => {
-  const logger = functions.logger;
-
-  const {
-    eventPlanId,
-    hostId,
-    day,
-    dailyStartTime,
-    dailyEndTime,
-    startDate,
-    endDate,
-  } = req.body;
-
   try {
-    const { data } = await etlEventsCreate(
-      {
-        eventPlanId,
-        hostId,
-        day,
-        dailyStartTime,
-        dailyEndTime,
-        startDate,
-        endDate,
-      },
-      { firebaseClientInjection: firebaseClient },
-      { debug: logger.info }
-    );
+    const params = req.body;
+    const context = await authenticate(req);
 
-    res.status(200).json({ data });
+    const { data } = await etlEventsCreate(params, context, {
+      debug: functions.logger.info,
+      firebaseClientInjection: firebaseClient,
+    });
+
+    return res.status(200).json({ data });
   } catch (err) {
     return next(err);
   }

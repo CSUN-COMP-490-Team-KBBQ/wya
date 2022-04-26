@@ -32,6 +32,7 @@ const _capabilities = (context: AuthContext, document: any): string[] => {
   if (document && document.hostId && context.user?.uid === document.hostId) {
     return [
       ...baseCapabilities,
+      'etl/events/create',
       'etl/events/delete',
       'etl/event-plans/delete',
       'etl/event-plans/update',
