@@ -5,31 +5,41 @@ import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
 import { EventId, UserId } from '../../../interfaces';
-import { ApiError, makeApiError } from '../../../../lib/errors';
 import { etlEventPlansDelete } from '../event-plans/delete';
+import { ApiError, makeApiError } from '../../../../lib/errors';
+import { validate } from '../../../../lib/validate';
+import { AuthContext, authorize } from '../../../auth';
 
 type Params = {
   eventId: EventId;
-  hostId: UserId;
-};
-
-type Context = {
-  firebaseClientInjection: App;
 };
 
 export const etlEventsDelete = async (
   params: Params,
-  context: Context,
-  { debug = Debug('api:etl/events/delete') as any } = {}
+  context: AuthContext,
+  {
+    debug = Debug('api:etl/events/delete') as any,
+    firebaseClientInjection = undefined as App | undefined,
+  } = {}
 ) => {
-  assert(params.eventId, makeApiError(400, 'Event is required'));
-  assert(params.hostId, makeApiError(400, 'Host is required'));
+  validate(
+    {
+      type: 'object',
+      required: ['eventId'],
+      properties: {
+        eventId: {
+          type: 'string',
+        },
+      },
+    },
+    params,
+    makeApiError(400, 'Bad request')
+  );
+
   debug(`Deleting an event: ${JSON.stringify(params, null, 4)}`);
 
-  const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
-  const firebaseFirestore = getFirebaseFirestore(
-    context.firebaseClientInjection
-  );
+  const firebaseAuth = getFirebaseAuth(firebaseClientInjection);
+  const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
   assert(
     firebaseAuth && firebaseFirestore,
     makeApiError(422, 'Invalid context')
@@ -42,11 +52,7 @@ export const etlEventsDelete = async (
 
       assert(event, makeApiError(422, 'Invalid event'));
 
-      // Assert that the params.hostId matches whats in the event doc
-      assert(
-        event?.hostId === params.hostId,
-        makeApiError(401, 'Unauthorized')
-      );
+      authorize('etl/events/delete', context, event);
 
       // Not sure if we can create another transaction in the middle of
       // this transaction
@@ -55,10 +61,12 @@ export const etlEventsDelete = async (
       await etlEventPlansDelete(
         {
           eventPlanId: params.eventId,
-          hostId: params.hostId,
         },
-        { firebaseClientInjection: context.firebaseClientInjection },
-        { debug }
+        context,
+        {
+          debug,
+          firebaseClientInjection,
+        }
       );
 
       for (const userId of [
@@ -89,4 +97,6 @@ export const etlEventsDelete = async (
   }
 
   debug('Done');
+
+  return { data: {} };
 };

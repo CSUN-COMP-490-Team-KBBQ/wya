@@ -1,40 +1,43 @@
 import assert from 'assert';
 import Debug from 'debug';
 import { App } from 'firebase-admin/app';
-import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
 import { EventPlanId, UserId } from '../../../interfaces';
 import { ApiError, makeApiError } from '../../../../lib/errors';
+import { validate } from '../../../../lib/validate';
+import { AuthContext, authorize } from '../../../auth';
 
 type Params = {
   eventPlanId: EventPlanId;
-  hostId: UserId;
-};
-
-type Context = {
-  firebaseClientInjection: App;
 };
 
 export const etlEventPlansDelete = async (
   params: Params,
-  context: Context,
-  { debug = Debug('api:etl/event-plans/delete') as any } = {}
+  context: AuthContext,
+  {
+    debug = Debug('api:etl/event-plans/delete') as any,
+    firebaseClientInjection = undefined as App | undefined,
+  } = {}
 ) => {
-  // Rough validation of params
-  assert(params.eventPlanId, makeApiError(400, 'Event-plan is required'));
-  assert(params.hostId, makeApiError(400, 'Host is required'));
+  validate(
+    {
+      type: 'object',
+      required: ['eventPlanId'],
+      properties: {
+        eventPlanId: {
+          type: 'string',
+        },
+      },
+    },
+    params,
+    makeApiError(400, 'Bad request')
+  );
 
   debug(`Deleting an event-plan: ${JSON.stringify(params, null, 4)}`);
 
-  const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
-  const firebaseFirestore = getFirebaseFirestore(
-    context.firebaseClientInjection
-  );
-  assert(
-    firebaseAuth && firebaseFirestore,
-    makeApiError(422, 'Invalid context')
-  );
+  const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
+  assert(firebaseFirestore, makeApiError(422, 'Bad firebase client'));
 
   try {
     await firebaseFirestore.runTransaction(async (transaction) => {
@@ -45,11 +48,7 @@ export const etlEventPlansDelete = async (
 
       assert(eventPlan, makeApiError(422, 'Invalid event-plan'));
 
-      // Assert that the params.hostId matches whats in the event-plan doc
-      assert(
-        eventPlan?.hostId === params.hostId,
-        makeApiError(401, 'Unauthorized')
-      );
+      authorize('etl/event-plans/delete', context, eventPlan);
 
       for (const userId of [
         ...((eventPlan.inviteesByUserId ?? []) as UserId[]),
@@ -79,4 +78,8 @@ export const etlEventPlansDelete = async (
   }
 
   debug('Done');
+
+  return {
+    data: {},
+  };
 };

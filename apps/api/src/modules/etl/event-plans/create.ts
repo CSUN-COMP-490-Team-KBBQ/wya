@@ -8,6 +8,8 @@ import { v4 as uuid } from 'uuid';
 
 import { Email, UserId, EVENT_PLAN_ROLE } from '../../../interfaces';
 import { ApiError, makeApiError } from '../../../../lib/errors';
+import { validate } from '../../../../lib/validate';
+import { AuthContext, authorize } from '../../../auth';
 
 type Params = {
   name: string;
@@ -16,20 +18,14 @@ type Params = {
   dailyEndTime: string;
   startDate: string;
   endDate: string;
-  hostId: UserId;
   invitees: Email[];
+  'g-recaptcha-response': string;
 };
 
-type Context = {
-  firebaseClientInjection: App;
-};
-
-const _validate = (params: Params) => {
+const _customValidate = (params: Params) => {
   const { invitees, ...restOfParams } = params;
-  for (const [key, value] of Object.entries(restOfParams)) {
-    assert(value || value === '', makeApiError(409, `${key} is required`));
-  }
 
+  // Custom validation to check invitees are valid emails
   if (invitees.length > 0) {
     /**
      * Regex copied from : https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression
@@ -39,33 +35,77 @@ const _validate = (params: Params) => {
     for (const email of invitees) {
       assert(
         EMAIL_REGEX.test(email),
-        makeApiError(409, `Invalid email provided: ${email}`)
+        makeApiError(400, `Invalid email provided: ${email}`)
       );
     }
   }
+
+  // Validate rest of the params
+  validate(
+    {
+      type: 'object',
+      required: [
+        'name',
+        'dailyStartTime',
+        'dailyEndTime',
+        'startDate',
+        'endDate',
+      ],
+      properties: {
+        name: {
+          type: 'string',
+        },
+        description: {
+          type: 'string',
+        },
+        dailyStartTime: {
+          type: 'string',
+        },
+        dailyEndTime: {
+          type: 'string',
+        },
+        startDate: {
+          type: 'string',
+        },
+        endDate: { type: 'string' },
+        'g-recaptcha-response': {
+          type: 'string',
+        },
+      },
+    },
+    restOfParams,
+    makeApiError(400, 'Bad request')
+  );
 };
 
 export const etlEventPlansCreate = async (
   params: Params,
-  context: Context,
-  { debug = Debug('api:etl/event-plans/create') as any } = {}
+  context: AuthContext,
+  {
+    debug = Debug('api:etl/event-plans/create') as any,
+    firebaseClientInjection = undefined as App | undefined,
+  } = {}
 ) => {
-  _validate(params);
+  _customValidate(params);
 
-  const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
-  const firebaseFirestore = getFirebaseFirestore(
-    context.firebaseClientInjection
-  );
+  authorize('etl/event-plans/create', context, {});
+
+  const firebaseAuth = getFirebaseAuth(firebaseClientInjection);
+  const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
   assert(
     firebaseAuth && firebaseFirestore,
-    makeApiError(422, 'Invalid context')
+    makeApiError(422, 'Bad firebase client')
   );
 
+  const hostId = context.user?.uid;
+  assert(hostId, makeApiError(401, 'Invalid user'));
+
   const eventPlanId = uuid();
-  const { invitees: inviteesByEmail, hostId, ...restOfParams } = params;
+
+  const { invitees: inviteesByEmail, ...restOfParams } = params;
 
   debug('Creating event-plan');
-  debug({ ...params, eventPlanId });
+  debug({ ...params, eventPlanId, hostId });
 
   let inviteesByUserId: UserId[] = [];
   for (const email of inviteesByEmail) {
@@ -92,6 +132,7 @@ export const etlEventPlansCreate = async (
         hostId,
         inviteesByUserId,
         eventPlanId,
+        isFinalized: false,
       };
       transaction.create(eventPlanDocRef, eventPlanDocPatch);
       patches.eventPlans.push({ [eventPlanId]: eventPlanDocPatch });
@@ -103,6 +144,7 @@ export const etlEventPlansCreate = async (
         );
         const eventPlanAvailabilitiesDocPatch = {
           data: {},
+          uid: userId,
         };
 
         transaction.create(

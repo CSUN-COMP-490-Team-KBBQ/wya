@@ -18,7 +18,7 @@ router.post('/create', async (req, res, next) => {
       firebaseClientInjection: firebaseClient,
     });
 
-    res.status(200).json({ data });
+    return res.status(200).json({ data });
   } catch (err) {
     return next(err);
   }
@@ -29,15 +29,15 @@ router.post('/delete', async (req, res, next) => {
     const params = req.body;
     const context = await authenticate(req);
 
-    await etlUsersDelete(params, context, {
+    const { data } = await etlUsersDelete(params, context, {
       debug: functions.logger.info,
       firebaseClientInjection: firebaseClient,
     });
+
+    return res.status(200).json({ data });
   } catch (err) {
     return next(err);
   }
-
-  res.sendStatus(200);
 });
 
 router.post('/update-time-format', async (req, res, next) => {
@@ -45,12 +45,12 @@ router.post('/update-time-format', async (req, res, next) => {
     const params = req.body;
     const context = await authenticate(req);
 
-    const data = await etlUsersUpdateTimeFormat(params, context, {
+    const { data, errors } = await etlUsersUpdateTimeFormat(params, context, {
       debug: functions.logger.info,
       firebaseClientInjection: firebaseClient,
     });
 
-    res.status(200).json(data);
+    return res.status(200).json({ data, errors });
   } catch (err) {
     return next(err);
   }

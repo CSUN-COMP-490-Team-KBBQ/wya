@@ -22,6 +22,7 @@ const _capabilities = (context: AuthContext, document: any): string[] => {
     return [
       ...baseCapabilities,
       'etl/events/guests/update',
+      'etl/event-plans/availabilities/update',
       'etl/users/delete',
       'etl/users/update-time-format',
     ];
@@ -29,7 +30,14 @@ const _capabilities = (context: AuthContext, document: any): string[] => {
 
   // Check that the document belongs to the host user
   if (document && document.hostId && context.user?.uid === document.hostId) {
-    return [...baseCapabilities];
+    return [
+      ...baseCapabilities,
+      'etl/events/delete',
+      'etl/event-plans/delete',
+      'etl/event-plans/update',
+      'etl/event-plans/delete-invitees',
+      'etl/event-plans/update-invitees',
+    ];
   }
 
   return [...baseCapabilities];
