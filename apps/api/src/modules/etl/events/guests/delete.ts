@@ -12,7 +12,6 @@ import {
 } from '../../../../../lib/errors';
 import { validate } from '../../../../../lib/validate';
 import { etlEventsDeleteGuests } from '../delete-guests';
-import { etlEventPlansDeleteInvitees } from '../../event-plans/delete-invitees';
 
 type Params = {
   eventId: EventId;
