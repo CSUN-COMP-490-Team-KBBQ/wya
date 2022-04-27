@@ -1,60 +1,39 @@
 import { Router } from 'express';
 
 import { firebaseClient, functions } from '../../../firebase';
-import { etlEventsGuestsUpdateStatus } from '../../../etl/events/guests/update-status';
-import { etlEventsGuestsUpdate } from '../../../etl/events/guests/update';
+import { authenticate } from '../../../../auth';
 import { etlEventsGuestsDelete } from '../../../etl/events/guests/delete';
+import { etlEventsGuestsUpdateStatus } from '../../../etl/events/guests/update-status';
 
 const router = Router();
 
 router.post('/update-status', async (req, res, next) => {
-  const logger = functions.logger;
-
-  const { status, uid, eventId } = req.body;
-
   try {
-    await etlEventsGuestsUpdateStatus(
-      { status, uid, eventId },
-      { firebaseClientInjection: firebaseClient },
-      { debug: logger.info }
-    );
+    const params = req.body;
+    const context = await authenticate(req);
 
-    res.sendStatus(200);
-  } catch (err) {
-    return next(err);
-  }
-});
+    const { data } = await etlEventsGuestsUpdateStatus(params, context, {
+      debug: functions.logger.info,
+      firebaseClientInjection: firebaseClient,
+    });
 
-router.post('/update', async (req, res, next) => {
-  const logger = functions.logger;
-
-  const { eventId, hostId, eventGuests } = req.body;
-
-  try {
-    await etlEventsGuestsUpdate(
-      { eventId, hostId, eventGuests },
-      { firebaseClientInjection: firebaseClient },
-      { debug: logger.info }
-    );
-
-    res.sendStatus(200);
+    return res.status(200).json({ data });
   } catch (err) {
     return next(err);
   }
 });
 
 router.post('/delete', async (req, res, next) => {
-  const logger = functions.logger;
-
-  const { eventId, userId } = req.body;
-
   try {
-    await etlEventsGuestsDelete(
-      { eventId, userId },
-      { firebaseClientInjection: firebaseClient },
-      { debug: logger.info }
-    );
-    res.sendStatus(200);
+    const params = req.body;
+    const context = await authenticate(req);
+
+    const { errors } = await etlEventsGuestsDelete(params, context, {
+      debug: functions.logger.info,
+      firebaseClientInjection: firebaseClient,
+    });
+
+    return res.status(200).json({ data: {}, errors });
   } catch (err) {
     return next(err);
   }

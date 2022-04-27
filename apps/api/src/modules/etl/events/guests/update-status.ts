@@ -1,67 +1,62 @@
 import assert from 'assert';
 import Debug from 'debug';
 import { App } from 'firebase-admin/app';
-import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
-import { UserId, EVENT_GUEST_STATUS, EventId } from '../../../../interfaces';
+import { EVENT_GUEST_STATUS, EventId } from '../../../../interfaces';
 import { ApiError, makeApiError } from '../../../../../lib/errors';
+import { validate } from '../../../../../lib/validate';
+import { authorize, AuthContext } from '../../../../auth';
 
 type Params = {
   status: EVENT_GUEST_STATUS;
-  uid: UserId;
   eventId: EventId;
-};
-
-type Context = {
-  firebaseClientInjection: App;
-};
-
-const _validate = (params: Params) => {
-  for (const [key, value] of Object.entries(params)) {
-    assert(value || value === '', makeApiError(400, `${key} is required`));
-  }
 };
 
 export const etlEventsGuestsUpdateStatus = async (
   params: Params,
-  context: Context,
-  { debug = Debug('api:etl/events/guests/update-status') as any } = {}
+  context: AuthContext,
+  {
+    debug = Debug('api:etl/events/guests/update-status') as any,
+    firebaseClientInjection = undefined as App | undefined,
+  } = {}
 ) => {
-  _validate(params);
-
-  const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
-  const firebaseFirestore = getFirebaseFirestore(
-    context.firebaseClientInjection
+  validate(
+    {
+      type: 'object',
+      required: ['eventId', 'status'],
+      properties: {
+        eventId: {
+          type: 'string',
+        },
+        status: {
+          type: 'string',
+        },
+      },
+    },
+    params,
+    makeApiError(400, 'Bad request')
   );
-  assert(
-    firebaseAuth && firebaseFirestore,
-    makeApiError(422, 'Invalid context')
-  );
 
-  debug('Updating event guests status');
-  debug(params);
+  const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
+  assert(firebaseFirestore, makeApiError(422, 'Invalid context'));
 
   try {
     await firebaseFirestore.runTransaction(async (transaction) => {
-      const eventDocRef = firebaseFirestore.doc(`/events/${params.eventId}`);
-      const eventDoc = (await transaction.get(eventDocRef)).data();
-      assert(eventDoc, makeApiError(422, 'Invalid event'));
-
       const eventGuestDocRef = firebaseFirestore.doc(
-        `/events/${params.eventId}/guests/${params.uid}`
+        `/events/${params.eventId}/guests/${context.user?.uid}`
       );
-      const eventGuestDoc = (await transaction.get(eventGuestDocRef)).data();
-      assert(eventGuestDoc, makeApiError(422, 'Invalid event guest'));
+      const eventGuest = (await transaction.get(eventGuestDocRef)).data();
+      assert(eventGuest, makeApiError(422, 'Invalid event guest'));
 
-      // Make sure user is a guest in the event
-      const isGuest =
-        ((eventDoc.guestsByUserId as UserId[]) || []).includes(params.uid) &&
-        eventGuestDoc.uid === params.uid;
-      assert(isGuest, makeApiError(422, 'User must be a guest'));
+      authorize('etl/events/guests/update-status', context, eventGuest);
 
-      const { status: currentStatus } = eventGuestDoc;
+      const { status: currentStatus } = eventGuest;
       const { status: intendedStatus } = params;
+
+      debug(
+        `Updating event guest ${context.user?.uid} status from ${currentStatus} to ${intendedStatus}`
+      );
 
       if (currentStatus === intendedStatus) {
         return;
@@ -99,7 +94,7 @@ export const etlEventsGuestsUpdateStatus = async (
 
       // Update in the users/events doc as well
       const usersEventsDocRef = firebaseFirestore.doc(
-        `/users/${params.uid}/events/${params.eventId}`
+        `/users/${context.user?.uid}/events/${params.eventId}`
       );
       transaction.update(usersEventsDocRef, statusPatch);
     });
@@ -109,4 +104,8 @@ export const etlEventsGuestsUpdateStatus = async (
     }
     throw makeApiError(500, 'Unable to update event guests', err);
   }
+
+  debug('Done');
+
+  return { data: {} };
 };

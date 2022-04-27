@@ -58,3 +58,12 @@ it('does not throw with empty params object', () => {
 
   expect(true).toBeTruthy();
 });
+
+it('does not throw with empty array', () => {
+  validate(
+    { type: 'object', properties: { guestsByUid: { type: 'array' } } },
+    { guestsByUid: [] }
+  );
+
+  expect(true).toBeTruthy();
+});

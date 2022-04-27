@@ -21,7 +21,8 @@ const _capabilities = (context: AuthContext, document: any): string[] => {
   if (document && document.uid && context.user?.uid === document.uid) {
     return [
       ...baseCapabilities,
-      'etl/events/guests/update',
+      'etl/events/guests/delete',
+      'etl/events/guests/update-status',
       'etl/event-plans/availabilities/update',
       'etl/users/delete',
       'etl/users/update-time-format',
@@ -34,6 +35,9 @@ const _capabilities = (context: AuthContext, document: any): string[] => {
       ...baseCapabilities,
       'etl/events/create',
       'etl/events/delete',
+      'etl/events/update',
+      'etl/events/delete-guests',
+      'etl/events/update-guests',
       'etl/event-plans/delete',
       'etl/event-plans/update',
       'etl/event-plans/delete-invitees',

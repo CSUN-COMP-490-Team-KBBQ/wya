@@ -63,12 +63,6 @@ export const etlEventsCreate = async (
   // Using the same uuid for both event-plans and their finalized events
   const eventId = params.eventPlanId;
 
-  const patches = {
-    events: [] as { [EventId: string]: {} }[],
-    eventGuests: [] as { [UserId: string]: {} }[],
-    usersEvents: [] as { [EventId: string]: {} }[],
-  };
-
   try {
     await firebaseFirestore.runTransaction(async (transaction) => {
       const eventPlanDocRef = firebaseFirestore.doc(
@@ -115,13 +109,13 @@ export const etlEventsCreate = async (
         ...pick(PROPERTIES_FROM_EVENT_PLAN, eventPlan),
         day: params.day,
         eventId,
+
         guestsByUserId,
       };
 
       transaction.create(eventDocRef, eventDocPatch);
 
-      patches.events.push({ [eventId]: eventDocPatch });
-
+      // Create event guest doc for each guest
       for (const userId of guestsByUserId) {
         const eventGuestsDocRef = firebaseFirestore.doc(
           `/events/${eventId}/guests/${userId}`
@@ -134,11 +128,9 @@ export const etlEventsCreate = async (
         };
 
         transaction.create(eventGuestsDocRef, eventGuestsDocPatch);
-
-        patches.eventGuests.push({ [userId]: eventGuestsDocPatch });
       }
 
-      // Associate the event to the guest users
+      // Create user event doc for each guest
       for (const userId of guestsByUserId) {
         const userEventsDocRef = firebaseFirestore.doc(
           `/users/${userId}/events/${eventId}`
@@ -153,15 +145,11 @@ export const etlEventsCreate = async (
         };
 
         transaction.create(userEventsDocRef, userEventsDocPatch);
-
-        patches.usersEvents.push({ [eventId]: userEventsDocPatch });
       }
 
-      const hostId = eventPlan.hostId;
-
-      // Associate the event to the host user
+      // Create user event doc for host
       const hostUserEventsDocRef = firebaseFirestore.doc(
-        `/users/${hostId}/events/${eventId}`
+        `/users/${eventPlan.hostId}/events/${eventId}`
       );
       const hostUserEventsDocPatch = {
         ...pick(PROPERTIES_FROM_EVENT_PLAN, eventPlan),
@@ -179,17 +167,14 @@ export const etlEventsCreate = async (
       transaction.update(eventPlanDocRef, { isFinalized: true });
 
       // Update user event-plan isFinalized field
-      for (const userId of [...guestsByUserId, hostId]) {
+      for (const userId of [...guestsByUserId, eventPlan.hostId]) {
         const userEventPlanDocRef = firebaseFirestore.doc(
           `/users/${userId}/event-plans/${params.eventPlanId}`
         );
         transaction.update(userEventPlanDocRef, { isFinalized: true });
       }
-
-      patches.usersEvents.push({ [eventId]: hostUserEventsDocPatch });
     });
 
-    debug(patches);
     debug('Done');
     return {
       data: [eventId],
