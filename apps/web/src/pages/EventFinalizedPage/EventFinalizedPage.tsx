@@ -22,6 +22,7 @@ import { useHistory } from 'react-router-dom';
 import Page from '../../components/Page/Page';
 
 import './EventFinalizedPage.css';
+import api from '../../modules/api';
 
 export default function EventFinalizedPage({
   match,
@@ -85,36 +86,40 @@ export default function EventFinalizedPage({
     }
   }, [userRecord, match.params.id]);
 
-  const handleAccept = () => {
-    if (userRecord) {
+  const handleAccept = async () => {
+    if (eventData !== undefined && userRecord) {
       const user: EventGuest = eventGuests.find(
         (obj) => obj.uid === userRecord.uid
       ) as EventGuest;
       user.status = EVENT_GUEST_STATUS.ACCEPTED;
-      updateGuest(match.params.id, user);
+
+      await api.post('/events/guests/update-status', {
+        status: user.status,
+        eventId: eventData.eventId,
+      });
     }
   };
 
-  const handleDecline = () => {
-    if (userRecord) {
+  const handleDecline = async () => {
+    if (eventData !== undefined && userRecord) {
       const user: EventGuest = eventGuests.find(
         (obj) => obj.uid === userRecord.uid
       ) as EventGuest;
       user.status = EVENT_GUEST_STATUS.DECLINED;
-      updateGuest(match.params.id, user);
+
+      await api.post('/events/guests/update-status', {
+        status: user.status,
+        eventId: eventData.eventId,
+      });
     }
   };
 
   const handleDelete = async () => {
     if (eventData !== undefined && userRecord) {
-      const dataNeededToDelete: { eventId: EventId } & {
-        hostId: UserId;
-      } = {
-        eventId: eventData.eventId,
-        hostId: userRecord.uid as UserId,
-      };
-
-      await deleteEventFinalized(dataNeededToDelete);
+      await api.post(
+        '/events/delete',
+        JSON.stringify({ eventId: eventData.eventId })
+      );
 
       console.log('Event deleted');
       history.push('/calendar');
@@ -123,35 +128,40 @@ export default function EventFinalizedPage({
 
   const handleRemove = async () => {
     if (eventData !== undefined && userRecord) {
-      const dataNeededToDelete: { eventId: EventId } & { userId: UserId } = {
-        eventId: eventData.eventId,
-        userId: userRecord.uid as UserId,
-      };
+      await api.post('/events/guests/delete', { eventId: eventData.eventId });
 
-      await deleteEventGuest(dataNeededToDelete);
-
-      console.log('Event Guest deleted');
+      console.log('Event Guest removed');
       history.push('/calendar');
     }
   };
 
   const handleUpdateGuests = async () => {
     if (eventData !== undefined && userRecord) {
-      const dataNeededToDelete: { eventId: EventId } & {
-        hostId: UserId;
-      } & { eventGuests: EventGuest[] } = {
+      await api.post('events/update-guests', {
         eventId: eventData.eventId,
-        hostId: userRecord.uid as UserId,
-        eventGuests: eventGuests.filter(
-          (value) =>
-            value.status === EVENT_GUEST_STATUS.ACCEPTED ||
-            value.status === EVENT_GUEST_STATUS.PENDING
-        ),
-      };
-
-      await updateEventGuests(dataNeededToDelete);
+        guestsByUserId: eventGuests
+          .filter(
+            (guest) =>
+              guest.status === EVENT_GUEST_STATUS.ACCEPTED ||
+              guest.status === EVENT_GUEST_STATUS.PENDING
+          )
+          .map((guest) => guest.uid),
+      });
 
       console.log('Guests Updated');
+    }
+  };
+
+  const handleDeleteGuests = async () => {
+    if (eventData !== undefined && userRecord) {
+      await api.post('events/delete-guests', {
+        eventId: eventData.eventId,
+        guestsByUserId: eventGuests
+          .filter((guest) => guest.status === EVENT_GUEST_STATUS.DECLINED)
+          .map((guest) => guest.uid),
+      });
+
+      console.log('Guests Deleted');
     }
   };
 
@@ -181,6 +191,9 @@ export default function EventFinalizedPage({
             </Button>
             <Button onClick={handleUpdateGuests} variant="danger">
               Update Guests
+            </Button>
+            <Button onClick={handleDeleteGuests} variant="danger">
+              Delete Declined Guests
             </Button>
           </div>
           {/* render for a guest only */}
