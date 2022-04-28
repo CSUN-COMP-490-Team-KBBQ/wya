@@ -98,28 +98,33 @@ export const etlEventsUpdateGuests = async (
         upsertGuestsByUserId
       );
 
+      // NOTE transaction.getAll throws an error if there are no guests because
+      // the spread operator on an empty array results in undefined
       const newGuests: {
         [guestId: UserId]: { firstName: string; lastName: string; uid: UserId };
-      } = (
-        await transaction.getAll(
-          ...newGuestsByUserId.map((guestId) =>
-            firebaseFirestore.doc(`/users/${guestId}`)
-          )
-        )
-      ).reduce((acc, curr) => {
-        const guest = curr.data();
+      } =
+        newGuestsByUserId.length > 0
+          ? (
+              await transaction.getAll(
+                ...newGuestsByUserId.map((guestId) =>
+                  firebaseFirestore.doc(`/users/${guestId}`)
+                )
+              )
+            ).reduce((acc, curr) => {
+              const guest = curr.data();
 
-        return guest
-          ? {
-              ...acc,
-              [guest.uid]: {
-                firstName: guest.firstName,
-                lastName: guest.lastName,
-                uid: guest.uid,
-              },
-            }
-          : { ...acc };
-      }, {});
+              return guest
+                ? {
+                    ...acc,
+                    [guest.uid]: {
+                      firstName: guest.firstName,
+                      lastName: guest.lastName,
+                      uid: guest.uid,
+                    },
+                  }
+                : { ...acc };
+            }, {})
+          : {};
 
       // Create event guest doc for each new guest
       for (const [_guestUid, guest] of Object.entries(newGuests)) {

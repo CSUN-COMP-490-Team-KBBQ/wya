@@ -81,39 +81,33 @@ export const etlEventsCreate = async (
 
       const guestsByUserId = [...eventPlan.inviteesByUserId];
 
+      // NOTE transaction.getAll throws an error if there are no guests because
+      // the spread operator on an empty array results in undefined
       const guests: {
         [guestId: UserId]: { firstName: string; lastName: string; uid: UserId };
-      } = (
-        await transaction.getAll(
-          ...guestsByUserId.map((guestId) =>
-            firebaseFirestore.doc(`/users/${guestId}`)
-          )
-        )
-      ).reduce((acc, curr) => {
-        const guest = curr.data();
+      } =
+        guestsByUserId.length > 0
+          ? (
+              await transaction.getAll(
+                ...guestsByUserId.map((guestId) =>
+                  firebaseFirestore.doc(`/users/${guestId}`)
+                )
+              )
+            ).reduce((acc, curr) => {
+              const guest = curr.data();
 
-        return guest
-          ? {
-              ...acc,
-              [guest.uid]: {
-                firstName: guest.firstName,
-                lastName: guest.lastName,
-                uid: guest.uid,
-              },
-            }
-          : { ...acc };
-      }, {});
-
-      const eventDocRef = firebaseFirestore.doc(`/events/${eventId}`);
-      const eventDocPatch = {
-        ...pick(PROPERTIES_FROM_EVENT_PLAN, eventPlan),
-        day: params.day,
-        eventId,
-
-        guestsByUserId,
-      };
-
-      transaction.create(eventDocRef, eventDocPatch);
+              return guest
+                ? {
+                    ...acc,
+                    [guest.uid]: {
+                      firstName: guest.firstName,
+                      lastName: guest.lastName,
+                      uid: guest.uid,
+                    },
+                  }
+                : { ...acc };
+            }, {})
+          : {};
 
       // Create event guest doc for each guest
       for (const userId of guestsByUserId) {
@@ -163,9 +157,6 @@ export const etlEventsCreate = async (
 
       transaction.create(hostUserEventsDocRef, hostUserEventsDocPatch);
 
-      // Update event-plan isFinalized field
-      transaction.update(eventPlanDocRef, { isFinalized: true });
-
       // Update user event-plan isFinalized field
       for (const userId of [...guestsByUserId, eventPlan.hostId]) {
         const userEventPlanDocRef = firebaseFirestore.doc(
@@ -173,6 +164,21 @@ export const etlEventsCreate = async (
         );
         transaction.update(userEventPlanDocRef, { isFinalized: true });
       }
+
+      // Update event-plan isFinalized field
+      transaction.update(eventPlanDocRef, { isFinalized: true });
+
+      // Update event doc
+      const eventDocRef = firebaseFirestore.doc(`/events/${eventId}`);
+      const eventDocPatch = {
+        ...pick(PROPERTIES_FROM_EVENT_PLAN, eventPlan),
+        day: params.day,
+        eventId,
+
+        guestsByUserId,
+      };
+
+      transaction.create(eventDocRef, eventDocPatch);
     });
 
     debug('Done');
