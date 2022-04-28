@@ -57,8 +57,8 @@ export const etlEventsDeleteGuests = async (
   const removeGuestsByUserId: UserId[] = [];
   for (const userId of params.guestsByUserId) {
     try {
-      await firebaseAuth.getUser(userId);
-      removeGuestsByUserId.push(userId);
+      const { uid } = await firebaseAuth.getUser(userId);
+      removeGuestsByUserId.push(uid);
     } catch (err: any) {
       errors.push(parseApiError(err));
     }
