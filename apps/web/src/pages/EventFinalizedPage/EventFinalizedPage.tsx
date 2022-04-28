@@ -4,17 +4,11 @@ import { Button, ListGroup } from 'react-bootstrap';
 import {
   EventDocument,
   EventGuest,
-  EventId,
   EVENT_GUEST_STATUS,
-  UserId,
 } from '../../interfaces';
 import {
-  updateGuest,
   getDocSnapshot$,
   getAllSubCollDocsSnapshot$,
-  deleteEventFinalized,
-  deleteEventGuest,
-  updateEventGuests,
 } from '../../lib/firestore';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import { useHistory } from 'react-router-dom';
