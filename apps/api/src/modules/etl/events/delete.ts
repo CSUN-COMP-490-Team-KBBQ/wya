@@ -98,5 +98,5 @@ export const etlEventsDelete = async (
 
   debug('Done');
 
-  return { data: {} };
+  return { data: {}, errors: [] };
 };

@@ -14,12 +14,12 @@ router.post('/create', async (req, res, next) => {
     const params = req.body;
     const context = await authenticate(req);
 
-    const { data } = await etlEventPlansCreate(params, context, {
+    const { data, errors } = await etlEventPlansCreate(params, context, {
       debug: functions.logger.info,
       firebaseClientInjection: firebaseClient,
     });
 
-    return res.status(200).json({ data });
+    return res.status(200).json({ data, errors });
   } catch (err) {
     return next(err);
   }
@@ -30,12 +30,12 @@ router.post('/delete', async (req, res, next) => {
     const params = req.body;
     const context = await authenticate(req);
 
-    const { data } = await etlEventPlansDelete(params, context, {
+    const { data, errors } = await etlEventPlansDelete(params, context, {
       debug: functions.logger.info,
       firebaseClientInjection: firebaseClient,
     });
 
-    return res.status(200).json({ data });
+    return res.status(200).json({ data, errors });
   } catch (err) {
     return next(err);
   }

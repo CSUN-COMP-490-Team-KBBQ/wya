@@ -12,12 +12,16 @@ router.post('/update-status', async (req, res, next) => {
     const params = req.body;
     const context = await authenticate(req);
 
-    const { data } = await etlEventsGuestsUpdateStatus(params, context, {
-      debug: functions.logger.info,
-      firebaseClientInjection: firebaseClient,
-    });
+    const { data, errors } = await etlEventsGuestsUpdateStatus(
+      params,
+      context,
+      {
+        debug: functions.logger.info,
+        firebaseClientInjection: firebaseClient,
+      }
+    );
 
-    return res.status(200).json({ data });
+    return res.status(200).json({ data, errors });
   } catch (err) {
     return next(err);
   }
@@ -28,12 +32,12 @@ router.post('/delete', async (req, res, next) => {
     const params = req.body;
     const context = await authenticate(req);
 
-    const { errors } = await etlEventsGuestsDelete(params, context, {
+    const { data, errors } = await etlEventsGuestsDelete(params, context, {
       debug: functions.logger.info,
       firebaseClientInjection: firebaseClient,
     });
 
-    return res.status(200).json({ data: {}, errors });
+    return res.status(200).json({ data, errors });
   } catch (err) {
     return next(err);
   }

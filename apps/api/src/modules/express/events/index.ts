@@ -32,12 +32,12 @@ router.post('/delete', async (req, res, next) => {
     const params = req.body;
     const context = await authenticate(req);
 
-    const { data } = await etlEventsDelete(params, context, {
+    const { data, errors } = await etlEventsDelete(params, context, {
       debug: functions.logger.info,
       firebaseClientInjection: firebaseClient,
     });
 
-    return res.status(200).json({ data });
+    return res.status(200).json({ data, errors });
   } catch (err) {
     return next(err);
   }
@@ -64,12 +64,12 @@ router.post('/delete-guests', async (req, res, next) => {
     const params = req.body;
     const context = await authenticate(req);
 
-    const { data } = await etlEventsDeleteGuests(params, context, {
+    const { data, errors } = await etlEventsDeleteGuests(params, context, {
       debug: functions.logger.info,
       firebaseClientInjection: firebaseClient,
     });
 
-    return res.status(200).json({ data });
+    return res.status(200).json({ data, errors });
   } catch (err) {
     return next(err);
   }

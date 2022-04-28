@@ -81,5 +81,5 @@ export const etlEventsGuestsDelete = async (
 
   debug('Done');
 
-  return { errors };
+  return { data: {}, errors };
 };

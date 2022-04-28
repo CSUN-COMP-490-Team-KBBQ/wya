@@ -107,5 +107,5 @@ export const etlEventsGuestsUpdateStatus = async (
 
   debug('Done');
 
-  return { data: {} };
+  return { data: {}, errors: [] };
 };
