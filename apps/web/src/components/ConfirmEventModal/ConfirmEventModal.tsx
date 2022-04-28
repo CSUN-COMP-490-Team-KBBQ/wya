@@ -11,8 +11,6 @@ import { convertStringArrayToObjectWithValueAndLabel } from '../../lib/eventHelp
 import './ConfirmEventModal.css';
 import api from '../../modules/api';
 
-type UserId = string;
-
 interface ConfirmEventModalProps {
   eventPlanDocument: EventPlanDocument;
   heatMapData: HeatMapData;
