@@ -18,10 +18,13 @@ import { UserRecordProvider } from '../../contexts/UserRecordContext';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LandingPage from '../../pages/LandingPage/LandingPage';
+import DashboardPage from '../../pages/DashboardPage/DashboardPage';
+import PlanAnEventPage from '../../pages/PlanAnEventPage/PlanAnEventPage';
+import SettingsPage from '../../pages/SettingsPage/SettingsPage';
+
+// Legacy
 import EventPlanPage from '../../pages/EventPlanPage/EventPlanPage';
 import EventFinalizedPage from '../../pages/EventFinalizedPage/EventFinalizedPage';
-import DashboardPage from '../../pages/DashboardPage/DashboardPage';
-import SettingsPage from '../../pages/SettingsPage/SettingsPage';
 
 export default function App(): JSX.Element {
   return (
@@ -55,6 +58,7 @@ export default function App(): JSX.Element {
             {/* legacy page */}
             <PrivateRoute path="/calendar" component={CalendarPage} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
+            <PrivateRoute path="/plan-event" component={PlanAnEventPage} />
 
             <PrivateRoute path="/settings/general" component={SettingsPage} />
             <PrivateRoute path="/settings/password" component={SettingsPage} />

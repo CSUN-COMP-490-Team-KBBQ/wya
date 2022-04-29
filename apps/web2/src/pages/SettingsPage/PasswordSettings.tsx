@@ -106,7 +106,7 @@ export default function PasswordSettings() {
 
         <div className="mt-6">
           <form onSubmit={onSubmitHandler}>
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:py-5 items-baseline">
+            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:border-t sm:border-gray-200 sm:py-5 pt-3">
               <label
                 htmlFor="current-password"
                 className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
@@ -120,12 +120,12 @@ export default function PasswordSettings() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  className="max-w-lg block w-full shadow-sm focus:ring-blue-500 border focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md px-2"
+                  className="max-w-lg block w-full shadow-sm focus:ring-blue-500 border focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md p-2"
                 />
               </div>
             </div>
 
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:py-5 items-baseline">
+            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:border-t sm:border-gray-200 sm:py-5 mt-2">
               <label
                 htmlFor="current-password"
                 className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
@@ -139,12 +139,12 @@ export default function PasswordSettings() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  className="max-w-lg block w-full shadow-sm focus:ring-blue-500 border focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md px-2"
+                  className="max-w-lg block w-full shadow-sm focus:ring-blue-500 border focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md p-2"
                 />
               </div>
             </div>
 
-            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:py-5 items-baseline">
+            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:border-t sm:border-gray-200 sm:py-5 mt-2">
               <label
                 htmlFor="current-password"
                 className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
@@ -158,7 +158,7 @@ export default function PasswordSettings() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  className="max-w-lg block w-full shadow-sm focus:ring-blue-500 border focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md px-2"
+                  className="max-w-lg block w-full shadow-sm focus:ring-blue-500 border focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md p-2 items-align"
                 />
               </div>
             </div>
