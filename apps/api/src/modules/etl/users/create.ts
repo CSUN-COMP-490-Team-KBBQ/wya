@@ -124,5 +124,6 @@ export const etlUsersCreate = async (
     data: {
       uid,
     },
+    errors: [],
   };
 };

@@ -1,138 +1,155 @@
 import assert from 'assert';
 import Debug from 'debug';
 import { App } from 'firebase-admin/app';
-import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
+import { pick } from 'lodash/fp';
 
 import {
   EventPlanId,
+  EventPlanDocument,
   EVENT_GUEST_STATUS,
   EVENT_ROLE,
   UserId,
 } from '../../../interfaces';
 import { ApiError, makeApiError } from '../../../../lib/errors';
+import { validate } from '../../../../lib/validate';
+import { authorize, AuthContext } from '../../../auth';
+
+const PROPERTIES_FROM_EVENT_PLAN = [
+  'name',
+  'description',
+  'hostId',
+  'startDate',
+  'endDate',
+  'dailyStartTime',
+  'dailyEndTime',
+];
 
 type Params = {
   eventPlanId: EventPlanId;
-  hostId: UserId;
   day: string;
-  dailyStartTime: string;
-  dailyEndTime: string;
-  startDate: string;
-  endDate: string;
-};
-
-type Context = {
-  firebaseClientInjection: App;
-};
-
-const _validate = (params: Params) => {
-  for (const [key, value] of Object.entries(params)) {
-    assert(value || value === '', makeApiError(409, `${key} is required`));
-  }
 };
 
 export const etlEventsCreate = async (
   params: Params,
-  context: Context,
-  { debug = Debug('api:etl/events/create') as any } = {}
+  context: AuthContext,
+  {
+    debug = Debug('api:etl/events/create') as any,
+    firebaseClientInjection = undefined as App | undefined,
+  } = {}
 ) => {
-  _validate(params);
-
-  const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
-  const firebaseFirestore = getFirebaseFirestore(
-    context.firebaseClientInjection
+  validate(
+    {
+      type: 'object',
+      required: ['eventPlanId', 'day'],
+      properties: {
+        eventPlanId: {
+          type: 'string',
+        },
+        day: {
+          type: 'string',
+        },
+      },
+    },
+    params,
+    makeApiError(400, 'Bad request')
   );
-  assert(
-    firebaseAuth && firebaseFirestore,
-    makeApiError(422, 'Invalid context')
-  );
 
-  debug('Creating event');
-  debug(params);
+  const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
+  assert(firebaseFirestore, makeApiError(422, 'Invalid context'));
 
-  const { eventPlanId, hostId, ...restOfParams } = params;
-  const patches = {
-    events: [] as { [EventId: string]: {} }[],
-    eventGuests: [] as { [UserId: string]: {} }[],
-    usersEvents: [] as { [EventId: string]: {} }[],
-  };
-  let eventId;
+  debug(`Creating an event: ${JSON.stringify(params, null, 4)}`);
+
+  // Using the same uuid for both event-plans and their finalized events
+  const eventId = params.eventPlanId;
 
   try {
     await firebaseFirestore.runTransaction(async (transaction) => {
       const eventPlanDocRef = firebaseFirestore.doc(
-        `/event-plans/${eventPlanId}`
+        `/event-plans/${params.eventPlanId}`
       );
 
-      const eventPlan = (await transaction.get(eventPlanDocRef)).data();
-      assert(eventPlan, makeApiError(422, 'Invalid event plan'));
-      assert(hostId === eventPlan.hostId, makeApiError(401, 'Unauthorized'));
+      const eventPlan = (await transaction.get(eventPlanDocRef)).data() as
+        | EventPlanDocument
+        | undefined;
+      assert(
+        eventPlan && eventPlan.hostId,
+        makeApiError(422, 'Invalid event plan')
+      );
 
-      const { inviteesByUserId, name, description } = eventPlan as {
-        inviteesByUserId: UserId[];
-        name: string;
-        description: string;
-      };
+      authorize('etl/events/create', context, eventPlan);
 
-      // Using the same uuid for both event-plans and their finalized events
-      eventId = eventPlanId;
-      const eventDocRef = firebaseFirestore.doc(`/events/${eventId}`);
-      const eventDocPatch = {
-        ...restOfParams,
-        eventId,
-        hostId,
-        name,
-        description,
-        guestsByUserId: [...inviteesByUserId],
-      };
+      const guestsByUserId = [...eventPlan.inviteesByUserId];
 
-      transaction.create(eventDocRef, eventDocPatch);
+      // NOTE transaction.getAll throws an error if there are no guests because
+      // the spread operator on an empty array results in undefined
+      const guests: {
+        [guestId: UserId]: { firstName: string; lastName: string; uid: UserId };
+      } =
+        guestsByUserId.length > 0
+          ? (
+              await transaction.getAll(
+                ...guestsByUserId.map((guestId) =>
+                  firebaseFirestore.doc(`/users/${guestId}`)
+                )
+              )
+            ).reduce((acc, curr) => {
+              const guest = curr.data();
 
-      patches.events.push({ [eventId]: eventDocPatch });
+              return guest
+                ? {
+                    ...acc,
+                    [guest.uid]: {
+                      firstName: guest.firstName,
+                      lastName: guest.lastName,
+                      uid: guest.uid,
+                    },
+                  }
+                : { ...acc };
+            }, {})
+          : {};
 
-      for (const userId of inviteesByUserId) {
+      // Create event guest doc for each guest
+      for (const userId of guestsByUserId) {
         const eventGuestsDocRef = firebaseFirestore.doc(
           `/events/${eventId}/guests/${userId}`
         );
         const eventGuestsDocPatch = {
-          uid: userId,
+          uid: guests[userId].uid,
+          firstName: guests[userId].firstName,
+          lastName: guests[userId].lastName,
           status: EVENT_GUEST_STATUS.PENDING,
         };
 
         transaction.create(eventGuestsDocRef, eventGuestsDocPatch);
-
-        patches.eventGuests.push({ [userId]: eventGuestsDocPatch });
       }
 
-      // Associate the event to the guest users
-      for (const userId of inviteesByUserId) {
+      // Create user event doc for each guest
+      for (const userId of guestsByUserId) {
         const userEventsDocRef = firebaseFirestore.doc(
-          `/users/${userId}/events/${eventPlanId}`
+          `/users/${userId}/events/${eventId}`
         );
         const userEventsDocPatch = {
-          ...restOfParams,
+          ...pick(PROPERTIES_FROM_EVENT_PLAN, eventPlan),
+          day: params.day,
           eventId,
-          name,
-          description,
+
           role: EVENT_ROLE.GUEST,
           status: EVENT_GUEST_STATUS.PENDING,
         };
 
         transaction.create(userEventsDocRef, userEventsDocPatch);
-
-        patches.usersEvents.push({ [eventId]: userEventsDocPatch });
       }
 
-      // Associate the event to the host user
+      // Create user event doc for host
       const hostUserEventsDocRef = firebaseFirestore.doc(
-        `/users/${hostId}/events/${eventId}`
+        `/users/${eventPlan.hostId}/events/${eventId}`
       );
       const hostUserEventsDocPatch = {
-        ...restOfParams,
+        ...pick(PROPERTIES_FROM_EVENT_PLAN, eventPlan),
+        day: params.day,
         eventId,
-        name,
-        description,
+
         role: EVENT_ROLE.HOST,
         // Assuming that the host is going to their own event
         status: EVENT_GUEST_STATUS.ACCEPTED,
@@ -141,17 +158,29 @@ export const etlEventsCreate = async (
       transaction.create(hostUserEventsDocRef, hostUserEventsDocPatch);
 
       // Update user event-plan isFinalized field
-      for (const userId of [...inviteesByUserId, hostId]) {
+      for (const userId of [...guestsByUserId, eventPlan.hostId]) {
         const userEventPlanDocRef = firebaseFirestore.doc(
-          `/users/${userId}/event-plans/${eventPlanId}`
+          `/users/${userId}/event-plans/${params.eventPlanId}`
         );
         transaction.update(userEventPlanDocRef, { isFinalized: true });
       }
 
-      patches.usersEvents.push({ [eventId]: hostUserEventsDocPatch });
+      // Update event-plan isFinalized field
+      transaction.update(eventPlanDocRef, { isFinalized: true });
+
+      // Update event doc
+      const eventDocRef = firebaseFirestore.doc(`/events/${eventId}`);
+      const eventDocPatch = {
+        ...pick(PROPERTIES_FROM_EVENT_PLAN, eventPlan),
+        day: params.day,
+        eventId,
+
+        guestsByUserId,
+      };
+
+      transaction.create(eventDocRef, eventDocPatch);
     });
 
-    debug(patches);
     debug('Done');
     return {
       data: [eventId],

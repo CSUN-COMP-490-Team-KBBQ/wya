@@ -63,5 +63,6 @@ export const etlUsersDelete = async (
 
   return {
     data: {},
+    errors: [],
   };
 };

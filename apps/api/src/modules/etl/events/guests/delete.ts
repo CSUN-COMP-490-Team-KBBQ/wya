@@ -1,79 +1,87 @@
 import assert from 'assert';
 import Debug from 'debug';
 import { App } from 'firebase-admin/app';
-import { getAuth as getFirebaseAuth } from 'firebase-admin/auth';
 import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
 
-import { EventId, UserId } from '../../../../interfaces';
-import { ApiError, makeApiError } from '../../../../../lib/errors';
+import { EventId } from '../../../../interfaces';
+import { AuthContext, authorize } from '../../../../auth';
+import {
+  JSON_API_ERROR,
+  makeApiError,
+  parseApiError,
+} from '../../../../../lib/errors';
+import { validate } from '../../../../../lib/validate';
+import { etlEventsDeleteGuests } from '../delete-guests';
 
 type Params = {
   eventId: EventId;
-  userId: UserId;
-};
-
-type Context = {
-  firebaseClientInjection: App;
 };
 
 export const etlEventsGuestsDelete = async (
   params: Params,
-  context: Context,
-  { debug = Debug('api:etl/events/guests/delete') as any } = {}
+  context: AuthContext,
+  {
+    debug = Debug('api:etl/events/guests/delete') as any,
+    firebaseClientInjection = undefined as App | undefined,
+  } = {}
 ) => {
-  assert(params.eventId, makeApiError(400, 'Event is required'));
-  assert(params.userId, makeApiError(400, 'User is required'));
-
-  debug(`Deleting an event: ${JSON.stringify(params, null, 4)}`);
-
-  const firebaseAuth = getFirebaseAuth(context.firebaseClientInjection);
-  const firebaseFirestore = getFirebaseFirestore(
-    context.firebaseClientInjection
+  validate(
+    {
+      type: 'object',
+      required: ['eventId'],
+      properties: {
+        eventId: {
+          type: 'string',
+        },
+      },
+    },
+    params,
+    makeApiError(400, 'Bad request')
   );
-  assert(
-    firebaseAuth && firebaseFirestore,
-    makeApiError(422, 'Invalid context')
-  );
+
+  const firebaseFirestore = getFirebaseFirestore(firebaseClientInjection);
+  assert(firebaseFirestore, makeApiError(422, 'Bad firebase client'));
+
+  const errors: JSON_API_ERROR[] = [];
 
   try {
-    await firebaseFirestore.runTransaction(async (transaction) => {
-      const eventDocRef = firebaseFirestore.doc(`/events/${params.eventId}`);
-      const event = (await transaction.get(eventDocRef)).data();
+    assert(context.user?.uid, makeApiError(422, 'Invalid user'));
 
-      assert(event, makeApiError(422, 'Invalid event'));
+    const [event, eventGuest] = (
+      await firebaseFirestore.getAll(
+        ...[
+          firebaseFirestore.doc(`/events/${params.eventId}`),
+          firebaseFirestore.doc(
+            `/events/${params.eventId}/guests/${context.user.uid}`
+          ),
+        ]
+      )
+    ).map((ref) => ref.data());
 
-      const guestsByUserId = event.guestsByUserId as UserId[];
-      // Assert that the params.userId is a guest in the event doc
-      assert(
-        guestsByUserId.includes(params.userId),
-        makeApiError(422, `User: ${params.userId} is not a guest`)
-      );
+    assert(event, makeApiError(422, 'Invalid event'));
+    assert(eventGuest, makeApiError(422, 'Invalid event guest'));
 
-      // Remove user from event
-      const eventGuestsDocRef = firebaseFirestore.doc(
-        `/events/${params.eventId}/guests/${params.userId}`
-      );
-      transaction.delete(eventGuestsDocRef);
+    authorize('etl/events/guests/delete', context, eventGuest);
 
-      // Updating event guest in events/eventId: { guestsByUserId }
-      const index = guestsByUserId.findIndex(
-        (value) => value === params.userId
-      );
-      guestsByUserId.splice(index, 1);
-      transaction.update(eventDocRef, { guestsByUserId: guestsByUserId });
+    debug(
+      `Delete event guest ${context.user?.uid} from Event: ${params.eventId} `
+    );
 
-      // Remove event from user
-      const userEventDocRef = firebaseFirestore.doc(
-        `/users/${params.userId}/events/${params.eventId}`
-      );
-      transaction.delete(userEventDocRef);
-    });
+    // HACK execute this etl functions on behalf of the host
+    await etlEventsDeleteGuests(
+      {
+        eventId: params.eventId,
+        guestsByUserId: [context.user.uid],
+      },
+      { user: { uid: event.hostId, email: undefined } },
+      { firebaseClientInjection }
+    );
+    // End of HACK
   } catch (err: any) {
-    if (err instanceof ApiError) {
-      throw err;
-    }
-    throw makeApiError(500, 'Unable to get event', err);
+    errors.push(parseApiError(err));
   }
 
   debug('Done');
+
+  return { data: {}, errors };
 };

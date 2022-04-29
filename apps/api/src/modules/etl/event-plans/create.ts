@@ -249,5 +249,6 @@ export const etlEventPlansCreate = async (
   debug('Done');
   return {
     data: [eventPlanId],
+    errors: [],
   };
 };

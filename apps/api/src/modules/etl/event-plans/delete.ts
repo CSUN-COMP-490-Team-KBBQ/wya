@@ -81,5 +81,6 @@ export const etlEventPlansDelete = async (
 
   return {
     data: {},
+    errors: [],
   };
 };
