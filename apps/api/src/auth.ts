@@ -31,6 +31,7 @@ const _capabilities = (context: AuthContext, document: any): string[] => {
       'etl/event-plans/availabilities/update',
       'etl/users/delete',
       'etl/users/friends/delete',
+      'etl/users/notifications/update-status',
       'etl/users/receive-friend-requests/update-status',
       'etl/users/update-time-format',
     ];

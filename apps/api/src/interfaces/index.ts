@@ -59,6 +59,11 @@ export enum FRIEND_REQUEST_STATUS {
   PENDING = 'PENDING',
 }
 
+export enum NOTIFICATION_STATUS {
+  UNSEEN = 'UNSEEN',
+  SEEN = 'SEEN',
+}
+
 /** event-plans */
 export enum EVENT_PLAN_ROLE {
   HOST = 'HOST',
