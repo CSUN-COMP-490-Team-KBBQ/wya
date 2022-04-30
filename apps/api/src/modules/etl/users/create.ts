@@ -108,9 +108,11 @@ export const etlUsersCreate = async (
         userAvailabilityHeatMapDocRef,
         userAvailabilityHeatMapDocumentPatch
       );
-      // NOTE: There are two other subcollections that pertain to the user
-      // document (event-plans and events), however there is no way to
-      // create an emtpy subcollection.
+
+      // NOTE: There are five other subcollections that pertain to the user
+      // document: event-plans, events, receive-friend-requests,
+      // send-friend-requests, friends, however there is no way to create an
+      // emtpy subcollection.
     });
   } catch (err: any) {
     if (err instanceof ApiError) {

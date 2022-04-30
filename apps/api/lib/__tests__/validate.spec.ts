@@ -67,3 +67,18 @@ it('does not throw with empty array', () => {
 
   expect(true).toBeTruthy();
 });
+
+it('does not throw with enum', () => {
+  validate(
+    {
+      type: 'object',
+      properties: {
+        status: {
+          enum: ['PENDING', 'ACCEPTED', 'DECLINED'],
+        },
+      },
+    },
+    { status: 'PENDING' }
+  );
+  expect(true).toBeTruthy();
+});

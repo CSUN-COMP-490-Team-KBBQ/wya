@@ -1,5 +1,7 @@
 import { Router } from 'express';
 
+import receiveFriendRequestsRouter from './receive-friend-requests';
+import sendFriendRequestsRouter from './send-friend-requests';
 import { functions, firebaseClient } from '../../firebase';
 import { etlUsersCreate } from '../../etl/users/create';
 import { etlUsersDelete } from '../../etl/users/delete';
@@ -55,5 +57,8 @@ router.post('/update-time-format', async (req, res, next) => {
     return next(err);
   }
 });
+
+router.use('/receive-friend-requests', receiveFriendRequestsRouter);
+router.use('/send-friend-requests', sendFriendRequestsRouter);
 
 export default router;

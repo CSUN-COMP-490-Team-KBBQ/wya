@@ -15,24 +15,32 @@ export type AuthContext = {
 const _capabilities = (context: AuthContext, document: any): string[] => {
   /** PLEASE KEEP CAPABILITIES IN ALPHABETICAL ORDER */
 
-  const baseCapabilities = ['etl/event-plans/create', 'etl/users/create'];
+  // Anyone should have these capabilities
+  const anyonesCapabilities = [
+    'etl/event-plans/create',
+    'etl/users/create',
+    'etl/users/send-friend-requests/create',
+  ];
 
-  // Check that the document belongs to the user
+  // Owner of the document should have these capabilities
   if (document && document.uid && context.user?.uid === document.uid) {
-    return [
-      ...baseCapabilities,
+    const docOwnerCapabilities = [
+      ...anyonesCapabilities,
       'etl/events/guests/delete',
       'etl/events/guests/update-status',
       'etl/event-plans/availabilities/update',
       'etl/users/delete',
+      'etl/users/receive-friend-requests/update-status',
       'etl/users/update-time-format',
     ];
+
+    return docOwnerCapabilities;
   }
 
-  // Check that the document belongs to the host user
+  // Host of the document should have these capabilities
   if (document && document.hostId && context.user?.uid === document.hostId) {
-    return [
-      ...baseCapabilities,
+    const docHostCapabilities = [
+      ...anyonesCapabilities,
       'etl/events/create',
       'etl/events/delete',
       'etl/events/update',
@@ -43,9 +51,11 @@ const _capabilities = (context: AuthContext, document: any): string[] => {
       'etl/event-plans/delete-invitees',
       'etl/event-plans/update-invitees',
     ];
+
+    return docHostCapabilities;
   }
 
-  return [...baseCapabilities];
+  return anyonesCapabilities;
 };
 
 /**
