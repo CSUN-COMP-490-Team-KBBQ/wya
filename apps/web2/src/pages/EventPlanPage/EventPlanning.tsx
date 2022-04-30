@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Container, Modal, Button } from 'react-bootstrap';
+import {Modal, Button } from 'react-bootstrap';
 
 import AvailabilityHeatMap from '../../components/AvailabilityHeatMap/AvailabilityHeatMap';
 import ConfirmEventModal from '../../components/ConfirmEventModal/ConfirmEventModal';
@@ -189,56 +189,3 @@ export default function EventPlanning({
 
     );
 }
-
-
-
-    
-    {/* // <Container fluid id="eventPlanningContainer">
-    //   <br></br>
-    //   <h1 className="font-medium text-5xl mt-0 mb-2 text-black-600">{eventPlanData.name}</h1>
-    //   <Col id="containerCol" sm={6}>
-    //     <Row>
-    //       <div id="eventDetails">
-    //       <h3 className="font-medium italic text-lg mt-0 mb-2 text-black-600">{eventPlanData.description}</h3>
-    //       </div>
-    //     </Row>
-    //     <br></br>
-    //     <h3 className="font-medium italic text-5xl mt-0 mb-2 text-black-600">Group Availability</h3>
-    //     <Row>
-    //       <AvailabilityHeatMap
-    //         yLabels={heatMapData.yTimesHeatMapLabelsArray}
-    //         xLabels={heatMapData.xDaysFormattedToSlicedDateString}
-    //         data={heatMapData.heatMap2dArray}
-    //         onClick={() => undefined}
-    //       />
-    //     </Row>
-    //     <br></br>
-    //     <Row>
-    //       <div id="buttonsRow">
-    //         <Button
-    //           className="eventAddAvailabilityButton"
-    //           type="button"
-    //           onClick={() => setModalShow(true)}
-    //         >
-    //           Add Availability
-    //         </Button>
-    //         <AddAvailabilityModal
-    //           scheduleSelectorData={scheduleSelector}
-    //           show={modalShow}
-    //           onHide={() => setModalShow(false)}
-    //           eventPlanAvailability={eventPlanAvailability}
-    //           eventPlanId={eventPlanData.eventPlanId}
-    //           uid={userId}
-    //         />
-    //         {isHost && (
-    //           <ConfirmEventModal
-    //             eventPlanDocument={eventPlanData}
-    //             heatMapData={heatMapData}
-    //           />
-    //         )}
-    //       </div>
-    //     </Row>
-    //     <br></br>
-    //   </Col>
-    // </Container>
- */}
