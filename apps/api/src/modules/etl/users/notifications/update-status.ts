@@ -1,7 +1,10 @@
 import assert from 'assert';
 import Debug from 'debug';
 import { App } from 'firebase-admin/app';
-import { getFirestore as getFirebaseFirestore } from 'firebase-admin/firestore';
+import {
+  getFirestore as getFirebaseFirestore,
+  Timestamp,
+} from 'firebase-admin/firestore';
 
 import { NOTIFICATION_STATUS } from '../../../../interfaces';
 import {
@@ -67,12 +70,16 @@ export const etlUsersNotificationsUpdateStatus = async (
       const currentStatus: NOTIFICATION_STATUS = notification.status;
       const intendedStatus = params.status;
 
+      const statusPatch: { status?: NOTIFICATION_STATUS; seenAt?: Timestamp } =
+        {};
       // Explicitly enumerating the valid status updates that are allowed
       if (
         currentStatus === NOTIFICATION_STATUS.UNSEEN &&
         intendedStatus === NOTIFICATION_STATUS.SEEN
       ) {
         // Ok
+        statusPatch.status = intendedStatus;
+        statusPatch.seenAt = Timestamp.now();
       } else {
         throw makeApiError(
           422,
@@ -83,7 +90,7 @@ export const etlUsersNotificationsUpdateStatus = async (
       debug(
         `Updating notification ${notification.uid} status from ${currentStatus} to ${intendedStatus}`
       );
-      transaction.update(notificationDocRef, { status: intendedStatus });
+      transaction.update(notificationDocRef, statusPatch);
     });
   } catch (err: any) {
     errors.push(parseApiError(err));
