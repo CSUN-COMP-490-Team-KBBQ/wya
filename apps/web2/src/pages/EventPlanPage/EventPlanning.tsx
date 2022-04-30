@@ -129,29 +129,35 @@ export default function EventPlanning({
   const [modalShow, setModalShow] = React.useState<boolean>(false);
 
   return (
-    <Container fluid id="eventPlanningContainer">
-      <br></br>
-      <h1 className="font-medium text-5xl mt-0 mb-2 text-black-600">{eventPlanData.name}</h1>
-      <Col id="containerCol" sm={6}>
-        <Row>
-          <div id="eventDetails">
-          <h3 className="font-medium italic text-lg mt-0 mb-2 text-black-600">{eventPlanData.description}</h3>
-          </div>
-        </Row>
-        <br></br>
-        <h3 className="font-medium italic text-5xl mt-0 mb-2 text-black-600">Group Availability</h3>
-        <Row>
-          <AvailabilityHeatMap
+    <div id="eventPlanningContainer" className="text-left bg-white shadow overflow-hidden sm:rounded-lg">
+      <div id="eventDetails" className="mb-2 px-4 sm:px-6">
+        <h3 className="text-left text-lg leading-6 font-medium text-gray-900">Event Details</h3>
+        </div>
+        <div className="">
+          <dl className="sm:divide-y sm:divide-gray-200">
+      <div className="py-4 mt-6 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt className="text-left text-sm font-medium text-gray-500">Event Name</dt>
+        <dd className="text-left mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{eventPlanData.name}</dd>
+      </div>
+      <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt className="text-left text-sm font-medium text-gray-500">Event Description</dt>
+        <dd className="text-left mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{eventPlanData.description}</dd>
+      </div>
+      <div style={{ margin: '0rem 10rem 0rem 0rem' }}>
+      <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt className="text-left text-sm font-medium text-gray-500">Group Availability</dt>
+        <dd className="text-left mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+        <AvailabilityHeatMap
             yLabels={heatMapData.yTimesHeatMapLabelsArray}
             xLabels={heatMapData.xDaysFormattedToSlicedDateString}
             data={heatMapData.heatMap2dArray}
             onClick={() => undefined}
           />
-        </Row>
-        <br></br>
-        <Row>
-          <div id="buttonsRow">
-            <Button
+          </dd>
+          </div>
+          <div className="sm:mt-8 sm:flex justify-end">
+                  <div className="inline-flex rounded-md shadow">
+             <Button
               className="eventAddAvailabilityButton"
               type="button"
               onClick={() => setModalShow(true)}
@@ -173,9 +179,66 @@ export default function EventPlanning({
               />
             )}
           </div>
-        </Row>
-        <br></br>
-      </Col>
-    </Container>
-  );
+          </div>
+        
+      </div>
+      </dl>
+      </div>
+      </div>
+    
+
+    );
 }
+
+
+
+    
+    {/* // <Container fluid id="eventPlanningContainer">
+    //   <br></br>
+    //   <h1 className="font-medium text-5xl mt-0 mb-2 text-black-600">{eventPlanData.name}</h1>
+    //   <Col id="containerCol" sm={6}>
+    //     <Row>
+    //       <div id="eventDetails">
+    //       <h3 className="font-medium italic text-lg mt-0 mb-2 text-black-600">{eventPlanData.description}</h3>
+    //       </div>
+    //     </Row>
+    //     <br></br>
+    //     <h3 className="font-medium italic text-5xl mt-0 mb-2 text-black-600">Group Availability</h3>
+    //     <Row>
+    //       <AvailabilityHeatMap
+    //         yLabels={heatMapData.yTimesHeatMapLabelsArray}
+    //         xLabels={heatMapData.xDaysFormattedToSlicedDateString}
+    //         data={heatMapData.heatMap2dArray}
+    //         onClick={() => undefined}
+    //       />
+    //     </Row>
+    //     <br></br>
+    //     <Row>
+    //       <div id="buttonsRow">
+    //         <Button
+    //           className="eventAddAvailabilityButton"
+    //           type="button"
+    //           onClick={() => setModalShow(true)}
+    //         >
+    //           Add Availability
+    //         </Button>
+    //         <AddAvailabilityModal
+    //           scheduleSelectorData={scheduleSelector}
+    //           show={modalShow}
+    //           onHide={() => setModalShow(false)}
+    //           eventPlanAvailability={eventPlanAvailability}
+    //           eventPlanId={eventPlanData.eventPlanId}
+    //           uid={userId}
+    //         />
+    //         {isHost && (
+    //           <ConfirmEventModal
+    //             eventPlanDocument={eventPlanData}
+    //             heatMapData={heatMapData}
+    //           />
+    //         )}
+    //       </div>
+    //     </Row>
+    //     <br></br>
+    //   </Col>
+    // </Container>
+ */}
