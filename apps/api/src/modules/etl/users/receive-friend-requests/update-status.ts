@@ -52,9 +52,21 @@ export const etlUsersReceiveFriendRequestsUpdateStatus = async (
 
   try {
     await firebaseFirestore.runTransaction(async (transaction) => {
+      const sender = (
+        await transaction.get(firebaseFirestore.doc(`/users/${params.fromUid}`))
+      ).data();
+      assert(sender, makeApiError(422, 'Invalid sender'));
+
+      const recipient = (
+        await transaction.get(
+          firebaseFirestore.doc(`/users/${context.user?.uid}`)
+        )
+      ).data();
+      assert(recipient, makeApiError(422, 'Invalid recipient'));
+
       // Get the friend request that was sent to this user
       const sendersFriendRequestDocRef = firebaseFirestore.doc(
-        `/users/${params.fromUid}/send-friend-requests/${context.user?.uid}`
+        `/users/${sender.uid}/send-friend-requests/${recipient.uid}`
       );
       const sendersFriendRequest = (
         await transaction.get(sendersFriendRequestDocRef)
@@ -65,25 +77,38 @@ export const etlUsersReceiveFriendRequestsUpdateStatus = async (
       );
 
       // Get the friend request that was received by this user
-      const receivedFriendRequestDocRef = firebaseFirestore.doc(
-        `/users/${context.user?.uid}/receive-friend-requests/${params.fromUid}`
+      const recipientsFriendRequestDocRef = firebaseFirestore.doc(
+        `/users/${recipient.uid}/receive-friend-requests/${sender.uid}`
       );
-      const receivedFriendRequest = (
-        await transaction.get(receivedFriendRequestDocRef)
+      const recipientsFriendRequest = (
+        await transaction.get(recipientsFriendRequestDocRef)
       ).data();
       assert(
-        receivedFriendRequest &&
-          receivedFriendRequest.uid === context.user?.uid,
+        recipientsFriendRequest &&
+          recipientsFriendRequest.uid === context.user?.uid,
         makeApiError(422, 'Invalid friend request received')
       );
+
+      const isRecipientFriendsWithSender = (
+        await transaction.get(
+          firebaseFirestore.doc(`/users/${sender.uid}/friends/${recipient.uid}`)
+        )
+      ).exists;
+
+      const isSenderFriendsWithRecipient = (
+        await transaction.get(
+          firebaseFirestore.doc(`/users/${recipient.uid}/friends/${sender.uid}`)
+        )
+      ).exists;
 
       authorize(
         'etl/users/receive-friend-requests/update-status',
         context,
-        receivedFriendRequest
+        recipientsFriendRequest
       );
 
-      const currentStatus: FRIEND_REQUEST_STATUS = receivedFriendRequest.status;
+      const currentStatus: FRIEND_REQUEST_STATUS =
+        recipientsFriendRequest.status;
       const intendedStatus = params.status;
 
       let addFriend = false;
@@ -107,39 +132,41 @@ export const etlUsersReceiveFriendRequestsUpdateStatus = async (
         );
       }
 
-      if (addFriend) {
-        // Add friend doc to our friends collection
+      if (addFriend && !isRecipientFriendsWithSender) {
+        // Add recipient to sender's friends collection
         transaction.create(
           firebaseFirestore.doc(
-            `/users/${receivedFriendRequest.uid}/friends/${sendersFriendRequest.uid}`
+            `/users/${sender.uid}/friends/${recipient.uid}`
           ),
           {
-            uid: receivedFriendRequest.uid,
+            uid: sender.uid,
 
-            friendUid: receivedFriendRequest.fromUid,
-            friendFirstName: receivedFriendRequest.fromFirstName,
-            friendLastName: receivedFriendRequest.fromLastName,
+            friendUid: recipient.uid,
+            friendFirstName: recipient.firstName,
+            friendLastName: recipient.lastName,
           }
         );
+      }
 
-        // Add friend doc to sender's friends collection
+      if (addFriend && !isSenderFriendsWithRecipient) {
+        // Add sender to recipient's friends collection
         transaction.create(
           firebaseFirestore.doc(
-            `/users/${sendersFriendRequest.uid}/friends/${receivedFriendRequest.uid}`
+            `/users/${recipient.uid}/friends/${sender.uid}`
           ),
           {
-            uid: sendersFriendRequest.uid,
+            uid: recipient.uid,
 
-            friendUid: sendersFriendRequest.toUid,
-            friendFirstName: sendersFriendRequest.toFirstName,
-            friendLastName: sendersFriendRequest.toLastName,
+            friendUid: sender.uid,
+            friendFirstName: sender.firstName,
+            friendLastName: sender.lastName,
           }
         );
       }
 
       // Clean up the friend requests
       transaction.delete(sendersFriendRequestDocRef);
-      transaction.delete(receivedFriendRequestDocRef);
+      transaction.delete(recipientsFriendRequestDocRef);
     });
   } catch (err: any) {
     errors.push(parseApiError(err));

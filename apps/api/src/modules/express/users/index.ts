@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import friendsRouter from './friends';
 import receiveFriendRequestsRouter from './receive-friend-requests';
 import sendFriendRequestsRouter from './send-friend-requests';
 import { functions, firebaseClient } from '../../firebase';
@@ -58,6 +59,7 @@ router.post('/update-time-format', async (req, res, next) => {
   }
 });
 
+router.use('/friends', friendsRouter);
 router.use('/receive-friend-requests', receiveFriendRequestsRouter);
 router.use('/send-friend-requests', sendFriendRequestsRouter);
 
