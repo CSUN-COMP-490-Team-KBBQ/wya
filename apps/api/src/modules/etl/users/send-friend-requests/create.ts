@@ -198,7 +198,7 @@ export const etlUsersSendFriendRequestsCreate = async (
 
           fromUid: fromUser.uid,
           fromFirstName: fromUser.firstName,
-          fromLastName: fromUser.LastName,
+          fromLastName: fromUser.lastName,
 
           status: FRIEND_REQUEST_STATUS.PENDING,
         };
@@ -252,7 +252,7 @@ export const etlUsersSendFriendRequestsCreate = async (
 
           toUid: toUser.uid,
           toFirstName: toUser.firstName,
-          toLastName: toUser.LastName,
+          toLastName: toUser.lastName,
 
           status: FRIEND_REQUEST_STATUS.PENDING,
         };
