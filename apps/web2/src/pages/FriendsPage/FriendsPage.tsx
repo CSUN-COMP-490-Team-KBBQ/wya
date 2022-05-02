@@ -1,6 +1,5 @@
 import React from 'react';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import Container from 'react-bootstrap/Container';
 
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
