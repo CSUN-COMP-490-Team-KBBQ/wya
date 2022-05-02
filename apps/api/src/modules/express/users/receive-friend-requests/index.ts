@@ -6,7 +6,7 @@ import { etlUsersReceiveFriendRequestsUpdateStatus } from '../../../etl/users/re
 
 const router = Router();
 
-router.post('/create', async (req, res, next) => {
+router.post('/update-status', async (req, res, next) => {
   try {
     const params = req.body;
     const context = await authenticate(req);
