@@ -30,7 +30,11 @@ export const etlEventsGuestsUpdateStatus = async (
           type: 'string',
         },
         status: {
-          type: 'string',
+          enum: [
+            EVENT_GUEST_STATUS.ACCEPTED,
+            EVENT_GUEST_STATUS.PENDING,
+            EVENT_GUEST_STATUS.DECLINED,
+          ],
         },
       },
     },

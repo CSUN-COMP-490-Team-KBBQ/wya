@@ -53,6 +53,12 @@ export type UserEventDocument = {
   endTime: string;
 };
 
+export enum FRIEND_REQUEST_STATUS {
+  ACCEPTED = 'ACCEPTED',
+  DECLINED = 'DECLINED',
+  PENDING = 'PENDING',
+}
+
 /** event-plans */
 export enum EVENT_PLAN_ROLE {
   HOST = 'HOST',
