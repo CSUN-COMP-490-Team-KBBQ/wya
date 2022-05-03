@@ -21,78 +21,8 @@ import { ScheduleSelectorData } from '../../interfaces/';
 
 import { CheckCircleIcon, XIcon } from '@heroicons/react/solid';
 
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import { Transition } from '@headlessui/react';
-
-const popupAlert = () => {
-  // <div className="flex justify-center mt-2">
-  //   <div className="flex items-center w-1/2 px-6 py-4 text-green-700 bg-green-100 rounded">
-  //     <span>
-  //       <svg
-  //         xmlns="http://www.w3.org/2000/svg"
-  //         className="w-6 h-6 "
-  //         fill="none"
-  //         viewBox="0 0 24 24"
-  //         stroke="currentColor"
-  //       >
-  //         <path
-  //           stroke-linecap="round"
-  //           stroke-linejoin="round"
-  //           stroke-width="2"
-  //           d="M5 13l4 4L19 7"
-  //         />
-  //       </svg>
-  //     </span>
-  //     <p className="ml-2 text-medium">simple alert message with Icon</p>
-  //   </div>
-  // </div>;
-  // <div
-  //   className="bg-teal-lightest border-t-4 border-teal rounded-b text-teal-darkest px-4 py-3 shadow-md my-2"
-  //   role="alert"
-  // >
-  //   <div className="flex">
-  //     <svg
-  //       className="h-6 w-6 text-teal mr-4"
-  //       xmlns="http://www.w3.org/2000/svg"
-  //       viewBox="0 0 20 20"
-  //     >
-  //       <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
-  //     </svg>
-  //     <div>
-  //       <p className="font-bold">Our privacy policy has changed</p>
-  //       <p className="text-sm">
-  //         Make sure you know how these changes affect you.
-  //       </p>
-  //     </div>
-  //   </div>
-  // </div>;
-  <div className="rounded-md bg-green-50 p-4">
-    <div className="flex">
-      <div className="flex-shrink-0">
-        <CheckCircleIcon
-          className="h-5 w-5 text-green-400"
-          aria-hidden="true"
-        />
-      </div>
-      <div className="ml-3">
-        <p className="text-sm font-medium text-green-800">
-          Successfully uploaded
-        </p>
-      </div>
-      <div className="ml-auto pl-3">
-        <div className="-mx-1.5 -my-1.5">
-          <button
-            type="button"
-            className="inline-flex bg-green-50 rounded-md p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600"
-          >
-            <span className="sr-only">Dismiss</span>
-            <XIcon className="h-5 w-5" aria-hidden="true" />
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>;
-};
 
 export default function AvailabilityPage() {
   const { pending, userRecord } = useUserRecordContext();
