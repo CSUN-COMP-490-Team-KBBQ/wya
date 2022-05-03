@@ -249,46 +249,29 @@ export default function CalendarPage(): JSX.Element {
               <div className="bg-white lg:min-w-0 lg:flex-1">
                 <div className="h-full py-6 px-4 sm:px-6 lg:px-8 bg-white">
                   {/* Start main area*/}
-                  <div
-                    className="relative h-full"
-                    style={{ minHeight: '36rem' }}
-                  >
-                    <div className="absolute inset-0 border-2 border-gray-200 border-dashed rounded-lg w-80 overflow-y-auto bg-white">
+                  <div style={{height: '33rem', width: '35rem'}} className="relative inset-0 py-6 px-4 sm:px-6 lg:px-8">
+                    <div className="absolute inset-0 overflow-y-auto bg-white">
                       <h1 className="pt-4 flex justify-center">Calendar</h1>
                       {/* Calendar */}
                       <Calendar />
                       {/* Calendar End */}
-                      {/* Main Area Divider */}
-                      <div className="relative py-4">
-                        <div
-                          className="absolute inset-0 flex items-center"
-                          aria-hidden="true"
-                        >
-                          <div className="w-full border-t border-gray-300" />
-                        </div>
-                        <div className="relative flex justify-center">
-                          <span className="px-3 bg-white text-lg font-medium text-gray-900"></span>
-                        </div>
-                      </div>
-                      {/* End Main Area Divider */}
-                      <div className="pb-4">
-                        <EventList
-                          elementId="calendar-event-plan-list"
-                          events={events}
-                        />
-                      </div>
+
                     </div>
+                    
                   </div>
+                  {/* Upcoming Section Start */}
+                  <EventList elementId="calendar-event-plan-list" events={events}/>
+                  {/* Upcoming Section End */}
                   {/* End main area */}
                 </div>
               </div>
             </div>
 
             {/* <div className="bg-[#00416d] pr-4 sm:pr-6 lg:pr-8 lg:flex-shrink-0 lg:border-l lg:border-gray-200 xl:pr-0"> */}
-              <div style={{width: '30rem'}} className="h-full pl-6 py-6 bg-white">
+              <div style={{width: '40rem'}} className="h-full pl-6 py-6 bg-white">
                 {/* Start right column area */}
-                <div className="h-full relative" style={{ minHeight: '16rem' }}>
-                  <div className="absolute inset-0 border-2 border-gray-200 border-dashed rounded-lg overflow-y-auto bg-white">
+                <div className="h-full relative">
+                  <div className="absolute inset-0 rounded-lg overflow-y-auto bg-white">
                     <div>
                       <EventPlanList elementId="" eventPlans={eventPlans} />
                     </div>
