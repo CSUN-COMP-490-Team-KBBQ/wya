@@ -24,8 +24,8 @@ export default function EventList(props: EventListProps): JSX.Element {
 
   return (
     <div id={elementId}>
-      <h1 className="pb-4">Upcoming Events</h1>
-      <ul className="space-y-3 px-20">
+      <h1 className="py-4 flex justify-center">Upcoming Events</h1>
+      <ul className="space-y-3 pr-8">
         {eventList.map(
           ({ eventId, name, startDate, dailyStartTime, dailyEndTime }) => (
             <li
@@ -41,19 +41,6 @@ export default function EventList(props: EventListProps): JSX.Element {
           )
         )}
       </ul>
-      {/* <ListGroup className="event-plan-list">
-        {eventList.map(({ eventId, name }) => {
-          return (
-            <ListGroup.Item
-              key={eventId}
-              action
-              onClick={() => history.push(`/events/${eventId}`)}
-            >
-              {name}
-            </ListGroup.Item>
-          );
-        })}
-      </ListGroup> */}
     </div>
   );
 }

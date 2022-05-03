@@ -1,4 +1,3 @@
-import './EventPlanList.css';
 import { useHistory } from 'react-router-dom';
 
 import { EventPlanInfo, EventPlanId } from '../../interfaces';
@@ -38,19 +37,6 @@ export default function EventPlanList(props: EventPlanListProps): JSX.Element {
           </li>
         ))}
       </ul>
-      {/* <ListGroup className="event-plan-list">
-        {eventList.map(({ eventPlanId, name }) => {
-          return (
-            <ListGroup.Item
-              key={eventPlanId}
-              action
-              onClick={() => history.push(`/event-plans/${eventPlanId}`)}
-            >
-              {name}
-            </ListGroup.Item>
-          );
-        })}
-      </ListGroup> */}
     </div>
   );
 }

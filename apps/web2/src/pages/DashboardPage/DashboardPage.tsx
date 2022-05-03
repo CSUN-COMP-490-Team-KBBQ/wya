@@ -70,45 +70,55 @@ export default function DashboardPage(): JSX.Element {
     return (
       <Sidebar>
         {/* 3 column wrapper */}
-        <div className="flex-grow w-full max-w-full mx-auto xl:px-8 lg:flex bg-white">
-          {/* main wrapper */}
-          <div className="flex-1 min-w-0 bg-white lg:flex">
+        <div className="flex-grow w-full max-w-7xl mx-auto xl:px-8 lg:flex bg-white">
+          {/* Left sidebar & main wrapper */}
+          <div className="flex-1 min-w-0 bg-white xl:flex">
             <div className="bg-white lg:min-w-0 lg:flex-1">
-              <div className="h-full py-6 px-4 sm:px-6 lg:px-8 bg-white">
-                {/* Start main area*/}
+              <div className="h-full py-6 px-4 sm:px-6 lg:px-8">
+                {/* Start left area*/}
+                {/* Calendar Section Start */}
+
                 <div
-                  style={{ height: '33rem', width: '35rem' }}
-                  className="relative inset-0 py-6 px-4 sm:px-6 lg:px-8"
+                  className="relative h-full"
+                  style={{ height: '33rem', width: 'auto', margin: 'auto' }}
                 >
                   <div className="absolute inset-0 overflow-y-auto bg-white">
                     <h1 className="pt-4 flex justify-center">Calendar</h1>
-                    {/* Calendar */}
                     <Calendar />
-                    {/* Calendar End */}
                   </div>
                 </div>
+                {/* Calendar Section End */}
                 {/* Upcoming Section Start */}
-                <EventList
-                  elementId="calendar-event-plan-list"
-                  events={events}
-                />
-                {/* Upcoming Section End */}
-                {/* End main area */}
-              </div>
-            </div>
-          </div>
-
-          {/* <div className="bg-[#00416d] pr-4 sm:pr-6 lg:pr-8 lg:flex-shrink-0 lg:border-l lg:border-gray-200 xl:pr-0"> */}
-          <div style={{ width: '40rem' }} className="h-full pl-6 py-6 bg-white">
-            {/* Start right column area */}
-            <div className="h-full relative">
-              <div className="absolute inset-0 rounded-lg overflow-y-auto bg-white">
-                <div>
-                  <EventPlanList elementId="" eventPlans={eventPlans} />
+                <div
+                  className="relative h-full"
+                  style={{ width: 'auto', margin: 'auto' }}
+                >
+                  <EventList
+                    elementId="calendar-event-plan-list"
+                    events={events}
+                  />
                 </div>
+                {/* Upcoming Section End */}
+                {/* End left area */}
               </div>
             </div>
-            {/* End right column area */}
+
+            <div className="bg-white lg:min-w-0 lg:flex-1">
+              <div className="h-full py-6 px-4 sm:px-6 lg:px-8">
+                {/* Start right area*/}
+                {/* Pending Events Start*/}
+                <div
+                  className="relative h-full"
+                  style={{ height: '33rem', width: 'auto', margin: 'auto' }}
+                >
+                  <div className="absolute inset-0 overflow-y-auto bg-white">
+                    <EventPlanList elementId="" eventPlans={eventPlans} />
+                  </div>
+                </div>
+                {/* Pending Events End*/}
+                {/* End right area */}
+              </div>
+            </div>
           </div>
         </div>
       </Sidebar>
