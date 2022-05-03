@@ -17,11 +17,7 @@ import {
   createScheduleSelectorData,
 } from '../../lib/availability';
 
-import {
-  EventPlanId,
-  EventPlanInfo,
-  ScheduleSelectorData,
-} from '../../interfaces/';
+import { ScheduleSelectorData } from '../../interfaces/';
 
 export default function AvailabilityPage() {
   const { pending, userRecord } = useUserRecordContext();
