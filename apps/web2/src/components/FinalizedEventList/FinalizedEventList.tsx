@@ -1,18 +1,15 @@
-import React from 'react';
-// import './FinalizedEventList.css';
-import { ListGroup } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 import { EventInfo, EventId } from '../../interfaces';
 
 interface EventListProps {
   elementId: string;
-  events: Array<EventInfo & { eventId: EventId }>;
+  events: (EventInfo & { eventId: EventId })[];
 }
 
 function sortEvents(
-  events: Array<EventInfo & { eventId: EventId }>
-): Array<EventInfo & { eventId: EventId }> {
+  events: (EventInfo & { eventId: EventId })[]
+): (EventInfo & { eventId: EventId })[] {
   return events.sort((a, b) => {
     const aStart = Date.parse(a.startDate);
     const bStart = Date.parse(b.startDate);
@@ -28,7 +25,7 @@ export default function EventList(props: EventListProps): JSX.Element {
   return (
     <div id={elementId}>
       <h1 className="pb-4">Upcoming Events</h1>
-      <ul role="list" className="space-y-3 px-20">
+      <ul className="space-y-3 px-20">
         {eventList.map(
           ({ eventId, name, startDate, dailyStartTime, dailyEndTime }) => (
             <li

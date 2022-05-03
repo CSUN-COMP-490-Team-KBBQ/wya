@@ -21,7 +21,6 @@ import {
 } from '../../lib/firestore';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
-import LandingPage from '../LandingPage/LandingPage';
 import SettingsPage from '../SettingsPage/SettingsPage';
 import EventPage from '../EventPage/EventPage';
 import Page from '../../components/Page/Page';
@@ -157,8 +156,8 @@ export default function EventFinalizedPage({
 
   if (userRecord && eventData && eventGuests) {
     return (
-        <div className="h-full flex">
-          {/* Sidebar for mobile */}
+      <div className="h-full flex">
+        {/* Sidebar for mobile */}
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -423,8 +422,8 @@ export default function EventFinalizedPage({
               })}
             </ListGroup>
           </div>
-          </div>
         </div>
+      </div>
     );
   }
 

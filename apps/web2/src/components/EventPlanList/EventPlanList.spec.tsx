@@ -23,6 +23,5 @@ it('renders component', () => {
       eventPlans={FAKE_USER_EVENT_PLANS}
     />
   );
-  expect(screen.getByText('Upcoming Events')).toBeTruthy();
   expect(screen.getByText('test event plan')).toBeTruthy();
 });

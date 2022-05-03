@@ -1,282 +1,117 @@
-import { Fragment, useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import {
-  HomeIcon,
-  MenuIcon,
-  UserGroupIcon,
-  XIcon,
-  PencilIcon,
-} from '@heroicons/react/outline';
-
+import React from 'react';
+import Calendar from '../../components/Calendar/Calendar';
+import EventPlanList from '../../components/EventPlanList/EventPlanList';
+import EventList from '../../components/FinalizedEventList/FinalizedEventList';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
-import Sidebar from '../../components/Sidebar/Sidebar';
-import PageSpinner from '../../components/PageSpinner/PageSpinner';
+import { getAllSubCollDocsSnapshot$ } from '../../lib/firestore';
 
+import {
+  EventPlanId,
+  EventPlanInfo,
+  EventId,
+  EventInfo,
+} from '../../interfaces/';
+import PageSpinner from '../../components/PageSpinner/PageSpinner';
+import Sidebar from '../../components/Sidebar/Sidebar';
 import LandingPage from '../LandingPage/LandingPage';
 
-import logo from '../../assets/wya-logo.png';
-import EventPlanPage from '../EventPlanPage/EventPlanPage';
-import CreateEventPlanPage from '../CreateEventPlanPage/CreateEventPlanPage';
+export default function DashboardPage(): JSX.Element {
+  const { userRecord, pending } = useUserRecordContext();
 
-const content = {
-  DASHBOARD: 'dashboard',
-  PLANEVENT: 'create-event',
-  FRIENDS: 'friends',
-  SETTINGS: 'settings',
-};
+  const [eventPlans, setEventPlans] = React.useState<
+    (EventPlanInfo & { eventPlanId: EventPlanId })[]
+  >([]);
+  const [events, setEvents] = React.useState<
+    (EventInfo & { eventId: EventId })[]
+  >([]);
 
-const navigation = [
-  {
-    name: 'Dashboard',
-    icon: HomeIcon,
-    content: content.DASHBOARD,
-    current: true,
-  },
-  {
-    name: 'Plan An Event',
-    icon: PencilIcon,
-    content: content.PLANEVENT,
-    current: false,
-  },
-  {
-    name: 'Friends',
-    icon: UserGroupIcon,
-    content: content.FRIENDS,
-    current: false,
-  },
-];
+  // Observe user availability
+  React.useEffect(() => {
+    if (userRecord) {
+      const { uid } = userRecord;
 
-// @ts-ignore
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+      // Get event-plans
+      getAllSubCollDocsSnapshot$(`/users/${uid}/event-plans`, {
+        next: (eventPlansSnapshot) => {
+          setEventPlans(
+            eventPlansSnapshot.docs.map((doc) => {
+              return {
+                eventPlanId: doc.id as EventPlanId,
+                ...(doc.data() as EventPlanInfo),
+              };
+            })
+          );
+        },
+      });
 
-export default function DashboardPage() {
-  const { pending, userRecord } = useUserRecordContext();
+      // Get events
+      getAllSubCollDocsSnapshot$(`/users/${uid}/events`, {
+        next: (eventsSnapshot) => {
+          setEvents(
+            eventsSnapshot.docs.map((doc) => {
+              return {
+                eventId: doc.id as EventId,
+                ...(doc.data() as EventInfo),
+              };
+            })
+          );
+        },
+      });
+    }
+  }, [userRecord]);
 
+  // Observe user events
   if (pending) {
     return <PageSpinner />;
   }
 
   if (userRecord) {
     return (
-      <div className="h-full flex">
-        {/* Sidebar for mobile */}
-        <Transition.Root show={sidebarOpen} as={Fragment}>
-          <Dialog
-            as="div"
-            className="fixed inset-0 flex z-40 lg:hidden"
-            onClose={setSidebarOpen}
-          >
-            <Transition.Child
-              as={Fragment}
-              enter="transition-opacity ease-linear duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity ease-linear duration-300"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="fixed inset-0 bg-gray-600 bg-opacity-75" />
-            </Transition.Child>
-            <Transition.Child
-              as={Fragment}
-              enter="transition ease-in-out duration-300 transform"
-              enterFrom="-translate-x-full"
-              enterTo="translate-x-0"
-              leave="transition ease-in-out duration-300 transform"
-              leaveFrom="translate-x-0"
-              leaveTo="-translate-x-full"
-            >
-              <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white focus:outline-none">
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-in-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in-out duration-300"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
+      <Sidebar>
+        {/* 3 column wrapper */}
+        <div className="flex-grow w-full max-w-full mx-auto xl:px-8 lg:flex bg-white">
+          {/* main wrapper */}
+          <div className="flex-1 min-w-0 bg-white lg:flex">
+            <div className="bg-white lg:min-w-0 lg:flex-1">
+              <div className="h-full py-6 px-4 sm:px-6 lg:px-8 bg-white">
+                {/* Start main area*/}
+                <div
+                  style={{ height: '33rem', width: '35rem' }}
+                  className="relative inset-0 py-6 px-4 sm:px-6 lg:px-8"
                 >
-                  <div className="absolute top-0 right-0 -mr-12 pt-2">
-                    <button
-                      type="button"
-                      className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      <span className="sr-only">Close sidebar</span>
-                      <XIcon
-                        className="h-6 w-6 text-white"
-                        aria-hidden="true"
-                      />
-                    </button>
+                  <div className="absolute inset-0 overflow-y-auto bg-white">
+                    <h1 className="pt-4 flex justify-center">Calendar</h1>
+                    {/* Calendar */}
+                    <Calendar />
+                    {/* Calendar End */}
                   </div>
-                </Transition.Child>
-                <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-                  <div className="flex-shrink-0 flex items-center px-4 justify-center">
-                    <img className="h-10 w-auto" src={logo} alt="wya? logo" />
-                  </div>
-                  <nav aria-label="Sidebar" className="mt-5">
-                    <div className="px-2 space-y-1">
-                      {nav.map((item) => (
-                        <button
-                          key={item.name}
-                          onClick={() => loadContent(item.content)}
-                          className={classNames(
-                            item.current
-                              ? 'bg-gray-100 text-gray-900'
-                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                            'group flex items-center px-2 py-2 text-base font-medium rounded-md no-underline w-full'
-                          )}
-                        >
-                          <item.icon
-                            className={classNames(
-                              item.current
-                                ? 'text-gray-500'
-                                : 'text-gray-400 group-hover:text-gray-500',
-                              'mr-4 h-6 w-6'
-                            )}
-                            aria-hidden="true"
-                          />
-                          {item.name}
-                        </button>
-                      ))}
-                    </div>
-                  </nav>
                 </div>
-                <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-                  <button
-                    onClick={() => loadContent(content.SETTINGS)}
-                    className="flex-shrink-0 group block no-underline"
-                  >
-                    <div className="flex items-center">
-                      <div className="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-200">
-                        {/* can add image tag for profile pics in future work */}
-                        <svg
-                          className="h-full w-full text-gray-300"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                      </div>
-                      <div className="ml-3 text-left">
-                        <p className="text-base font-medium text-gray-700 group-hover:text-gray-900 mb-0">
-                          Whitney Francis
-                        </p>
-                        <p className="text-sm font-medium text-gray-500 group-hover:text-gray-700 mb-0">
-                          View profile
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-                </div>
+                {/* Upcoming Section Start */}
+                <EventList
+                  elementId="calendar-event-plan-list"
+                  events={events}
+                />
+                {/* Upcoming Section End */}
+                {/* End main area */}
               </div>
-            </Transition.Child>
-            <div className="flex-shrink-0 w-14" aria-hidden="true">
-              {/* Force sidebar to shrink to fit close icon */}
             </div>
-          </Dialog>
-        </Transition.Root>
+          </div>
 
-        {/* Static sidebar for desktop */}
-        <div className="hidden lg:flex lg:flex-shrink-0">
-          <div className="flex flex-col w-64">
-            {/* Sidebar component, swap this element with another sidebar if you like */}
-            <div className="flex-1 flex flex-col min-h-screen border-r border-gray-200 bg-gray-100">
-              <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-                <div className="flex items-center flex-shrink-0 px-4 justify-center">
-                  <img className="h-10 w-auto" src={logo} alt="wya? logo" />
+          {/* <div className="bg-[#00416d] pr-4 sm:pr-6 lg:pr-8 lg:flex-shrink-0 lg:border-l lg:border-gray-200 xl:pr-0"> */}
+          <div style={{ width: '40rem' }} className="h-full pl-6 py-6 bg-white">
+            {/* Start right column area */}
+            <div className="h-full relative">
+              <div className="absolute inset-0 rounded-lg overflow-y-auto bg-white">
+                <div>
+                  <EventPlanList elementId="" eventPlans={eventPlans} />
                 </div>
-                <nav className="mt-5 flex-1" aria-label="Sidebar">
-                  <div className="px-2 space-y-1">
-                    {nav.map((item) => (
-                      <button
-                        key={item.name}
-                        onClick={() => loadContent(item.content)}
-                        className={classNames(
-                          item.current
-                            ? 'bg-gray-200 text-gray-900'
-                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                          'group flex items-center px-2 py-2 text-sm font-medium rounded-md no-underline w-full'
-                        )}
-                      >
-                        <item.icon
-                          className={classNames(
-                            item.current
-                              ? 'text-gray-500'
-                              : 'text-gray-400 group-hover:text-gray-500',
-                            'mr-3 h-6 w-6'
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </button>
-                    ))}
-                  </div>
-                </nav>
-              </div>
-              <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-                <button
-                  onClick={() => loadContent(content.SETTINGS)}
-                  className="flex-shrink-0 w-full group block no-underline"
-                >
-                  <div className="flex items-center">
-                    <div className="inline-block h-9 w-9 rounded-full overflow-hidden bg-gray-200">
-                      <svg
-                        className="h-full w-full text-gray-300"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
-                    </div>
-                    <div className="ml-3 text-left">
-                      <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 mb-0">
-                        Whitney Francis
-                      </p>
-                      <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700 mb-0">
-                        View profile
-                      </p>
-                    </div>
-                  </div>
-                </button>
               </div>
             </div>
+            {/* End right column area */}
           </div>
         </div>
-        <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
-          <div className="lg:hidden">
-            <div className="flex items-center justify-between bg-gray-50 border-b border-gray-200 px-4 py-1.5">
-              <div>
-                <img className="h-8 w-auto" src={logo} alt="wya? logo" />
-              </div>
-              <div>
-                <button
-                  type="button"
-                  className="-mr-3 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900"
-                  onClick={() => setSidebarOpen(true)}
-                >
-                  <span className="sr-only">Open sidebar</span>
-                  <MenuIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
-              </div>
-            </div>
-          </div>
-          {/* Content */}
-          {currentContent === content.FRIENDS ? (
-            <></>
-          ) : currentContent === content.PLANEVENT ? (
-            <CreateEventPlanPage />
-          ) : currentContent === content.SETTINGS ? (
-            <SettingsPage />
-          ) : (
-            // Added as an example - this will be for the event pages once we finalize dashboard
-            <CalendarPage />
-          )}
-        </div>
-      </div>
+      </Sidebar>
     );
   }
 
