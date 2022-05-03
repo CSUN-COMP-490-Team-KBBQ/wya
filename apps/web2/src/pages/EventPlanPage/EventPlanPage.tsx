@@ -1,6 +1,5 @@
 import React from 'react';
-import Page from '../../components/Page/Page';
-
+import Sidebar from '../../components/Sidebar/Sidebar';
 import {
   getAllSubCollDocsSnapshot$,
   getDocSnapshot$,
@@ -141,7 +140,7 @@ export default function EventPlanPage({
     scheduleSelectorData !== undefined
   ) {
     return (
-      <Page>
+      <Sidebar>
         <EventPlanning
           userId={userRecord.uid}
           eventPlanData={eventPlanData.current}
@@ -150,14 +149,14 @@ export default function EventPlanPage({
           scheduleSelector={scheduleSelectorData}
           isHost={isHost}
         />
-      </Page>
+      </Sidebar>
     );
   }
 
   // default render
   return (
-    <Page>
+    <Sidebar>
       <></>
-    </Page>
+    </Sidebar>
   );
 }

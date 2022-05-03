@@ -15,6 +15,7 @@ import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
 import { UserAuthProvider } from '../../contexts/UserContext';
 import { UserRecordProvider } from '../../contexts/UserRecordContext';
 
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LandingPage from '../../pages/LandingPage/LandingPage';
 import EventPlanPage from '../../pages/EventPlanPage/EventPlanPage';
