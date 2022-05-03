@@ -21,7 +21,6 @@ import {
 } from '../../lib/firestore';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
-import LandingPage from '../LandingPage/LandingPage';
 import SettingsPage from '../SettingsPage/SettingsPage';
 import EventPage from '../EventPage/EventPage';
 import Page from '../../components/Page/Page';

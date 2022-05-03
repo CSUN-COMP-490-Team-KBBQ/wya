@@ -1,26 +1,26 @@
-import { FunctionComponent, useEffect, useState } from "react";
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/solid";
+import { FunctionComponent, useEffect, useState } from 'react';
+import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/solid';
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ');
 }
 
 const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
-const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const Calendar: FunctionComponent = () => {
   const date = new Date();
@@ -76,14 +76,14 @@ const Calendar: FunctionComponent = () => {
 
   return (
     <>
-      <div className="container py-4 px-6">
+      <div className="container mx-auto py-4 px-6">
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="flex items-center justify-between px-6 py-2 border-b">
             <div>
               <span className="text-lg font-bold text-gray-800">
                 {monthNames[month]}
               </span>
-                            <span className="ml-1 text-lg text-gray-600 font-normal">
+              <span className="ml-1 text-lg text-gray-600 font-normal">
                 {year}
               </span>
             </div>
@@ -135,9 +135,13 @@ const Calendar: FunctionComponent = () => {
                     {date}
                   </div>
                 </div>
+              ))}
             </div>
-        </>
-    );
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Calendar;
