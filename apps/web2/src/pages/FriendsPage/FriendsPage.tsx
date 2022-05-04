@@ -143,15 +143,15 @@ export default function FriendsPage(): JSX.Element {
                 {/* Friends List data Start */}
                 <h1 className="pt-4 flex justify-center">Friends List</h1>
                   <div className="w-96 mx-auto sm:px-6 lg:px-8">
-                                                  {/* Begin line breaker */}
-                                                  <br></br>
-                              <br></br>
-                              <div className="relative">
-                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                      <div className="w-full border-t border-gray-300"></div>
-                                      </div>
-                                      </div>
-                                      {/* End line breaker */}
+                    {/* Begin line breaker */}
+                    <br></br>
+                    <br></br>
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                        <div className="w-full border-t border-gray-300"></div>
+                        </div>
+                        </div>
+                    {/* End line breaker */}
                     <div className="flow-root mt-6">
 
                       {friends.map(
