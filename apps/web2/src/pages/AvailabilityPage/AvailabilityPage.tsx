@@ -101,13 +101,11 @@ export default function AvailabilityPage() {
             <div className="max-w-4xl mx-auto flex flex-col md:px-8 xl:px-0">
               <main className="flex-1">
                 <div className="relative max-w-4xl mx-auto md:px-8 xl:px-0">
-                  <div className="pt-10 pb-16">
+                  <div className="pb-16">
                     <div className="px-4 sm:px-6 md:px-0">
-                      <h1 className="text-3xl font-extrabold text-gray-900 mb-4">
-                        Availability
-                      </h1>
+                      <h1 className="pt-4 flex justify-center">Availability</h1>
                       {userRecord && scheduleSelectorData !== undefined ? (
-                        <div className="grid-rows-3">
+                        <div className="grid-rows-3 pt-3">
                           <div>
                             <AvailabilityScheduleSelector
                               startTime={0}
