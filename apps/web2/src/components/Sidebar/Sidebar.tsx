@@ -6,8 +6,9 @@ import {
   UserGroupIcon,
   XIcon,
   LogoutIcon,
+  PencilIcon,
 } from '@heroicons/react/outline';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import { logOut } from '../../lib/auth';
@@ -16,6 +17,7 @@ import logo from '../../assets/wya-logo.png';
 
 const content = {
   DASHBOARD: '/dashboard',
+  PLAN_AN_EVENT: '/plan-event',
   FRIENDS: '/friends',
   SETTINGS: '/settings/general',
 };
@@ -26,6 +28,12 @@ const navigation = [
     icon: HomeIcon,
     content: content.DASHBOARD,
     current: true,
+  },
+  {
+    name: 'Plan An Event',
+    icon: PencilIcon,
+    content: content.PLAN_AN_EVENT,
+    current: false,
   },
   {
     name: 'Friends',
@@ -41,8 +49,15 @@ function classNames(...classes) {
 }
 
 const Sidebar: React.FC = ({ children }): JSX.Element => {
+  const location = useLocation();
   const { userRecord } = useUserRecordContext();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  navigation.forEach((item) =>
+    item.content === location.pathname
+      ? (item.current = true)
+      : (item.current = false)
+  );
 
   return (
     <div className="h-full flex">
