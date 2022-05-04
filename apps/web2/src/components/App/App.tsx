@@ -1,4 +1,3 @@
-import React from 'react';
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
 import LoginPage from '../../pages/LoginPage/LoginPage';
@@ -9,7 +8,6 @@ import CreateEventPage from '../../pages/CreateEventPage/CreateEventPage';
 import CreateEventPlanPage from '../../pages/CreateEventPlanPage/CreateEventPlanPage';
 import EventPage from '../../pages/EventPage/EventPage';
 import FriendsPage from '../../pages/FriendsPage/FriendsPage';
-import CalendarPage from '../../pages/CalendarPage/CalendarPage';
 import ProfilePage from '../../pages/ProfilePage/ProfilePage';
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
 import { UserAuthProvider } from '../../contexts/UserContext';
@@ -56,7 +54,6 @@ export default function App(): JSX.Element {
               component={EventFinalizedPage}
             />
             {/* legacy page */}
-            <PrivateRoute path="/calendar" component={CalendarPage} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/plan-event" component={PlanAnEventPage} />
 
