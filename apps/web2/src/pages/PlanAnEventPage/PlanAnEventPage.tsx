@@ -113,7 +113,7 @@ export default function PlanAnEventPage() {
           <div className="space-y-6">
             <div>
               <h1 className="text-lg leading-6 font-medium text-gray-900">
-                Event Settings
+                Event Details
               </h1>
               <p className="mt-1 text-sm text-gray-500">
                 Let’s get started by filling in the information below to create
@@ -134,7 +134,7 @@ export default function PlanAnEventPage() {
                   name="name"
                   id="name"
                   className="block w-full shadow-sm focus:ring-blue-500 border focus:border-blue-500 sm:text-sm border-gray-300 rounded-md p-2"
-                  defaultValue="Nero Event"
+                  required
                 />
               </div>
             </div>
@@ -153,6 +153,7 @@ export default function PlanAnEventPage() {
                   rows={3}
                   className="block w-full shadow-sm focus:ring-blue-500 border focus:border-blue-500 sm:text-sm border border-gray-300 rounded-md p-2"
                   defaultValue={''}
+                  required
                 />
               </div>
             </div>
@@ -172,7 +173,8 @@ export default function PlanAnEventPage() {
                     id="startDate"
                     className="block w-full shadow-sm focus:ring-blue-500 border focus:border-blue-500 sm:text-sm border-gray-300 rounded-md p-2"
                     min={currentDate}
-                    placeholder="From"
+                    pattern="\d{2}\/d{2}\/d{4}"
+                    required
                   />
                 </div>
                 <div className="col-span-1 sm:col-start-2">
@@ -182,7 +184,8 @@ export default function PlanAnEventPage() {
                     id="endDate"
                     className="block w-full shadow-sm focus:ring-blue-500 border focus:border-blue-500 sm:text-sm border-gray-300 rounded-md p-2"
                     min={currentDate}
-                    placeholder="To"
+                    pattern="\d{2}\/d{2}\/d{4}"
+                    required
                   />
                 </div>
               </div>
@@ -200,7 +203,6 @@ export default function PlanAnEventPage() {
                   <TimePicker
                     className="time-picker-input"
                     placement="bottomLeft"
-                    placeholder="Daily start time"
                     inputIcon={
                       <i
                         style={{
@@ -236,7 +238,6 @@ export default function PlanAnEventPage() {
                   <TimePicker
                     className="time-picker-input"
                     placement="bottomLeft"
-                    placeholder="Daily end time"
                     inputIcon={
                       <i
                         style={{
@@ -285,7 +286,7 @@ export default function PlanAnEventPage() {
                       type="email"
                       className="block w-full shadow-sm focus:ring-blue-500 border focus:border-blue-500 sm:text-sm border-gray-300 rounded-md p-2"
                       placeholder="Email address"
-                      pattern=".+@globex\.com"
+                      pattern="/.+@.+\..+/gm"
                       ref={(node: HTMLInputElement) => {
                         inputRef.current = node;
                       }}
