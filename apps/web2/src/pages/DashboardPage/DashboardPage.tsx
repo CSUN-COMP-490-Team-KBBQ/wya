@@ -109,7 +109,7 @@ export default function DashboardPage(): JSX.Element {
                 {/* Pending Events Start*/}
                 <div
                   className="relative h-full"
-                  style={{ height: '33rem', width: 'auto', margin: 'auto' }}
+                  style={{ height: '40rem', width: 'auto', margin: 'auto' }}
                 >
                   <div className="absolute inset-0 overflow-y-auto bg-white">
                     <EventPlanList elementId="" eventPlans={eventPlans} />
