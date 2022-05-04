@@ -7,6 +7,7 @@ import {
   XIcon,
   LogoutIcon,
   PencilIcon,
+  CalendarIcon,
 } from '@heroicons/react/outline';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -20,6 +21,7 @@ const content = {
   PLAN_AN_EVENT: '/plan-event',
   FRIENDS: '/friends',
   SETTINGS: '/settings/general',
+  AVAILABILITY: '/availability',
 };
 
 const navigation = [
@@ -39,6 +41,12 @@ const navigation = [
     name: 'Friends',
     icon: UserGroupIcon,
     content: content.FRIENDS,
+    current: false,
+  },
+  {
+    name: 'Availability',
+    icon: CalendarIcon,
+    content: content.AVAILABILITY,
     current: false,
   },
 ];

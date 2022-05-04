@@ -19,6 +19,7 @@ import LandingPage from '../../pages/LandingPage/LandingPage';
 import DashboardPage from '../../pages/DashboardPage/DashboardPage';
 import PlanAnEventPage from '../../pages/PlanAnEventPage/PlanAnEventPage';
 import SettingsPage from '../../pages/SettingsPage/SettingsPage';
+import AvailabilityPage from '../../pages/AvailabilityPage/AvailabilityPage';
 
 // Legacy
 import EventPlanPage from '../../pages/EventPlanPage/EventPlanPage';
@@ -59,6 +60,8 @@ export default function App(): JSX.Element {
 
             <PrivateRoute path="/settings/general" component={SettingsPage} />
             <PrivateRoute path="/settings/password" component={SettingsPage} />
+
+            <PrivateRoute path="/availability" component={AvailabilityPage}/>
 
             {/* legacy page */}
             <PrivateRoute path="/profile" component={ProfilePage} />

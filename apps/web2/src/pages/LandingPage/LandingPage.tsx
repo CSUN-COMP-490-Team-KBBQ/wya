@@ -19,9 +19,9 @@ export default function LandingPage() {
 
   return (
     <>
-      <div className="relative bg-white overflow-hidden">
+      <div className="relative bg-white overflow-auto-">
         <div className="max-w-7xl mx-auto">
-          <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32 h-screen">
+          <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
             <div className="relative pt-6 px-4 sm:px-6 lg:px-8">
               <nav
                 className="relative flex items-center justify-between"
@@ -65,8 +65,8 @@ export default function LandingPage() {
                   stacking personal schedules so that your group will be able to
                   clearly see who&apos;s doing what and when. The add-a-friend
                   feature and overall simplicity of wya? removes the need for
-                  multiple apps and lets you add friends, plan, and invite whomever
-                  you&apos;d like!
+                  multiple apps and lets you add friends, plan, and invite
+                  whomever you&apos;d like!
                 </p>
                 <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                   <div className="inline-flex rounded-md shadow">
@@ -80,7 +80,7 @@ export default function LandingPage() {
                       to="/login"
                       className="no-underline flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10"
                     >
-                    Log In
+                      Log In
                     </Link>
                   </div>
                 </div>
