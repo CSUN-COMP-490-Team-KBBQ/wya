@@ -70,39 +70,6 @@ export default function GeneralSettings() {
               </dd>
             </div>
             <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5 items-center">
-              <dt className="text-sm font-medium text-gray-500">Photo</dt>
-              <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2 items-center">
-                <span className="flex-grow">
-                  <div className="inline-block h-9 w-9 rounded-full overflow-hidden bg-gray-200">
-                    <svg
-                      className="h-full w-full text-gray-300"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                  </div>
-                </span>
-                <span className="ml-4 flex-shrink-0 flex items-start space-x-4">
-                  <button
-                    type="button"
-                    className="bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  >
-                    Update
-                  </button>
-                  <span className="text-gray-300" aria-hidden="true">
-                    |
-                  </span>
-                  <button
-                    type="button"
-                    className="bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  >
-                    Remove
-                  </button>
-                </span>
-              </dd>
-            </div>
-            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5 items-center">
               <dt className="text-sm font-medium text-gray-500">Email</dt>
               <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 <span className="flex-grow">{userRecord?.email}</span>

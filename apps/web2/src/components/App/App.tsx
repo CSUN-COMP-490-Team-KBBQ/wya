@@ -4,11 +4,8 @@ import LoginPage from '../../pages/LoginPage/LoginPage';
 import RegisterPage from '../../pages/RegisterPage/RegisterPage';
 import PrivateRoute from '../PrivateRoute/PrivateRoute';
 import PasswordResetPage from '../../pages/PasswordResetPage/PasswordResetPage';
-import CreateEventPage from '../../pages/CreateEventPage/CreateEventPage';
-import CreateEventPlanPage from '../../pages/CreateEventPlanPage/CreateEventPlanPage';
 import EventPage from '../../pages/EventPage/EventPage';
 import FriendsPage from '../../pages/FriendsPage/FriendsPage';
-import ProfilePage from '../../pages/ProfilePage/ProfilePage';
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
 import { UserAuthProvider } from '../../contexts/UserContext';
 import { UserRecordProvider } from '../../contexts/UserRecordContext';
@@ -37,14 +34,7 @@ export default function App(): JSX.Element {
             <Route path="/password-reset" exact component={PasswordResetPage} />
 
             {/* legacy page */}
-            <PrivateRoute path="/create-event" component={CreateEventPage} />
-            {/* legacy page */}
             <PrivateRoute path="/friends" component={FriendsPage} />
-            {/* legacy page */}
-            <PrivateRoute
-              path="/create-event-plan"
-              component={CreateEventPlanPage}
-            />
             {/* legacy page */}
             <PrivateRoute path="/event/:id" component={EventPage} />
             {/* legacy page */}
@@ -63,8 +53,6 @@ export default function App(): JSX.Element {
 
             <PrivateRoute path="/availability" component={AvailabilityPage}/>
 
-            {/* legacy page */}
-            <PrivateRoute path="/profile" component={ProfilePage} />
             {/* legacy page */}
             <Route path="*" exact component={NotFoundPage} />
           </Switch>

@@ -5,9 +5,9 @@ import {
   MenuIcon,
   UserGroupIcon,
   XIcon,
-  LogoutIcon,
   PencilIcon,
   CalendarIcon,
+  IdentificationIcon,
 } from '@heroicons/react/outline';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -47,6 +47,13 @@ const navigation = [
     name: 'Availability',
     icon: CalendarIcon,
     content: content.AVAILABILITY,
+    current: false,
+  },
+
+  {
+    name: 'View Profile',
+    icon: IdentificationIcon,
+    content: content.SETTINGS,
     current: false,
   },
 ];
@@ -146,16 +153,6 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
                         {item.name}
                       </Link>
                     ))}
-                    <button
-                      className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md no-underline w-full"
-                      onClick={logOut}
-                    >
-                      <LogoutIcon
-                        className="text-gray-400 group-hover:text-gray-500 mr-4 h-6 w-6"
-                        aria-hidden="true"
-                      />
-                      Sign Out
-                    </button>
                   </div>
                 </nav>
               </div>
@@ -165,23 +162,16 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
                   className="flex-shrink-0 group block no-underline"
                 >
                   <div className="flex items-center">
-                    <div className="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-200">
-                      {/* can add image tag for profile pics in future work */}
-                      <svg
-                        className="h-full w-full text-gray-300"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
-                    </div>
                     <div className="ml-3 text-left">
                       <p className="text-base font-medium text-gray-700 group-hover:text-gray-900 mb-0">
                         {userRecord?.firstName} {userRecord?.lastName}
                       </p>
-                      <p className="text-sm font-medium text-gray-500 group-hover:text-gray-700 mb-0">
-                        View profile
-                      </p>
+                      <button
+                    className="text-gray-600 hover:text-gray-900 group flex items-center py-2 text-sm font-medium rounded-md no-underline w-full"
+                    onClick={logOut}
+                  > Sign Out &nbsp; <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+</svg></button>
                     </div>
                   </div>
                 </Link>
@@ -228,16 +218,6 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
                       {item.name}
                     </Link>
                   ))}
-                  <button
-                    className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md no-underline w-full"
-                    onClick={logOut}
-                  >
-                    <LogoutIcon
-                      className="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6"
-                      aria-hidden="true"
-                    />
-                    Sign Out
-                  </button>
                 </div>
               </nav>
             </div>
@@ -247,21 +227,17 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
                 className="flex-shrink-0 w-full group block no-underline"
               >
                 <div className="flex items-center">
-                  <div className="inline-block h-9 w-9 rounded-full overflow-hidden bg-gray-200">
-                    <svg
-                      className="h-full w-full text-gray-300"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                  </div>
                   <div className="ml-3 text-left">
-                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 mb-0">
+                    <p className="text-md font-medium text-gray-700 group-hover:text-gray-900 mb-0">
                       {userRecord?.firstName} {userRecord?.lastName}
                     </p>
                     <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700 mb-0">
-                      View profile
+                    <button
+                    className="text-gray-600 hover:text-gray-900 group flex items-center py-2 text-sm font-medium rounded-md no-underline w-full"
+                    onClick={logOut}
+                  >Sign Out &nbsp; <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg></button>
                     </p>
                   </div>
                 </div>
