@@ -5,7 +5,7 @@ import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import { TIME_FORMAT } from '../../interfaces';
 
-import { updateUserTimeFormat } from '../../lib/firestore';
+import api from '../../modules/api';
 
 // @ts-ignore
 function classNames(...classes) {
@@ -23,13 +23,14 @@ export default function GeneralSettings() {
     }
   }, [userRecord]);
 
-  const handleStandardTimeFormatChange = (enabled: boolean) => {
+  const handleStandardTimeFormatChange = async (enabled: boolean) => {
     if (userRecord) {
-      const { uid } = userRecord;
       const intendedTimeFormat = enabled
         ? TIME_FORMAT.TWENTY_FOUR_HOURS
         : TIME_FORMAT.TWELVE_HOURS;
-      updateUserTimeFormat(uid, intendedTimeFormat)
+
+      await api
+        .post('/users/update-time-format', { intendedTimeFormat })
         .then(() => {
           setStandardTimeFormatEnabled(intendedTimeFormat === 'HH:mm');
         })

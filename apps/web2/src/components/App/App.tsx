@@ -6,13 +6,11 @@ import PrivateRoute from '../PrivateRoute/PrivateRoute';
 import PasswordResetPage from '../../pages/PasswordResetPage/PasswordResetPage';
 import CreateEventPage from '../../pages/CreateEventPage/CreateEventPage';
 import CreateEventPlanPage from '../../pages/CreateEventPlanPage/CreateEventPlanPage';
-import EventPage from '../../pages/EventPage/EventPage';
 import FriendsPage from '../../pages/FriendsPage/FriendsPage';
 import ProfilePage from '../../pages/ProfilePage/ProfilePage';
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
 import { UserAuthProvider } from '../../contexts/UserContext';
 import { UserRecordProvider } from '../../contexts/UserRecordContext';
-
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LandingPage from '../../pages/LandingPage/LandingPage';
@@ -46,8 +44,6 @@ export default function App(): JSX.Element {
               component={CreateEventPlanPage}
             />
             {/* legacy page */}
-            <PrivateRoute path="/event/:id" component={EventPage} />
-            {/* legacy page */}
             <PrivateRoute path="/event-plans/:id" component={EventPlanPage} />
             {/* legacy page */}
             <PrivateRoute
@@ -61,7 +57,7 @@ export default function App(): JSX.Element {
             <PrivateRoute path="/settings/general" component={SettingsPage} />
             <PrivateRoute path="/settings/password" component={SettingsPage} />
 
-            <PrivateRoute path="/availability" component={AvailabilityPage}/>
+            <PrivateRoute path="/availability" component={AvailabilityPage} />
 
             {/* legacy page */}
             <PrivateRoute path="/profile" component={ProfilePage} />

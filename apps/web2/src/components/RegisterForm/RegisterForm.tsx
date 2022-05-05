@@ -4,10 +4,11 @@ import { useHistory, Link } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 import Recaptcha from '../Recaptcha/Recaptcha';
-import { registerUser, logIn } from '../../lib/auth';
+import { logIn } from '../../modules/firebase/auth';
 import { useUserContext } from '../../contexts/UserContext';
 
 import logo from '../../assets/wya-logo.png';
+import api from '../../modules/api';
 
 export default function RegisterForm(): JSX.Element {
   const history = useHistory();
@@ -37,7 +38,7 @@ export default function RegisterForm(): JSX.Element {
 
     assert(token, 'Missing ReCAPTCHA token');
 
-    await registerUser(formValue);
+    await api.post('/users/create', JSON.stringify(formValue));
     await logIn(email, password);
     history.push('/dashboard');
   };

@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { XCircleIcon } from '@heroicons/react/solid';
 
-import { passwordReset } from '../../lib/auth';
+import { passwordReset } from '../../modules/firebase/auth';
 
 import logo from '../../assets/wya-logo.png';
 

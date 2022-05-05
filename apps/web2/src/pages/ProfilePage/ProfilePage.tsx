@@ -9,12 +9,12 @@ import ChangePasswordForm from '../../components/ChangePasswordForm/ChangePasswo
 import Page from '../../components/Page/Page';
 import { useUserContext } from '../../contexts/UserContext';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
-import { logIn, changePassword } from '../../lib/auth';
-import { updateUserTimeFormat } from '../../lib/firestore';
+import { logIn, changePassword } from '../../modules/firebase/auth';
 import { TIME_FORMAT } from '../../interfaces';
 
 import './ProfilePage.css';
 import 'react-toggle/style.css';
+import api from '../../modules/api';
 
 export default function ProfilePage(): JSX.Element {
   const { user } = useUserContext();
@@ -58,14 +58,16 @@ export default function ProfilePage(): JSX.Element {
     return <ChangePasswordForm />;
   };
 
-  const handleTimeFormatToggle = () => {
+  const handleTimeFormatToggle = async () => {
     if (userRecord) {
-      const { uid, timeFormat } = userRecord;
+      const { timeFormat } = userRecord;
       const intendedTimeFormat =
         timeFormat === TIME_FORMAT.TWELVE_HOURS
           ? TIME_FORMAT.TWENTY_FOUR_HOURS
           : TIME_FORMAT.TWELVE_HOURS;
-      updateUserTimeFormat(uid, intendedTimeFormat)
+
+      await api
+        .post('/users/update-time-format', { intendedTimeFormat })
         .then(() => {
           setTimeFormat(intendedTimeFormat);
         })

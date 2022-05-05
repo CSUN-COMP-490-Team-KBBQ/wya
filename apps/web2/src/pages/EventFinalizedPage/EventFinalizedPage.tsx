@@ -15,18 +15,17 @@ import {
   EVENT_GUEST_STATUS,
 } from '../../interfaces';
 import {
-  updateGuest,
   getDocSnapshot$,
   getAllSubCollDocsSnapshot$,
 } from '../../lib/firestore';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import SettingsPage from '../SettingsPage/SettingsPage';
-import EventPage from '../EventPage/EventPage';
 import Page from '../../components/Page/Page';
 
 import logo from '../../assets/wya-logo.png';
 import './EventFinalizedPage.css';
+import api from '../../modules/api';
 
 const content = {
   DASHBOARD: 'dashboard',
@@ -134,23 +133,31 @@ export default function EventFinalizedPage({
     }
   }, [userRecord, match.params.id]);
 
-  const handleAccept = () => {
+  const handleAccept = async () => {
     if (userRecord) {
       const user: EventGuest = eventGuests.find(
         (obj) => obj.uid === userRecord.uid
       ) as EventGuest;
       user.status = EVENT_GUEST_STATUS.ACCEPTED;
-      updateGuest(match.params.id, user);
+
+      await api.post('/events/guests/update-status', {
+        status: user.status,
+        eventId: match.params.id,
+      });
     }
   };
 
-  const handleDecline = () => {
+  const handleDecline = async () => {
     if (userRecord) {
       const user: EventGuest = eventGuests.find(
         (obj) => obj.uid === userRecord.uid
       ) as EventGuest;
       user.status = EVENT_GUEST_STATUS.DECLINED;
-      updateGuest(match.params.id, user);
+
+      await api.post('/events/guests/update-status', {
+        status: user.status,
+        eventId: match.params.id,
+      });
     }
   };
 
@@ -359,14 +366,7 @@ export default function EventFinalizedPage({
             </div>
           </div>
           {/* Content */}
-          {currentContent === content.FRIENDS ? (
-            <></>
-          ) : currentContent === content.SETTINGS ? (
-            <SettingsPage />
-          ) : (
-            // Added as an example - this will be for the event pages once we finalize dashboard
-            <EventPage />
-          )}
+          {currentContent === content.FRIENDS ? <></> : <SettingsPage />}
         </div>
         <div id="eventFinalizedContent">
           <h1>{eventData.name}</h1>
