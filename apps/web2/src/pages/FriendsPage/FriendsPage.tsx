@@ -3,7 +3,6 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
-import './FriendsPage.css';
 import { Email, UserId, FRIEND_REQUEST_STATUS } from '../../interfaces';
 import api from '../../modules/api';
 import { getAllSubCollDocsSnapshot$ } from '../../lib/firestore';

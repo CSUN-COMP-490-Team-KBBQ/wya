@@ -126,7 +126,9 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
               </Transition.Child>
               <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
                 <div className="flex-shrink-0 flex items-center px-4 justify-center">
-                  <img className="h-10 w-auto" src={logo} alt="wya? logo" />
+                  <a href="/dashboard">
+                    <img className="h-16 w-auto" src={logo} alt="wya? logo" />
+                  </a>
                 </div>
                 <nav aria-label="Sidebar" className="mt-5">
                   <div className="px-2 space-y-1">
@@ -167,11 +169,26 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
                         {userRecord?.firstName} {userRecord?.lastName}
                       </p>
                       <button
-                    className="text-gray-600 hover:text-gray-900 group flex items-center py-2 text-sm font-medium rounded-md no-underline w-full"
-                    onClick={logOut}
-                  > Sign Out &nbsp; <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-</svg></button>
+                        className="text-gray-600 hover:text-gray-900 group flex items-center py-2 text-sm font-medium rounded-md no-underline w-full"
+                        onClick={logOut}
+                      >
+                        {' '}
+                        Sign Out &nbsp;{' '}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          />
+                        </svg>
+                      </button>
                     </div>
                   </div>
                 </Link>
@@ -191,7 +208,9 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
           <div className="flex-1 flex flex-col min-h-screen border-r border-gray-200 bg-gray-100">
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center flex-shrink-0 px-4 justify-center">
-                <img className="h-10 w-auto" src={logo} alt="wya? logo" />
+                <a href="/dashboard">
+                  <img className="h-16 w-auto" src={logo} alt="wya? logo" />
+                </a>
               </div>
               <nav className="mt-5 flex-1" aria-label="Sidebar">
                 <div className="px-2 space-y-1">
@@ -232,12 +251,26 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
                       {userRecord?.firstName} {userRecord?.lastName}
                     </p>
                     <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700 mb-0">
-                    <button
-                    className="text-gray-600 hover:text-gray-900 group flex items-center py-2 text-sm font-medium rounded-md no-underline w-full"
-                    onClick={logOut}
-                  >Sign Out &nbsp; <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg></button>
+                      <button
+                        className="text-gray-600 hover:text-gray-900 group flex items-center py-2 text-sm font-medium rounded-md no-underline w-full"
+                        onClick={logOut}
+                      >
+                        Sign Out &nbsp;{' '}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          />
+                        </svg>
+                      </button>
                     </p>
                   </div>
                 </div>
@@ -251,7 +284,9 @@ const Sidebar: React.FC = ({ children }): JSX.Element => {
         <div className="lg:hidden">
           <div className="flex items-center justify-between bg-gray-50 border-b border-gray-200 px-4 py-1.5">
             <div>
-              <img className="h-8 w-auto" src={logo} alt="wya? logo" />
+              <a href="/dashboard">
+                <img className="h-12 w-auto" src={logo} alt="wya? logo" />
+              </a>
             </div>
             <div>
               <button
