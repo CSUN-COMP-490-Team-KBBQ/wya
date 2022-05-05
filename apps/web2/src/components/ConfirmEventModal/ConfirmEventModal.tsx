@@ -71,7 +71,7 @@ export default function ConfirmEventModal(
         );
 
         console.log('Event finalized: ', eventId);
-        history.push(`/events-finalized/${eventId}`);
+        history.push(`/events/${eventId}`);
       }
     } else {
       setDisplayError('All values need to be entered to update event!');
