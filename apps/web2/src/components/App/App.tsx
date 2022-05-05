@@ -18,7 +18,7 @@ import AvailabilityPage from '../../pages/AvailabilityPage/AvailabilityPage';
 
 // Legacy
 import EventPlanPage from '../../pages/EventPlanPage/EventPlanPage';
-import EventFinalizedPage from '../../pages/EventFinalizedPage/EventFinalizedPage';
+import EventPage from '../../pages/EventFinalizedPage/EventPage';
 
 export default function App(): JSX.Element {
   return (
@@ -31,18 +31,17 @@ export default function App(): JSX.Element {
             <Route path="/register" exact component={RegisterPage} />
             <Route path="/password-reset" exact component={PasswordResetPage} />
 
-            <PrivateRoute path="/friends" component={FriendsPage} />
-            <PrivateRoute path="/event-plans/:id" component={EventPlanPage} />
-            {/* legacy page */}
-            <PrivateRoute path="/events/:id" component={EventFinalizedPage} />
-            {/* legacy page */}
             <PrivateRoute path="/dashboard" component={DashboardPage} />
+
             <PrivateRoute path="/plan-event" component={PlanAnEventPage} />
+            <PrivateRoute path="/friends" component={FriendsPage} />
+            <PrivateRoute path="/availability" component={AvailabilityPage} />
+
+            <PrivateRoute path="/event-plans/:id" component={EventPlanPage} />
+            <PrivateRoute path="/events/:id" component={EventPage} />
 
             <PrivateRoute path="/settings/general" component={SettingsPage} />
             <PrivateRoute path="/settings/password" component={SettingsPage} />
-
-            <PrivateRoute path="/availability" component={AvailabilityPage} />
 
             {/* legacy page */}
             <Route path="*" exact component={NotFoundPage} />

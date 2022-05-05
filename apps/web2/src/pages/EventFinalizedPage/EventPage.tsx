@@ -18,7 +18,7 @@ import Page from '../../components/Page/Page';
 import api from '../../modules/api';
 import Sidebar from '../../components/Sidebar/Sidebar';
 
-export default function EventFinalizedPage({
+export default function EventPage({
   match,
 }: {
   match: {

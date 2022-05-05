@@ -1,7 +1,7 @@
 import React from 'react';
 import Calendar from '../../components/Calendar/Calendar';
 import EventPlanList from '../../components/EventPlanList/EventPlanList';
-import EventList from '../../components/FinalizedEventList/FinalizedEventList';
+import EventList from '../../components/EventList/EventList';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import { getAllSubCollDocsSnapshot$ } from '../../lib/firestore';
