@@ -1,5 +1,5 @@
 import React from 'react';
-import { LockClosedIcon } from '@heroicons/react/solid';
+import { LockClosedIcon, XCircleIcon } from '@heroicons/react/solid';
 
 import { useHistory, Link } from 'react-router-dom';
 import { logIn } from '../../lib/auth';
@@ -10,6 +10,7 @@ import logo from '../../assets/wya-logo.png';
 export default function LoginForm(): JSX.Element {
   const history = useHistory();
   const { user } = useUserContext();
+  const [displayError, setDisplayError] = React.useState<string>('');
   React.useEffect(() => {
     if (user) {
       history.push('/dashboard');
@@ -31,6 +32,8 @@ export default function LoginForm(): JSX.Element {
       })
       // eslint-disable-next-line
       .catch(console.error);
+      const errorResponse = `Please try again!`;
+      setDisplayError(errorResponse);
   };
 
   return (
@@ -41,6 +44,26 @@ export default function LoginForm(): JSX.Element {
           Sign in to your account
         </h2>
       </div>
+
+       {/* Negative Alert Banner */}
+       {displayError.length > 0 && (
+          <div className="rounded-md bg-red-50 p-4 sm:mx-auto">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <XCircleIcon
+                  className="h-5 w-5 text-red-400"
+                  aria-hidden="true"
+                />
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">
+                  Error: Email address or password is incorrect.
+                </h3>
+                <div className="mt-2 text-sm text-red-700">{displayError}</div>
+              </div>
+            </div>
+          </div>
+        )}
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-4 px-4 shadow sm:rounded-lg sm:px-10">
