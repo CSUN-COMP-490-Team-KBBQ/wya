@@ -4,6 +4,7 @@ import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import { passwordReset } from '../../lib/auth';
 
 import logo from '../../assets/wya-logo.png';
+import { Link } from 'react-router-dom';
 
 export default function PasswordResetPage(): JSX.Element {
   const [displayError, setDisplayError] = React.useState<string>('');
