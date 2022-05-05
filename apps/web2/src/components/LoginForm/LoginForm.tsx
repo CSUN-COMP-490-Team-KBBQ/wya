@@ -17,23 +17,25 @@ export default function LoginForm(): JSX.Element {
     }
   }, [user, history]);
 
-  const logInHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const logInHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setDisplayError('');
     const formData = new FormData(e.target as HTMLFormElement);
     const formValue = Object.fromEntries(formData.entries());
     // eslint-disable-next-line
     console.log('USER_LOGIN', formValue);
     const { email, password } = formValue;
-    logIn(email as string, password as string)
+    await logIn(email as string, password as string)
       .then(({ uid }) => {
         // eslint-disable-next-line
         console.log(`Logged in as user ${uid}`); // tag as debug
         history.push('/dashboard');
       })
       // eslint-disable-next-line
-      .catch(console.error);
-      const errorResponse = `Please try again!`;
-      setDisplayError(errorResponse);
+      .catch(() => {
+        const errorResponse = `Please try again!`;
+        setDisplayError(errorResponse);
+      });
   };
 
   return (
@@ -45,25 +47,25 @@ export default function LoginForm(): JSX.Element {
         </h2>
       </div>
 
-       {/* Negative Alert Banner */}
-       {displayError.length > 0 && (
-          <div className="rounded-md bg-red-50 p-4 sm:mx-auto">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <XCircleIcon
-                  className="h-5 w-5 text-red-400"
-                  aria-hidden="true"
-                />
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">
-                  Error: Email address or password is incorrect.
-                </h3>
-                <div className="mt-2 text-sm text-red-700">{displayError}</div>
-              </div>
+      {/* Negative Alert Banner */}
+      {displayError.length > 0 && (
+        <div className="rounded-md bg-red-50 p-4 sm:mx-auto">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <XCircleIcon
+                className="h-5 w-5 text-red-400"
+                aria-hidden="true"
+              />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Error: Email address or password is incorrect.
+              </h3>
+              <div className="mt-2 text-sm text-red-700">{displayError}</div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-4 px-4 shadow sm:rounded-lg sm:px-10">
