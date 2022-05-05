@@ -6,6 +6,7 @@ import { etlEventPlansCreate } from '../../etl/event-plans/create';
 import { etlEventPlansDelete } from '../../etl/event-plans/delete';
 import { etlEventPlansUpdate } from '../../etl/event-plans/update';
 import { etlEventPlansUpdateInvitees } from '../../etl/event-plans/update-invitees';
+import updateRouter from './availabilities';
 
 const router = Router();
 
@@ -76,5 +77,7 @@ router.post('/update-invitees', async (req, res, next) => {
     return next(err);
   }
 });
+
+router.use('/availabilities', updateRouter);
 
 export default router;

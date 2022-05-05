@@ -6,7 +6,6 @@ import PrivateRoute from '../PrivateRoute/PrivateRoute';
 import PasswordResetPage from '../../pages/PasswordResetPage/PasswordResetPage';
 import CreateEventPage from '../../pages/CreateEventPage/CreateEventPage';
 import CreateEventPlanPage from '../../pages/CreateEventPlanPage/CreateEventPlanPage';
-import EventPage from '../../pages/EventPage/EventPage';
 import FriendsPage from '../../pages/FriendsPage/FriendsPage';
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
 import { UserAuthProvider } from '../../contexts/UserContext';

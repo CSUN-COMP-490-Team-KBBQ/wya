@@ -12,7 +12,7 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
-import { logOut } from '../../lib/auth';
+import { logOut } from '../../modules/firebase/auth';
 
 import logo from '../../assets/wya-logo.png';
 
