@@ -18,11 +18,11 @@ export default function RegisterForm(): JSX.Element {
   const recaptchaRef = React.useRef<ReCAPTCHA>(null);
 
   React.useEffect(() => {
-    // if (user) {
-    //   // eslint-disable-next-line
-    //   history.push('/dashboard');
-    // }
-  }, [displayError]);
+    if (user) {
+      // eslint-disable-next-line
+      history.push('/dashboard');
+    }
+  });
 
   const registerUserHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,20 +34,20 @@ export default function RegisterForm(): JSX.Element {
     const { email, password, confirmPassword } = formValue;
 
     assert(recaptchaRef.current, 'ReCAPTCHA has not loaded');
-    const token = await recaptchaRef.current.executeAsync();
+    const token = recaptchaRef.current;
 
     assert(token, 'Missing ReCAPTCHA token');
 
     if (password !== confirmPassword) {
       setDisplayError('Passwords do not match!');
     } else {
-      // eslint-disable-next-line
+      setDisplayError('');
       await registerUser(formValue)
         .then(async () => {
           await logIn(email, password);
           history.push('/dashboard');
         })
-        .catch((err) => {
+        .catch(() => {
           setDisplayError('Email address is already in use!');
         });
     }
