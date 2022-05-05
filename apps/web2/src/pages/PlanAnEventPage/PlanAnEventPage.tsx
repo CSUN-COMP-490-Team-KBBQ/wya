@@ -6,6 +6,8 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { useHistory } from 'react-router-dom';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid';
 import { ClockIcon } from '@heroicons/react/outline';
+import 'rc-time-picker/assets/index.css';
+import './PlanAnEventPage.css';
 
 import Recaptcha from '../../components/Recaptcha/Recaptcha';
 import Sidebar from '../../components/Sidebar/Sidebar';

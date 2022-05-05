@@ -15,10 +15,8 @@ import DashboardPage from '../../pages/DashboardPage/DashboardPage';
 import PlanAnEventPage from '../../pages/PlanAnEventPage/PlanAnEventPage';
 import SettingsPage from '../../pages/SettingsPage/SettingsPage';
 import AvailabilityPage from '../../pages/AvailabilityPage/AvailabilityPage';
-
-// Legacy
 import EventPlanPage from '../../pages/EventPlanPage/EventPlanPage';
-import EventPage from '../../pages/EventFinalizedPage/EventPage';
+import EventPage from '../../pages/EventPage/EventPage';
 
 export default function App(): JSX.Element {
   return (
