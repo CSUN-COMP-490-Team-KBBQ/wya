@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 
 import { passwordReset } from '../../lib/auth';
@@ -7,7 +6,6 @@ import { passwordReset } from '../../lib/auth';
 import logo from '../../assets/wya-logo.png';
 
 export default function PasswordResetPage(): JSX.Element {
-  const history = useHistory();
   const [displayError, setDisplayError] = React.useState<string>('');
   const [displayMessage, setDisplayMessage] = React.useState<string>('');
 
