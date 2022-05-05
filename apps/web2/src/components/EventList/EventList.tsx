@@ -4,7 +4,7 @@ import { EventInfo, EventId } from '../../interfaces';
 
 interface EventListProps {
   elementId: string;
-  events: (EventInfo & { eventId: EventId })[];
+  eventsFiltered: (EventInfo & { eventId: EventId })[];
 }
 
 function sortEvents(
@@ -19,15 +19,15 @@ function sortEvents(
 
 export default function EventList(props: EventListProps): JSX.Element {
   const history = useHistory();
-  const { elementId, events } = props;
-  const eventList = sortEvents(events);
+  const { elementId, eventsFiltered } = props;
+  const eventList = sortEvents(eventsFiltered);
 
   return (
     <div id={elementId}>
       <h1 className="py-4 flex justify-center">Upcoming Events</h1>
       <ul className="space-y-3 pr-8">
         {eventList.map(
-          ({ eventId, name, startDate, dailyStartTime, dailyEndTime }) => (
+          ({ eventId, name, dailyStartTime, dailyEndTime, day }) => (
             <li
               key={eventId}
               onClick={() => history.push(`/events/${eventId}`)}
@@ -35,7 +35,7 @@ export default function EventList(props: EventListProps): JSX.Element {
             >
               {/* Your content */}
               {name} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {startDate} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {day} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               {dailyStartTime} - {dailyEndTime}
             </li>
           )

@@ -1,5 +1,16 @@
-import { FunctionComponent, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/solid';
+import { EventId, EventInfo } from '../../interfaces';
+
+interface CalendarEventListProps {
+  events: (EventInfo & {
+    eventId: EventId;
+  })[];
+
+  setEventsFiltered: Dispatch<
+    SetStateAction<(EventInfo & { eventId: string })[]>
+  >;
+}
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ');
@@ -20,20 +31,28 @@ const monthNames = [
   'December',
 ];
 
-const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const Calendar: FunctionComponent = () => {
+export default function Calendar(props: CalendarEventListProps): JSX.Element {
+  const { events, setEventsFiltered } = props;
   const date = new Date();
   const [month, setMonth] = useState<number>(date.getMonth());
   const [year, setYear] = useState<number>(date.getFullYear());
   const [numOfDays, setNumOfDays] = useState<number[]>([]);
   const [emptyDays, setEmptyDays] = useState<number[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string>('');
 
   const isToday = (date: number) => {
     const today = new Date();
     const d = new Date(year, month, date);
 
     return today.toDateString() === d.toDateString();
+  };
+
+  const isSelected = (date: number) => {
+    const d = new Date(year, month, date).toDateString();
+
+    return selectedDate === d;
   };
 
   const nextMonth = () => {
@@ -52,6 +71,13 @@ const Calendar: FunctionComponent = () => {
     } else {
       setMonth(month - 1);
     }
+  };
+
+  const filterEventsAccordingToDate = (date: number) => {
+    const dateString = new Date(year, month, date).toDateString();
+    setEventsFiltered(events.filter((event) => event.day === dateString));
+
+    setSelectedDate(dateString);
   };
 
   useEffect(() => {
@@ -104,7 +130,7 @@ const Calendar: FunctionComponent = () => {
               className="flex flex-wrap -mb-8"
               style={{ marginBottom: '-30px' }}
             >
-              {days.map((day) => (
+              {dayNames.map((day) => (
                 <div key={day} className="px-2 pt-1 pb-8 w-[14.28%]">
                   <div className="text-gray-600 text-sm uppercase tracking-wide font-bold text-center">
                     {day}
@@ -122,18 +148,28 @@ const Calendar: FunctionComponent = () => {
               {numOfDays.map((date, index) => (
                 <div
                   key={index}
-                  className="px-4 pt-2 border-r border-b relative h-12 w-[14.28%]"
+                  className="border-r border-b relative h-12 w-[14.28%] "
                 >
-                  <div
-                    className={classNames(
-                      isToday(date)
-                        ? 'bg-blue-500 text-white'
-                        : 'text-gray-700 hover:bg-blue-200',
-                      'inline-flex w-6 h-6 items-center justify-center cursor-pointer text-center leading-none rounded-full transition ease-in-out duration-100'
-                    )}
+                  <button
+                    className="h-full w-full"
+                    onClick={() => filterEventsAccordingToDate(date)}
                   >
-                    {date}
-                  </div>
+                    <div
+                      className={classNames(
+                        isToday(date)
+                          ? 'bg-blue-500 text-white'
+                          : 'text-gray-700 hover:bg-blue-200',
+                        classNames(
+                          isSelected(date)
+                            ? 'w-full h-full bg-blue-500'
+                            : 'w-6 h-6 rounded-full'
+                        ),
+                        'inline-flex items-center justify-center cursor-pointer text-center leading-none transition ease-in-out duration-100'
+                      )}
+                    >
+                      {date}
+                    </div>
+                  </button>
                 </div>
               ))}
             </div>
@@ -142,6 +178,6 @@ const Calendar: FunctionComponent = () => {
       </div>
     </>
   );
-};
+}
 
-export default Calendar;
+// export default Calendar;

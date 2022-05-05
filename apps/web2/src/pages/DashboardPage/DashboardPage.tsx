@@ -29,6 +29,10 @@ export default function DashboardPage(): JSX.Element {
     (EventInfo & { eventId: EventId })[]
   >([]);
 
+  const [eventsFiltered, setEventsFiltered] = React.useState<
+    (EventInfo & { eventId: EventId })[]
+  >([]);
+
   // Observe user availability
   React.useEffect(() => {
     if (userRecord) {
@@ -54,6 +58,15 @@ export default function DashboardPage(): JSX.Element {
       getAllSubCollDocsSnapshot$(`/users/${uid}/events`, {
         next: (eventsSnapshot) => {
           setEvents(
+            eventsSnapshot.docs.map((doc) => {
+              return {
+                eventId: doc.id as EventId,
+                ...(doc.data() as EventInfo),
+              };
+            })
+          );
+
+          setEventsFiltered(
             eventsSnapshot.docs.map((doc) => {
               return {
                 eventId: doc.id as EventId,
@@ -89,7 +102,10 @@ export default function DashboardPage(): JSX.Element {
                 >
                   <div className="absolute inset-0 overflow-y-auto bg-white">
                     <h1 className="pt-4 flex justify-center">Calendar</h1>
-                    <Calendar />
+                    <Calendar
+                      events={events}
+                      setEventsFiltered={setEventsFiltered}
+                    />
                   </div>
                 </div>
                 {/* Calendar Section End */}
@@ -100,7 +116,7 @@ export default function DashboardPage(): JSX.Element {
                 >
                   <EventList
                     elementId="calendar-event-plan-list"
-                    events={events}
+                    eventsFiltered={eventsFiltered}
                   />
                 </div>
                 {/* Upcoming Section End */}
