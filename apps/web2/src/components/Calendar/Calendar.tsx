@@ -2,6 +2,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/solid';
 import { EventId, EventInfo } from '../../interfaces';
 
+import './Calendar.css';
+
 interface CalendarEventListProps {
   events: (EventInfo & {
     eventId: EventId;
@@ -55,6 +57,15 @@ export default function Calendar(props: CalendarEventListProps): JSX.Element {
     return selectedDate === d;
   };
 
+  const hasEvent = (date: number) => {
+    const dayRenderedString = new Date(year, month, date).toDateString();
+    const hasDayRenderedArray = events.filter(
+      (event) => event.day === dayRenderedString
+    );
+
+    return hasDayRenderedArray.length !== 0;
+  };
+
   const nextMonth = () => {
     if (month === 11) {
       setYear(year + 1);
@@ -75,9 +86,14 @@ export default function Calendar(props: CalendarEventListProps): JSX.Element {
 
   const filterEventsAccordingToDate = (date: number) => {
     const dateString = new Date(year, month, date).toDateString();
-    setEventsFiltered(events.filter((event) => event.day === dateString));
 
-    setSelectedDate(dateString);
+    if (dateString !== selectedDate) {
+      setEventsFiltered(events.filter((event) => event.day === dateString));
+      setSelectedDate(dateString);
+    } else {
+      setEventsFiltered(events);
+      setSelectedDate('');
+    }
   };
 
   useEffect(() => {
@@ -154,6 +170,11 @@ export default function Calendar(props: CalendarEventListProps): JSX.Element {
                     className="h-full w-full"
                     onClick={() => filterEventsAccordingToDate(date)}
                   >
+                    <div
+                      className={classNames(
+                        hasEvent(date) ? 'circle-mark' : ''
+                      )}
+                    ></div>
                     <div
                       className={classNames(
                         isToday(date)
