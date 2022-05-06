@@ -43,7 +43,8 @@ export default function RegisterForm(): JSX.Element {
       setDisplayError('Passwords do not match!');
     } else {
       setDisplayError('');
-      await registerUser(formValue)
+      await await api
+        .post('/users/create', JSON.stringify(formValue))
         .then(async () => {
           await logIn(email, password);
           history.push('/dashboard');
