@@ -1,0 +1,10 @@
+.circle-mark {
+  content: '';
+  border-radius: 2rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  background-color: rgb(28, 94, 201);
+}

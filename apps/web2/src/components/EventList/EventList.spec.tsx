@@ -18,7 +18,10 @@ const FAKE_USER_EVENTS: (EventInfo & { eventId: EventId })[] = [
 
 it('renders component', () => {
   render(
-    <EventList elementId="calender-event-plan-list" events={FAKE_USER_EVENTS} />
+    <EventList
+      elementId="calender-event-plan-list"
+      eventsFiltered={FAKE_USER_EVENTS}
+    />
   );
   expect(screen.getByText('Upcoming Events')).toBeTruthy();
 });
