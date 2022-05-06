@@ -49,7 +49,7 @@ function AvailabilityHeatMap(props: AvailabilityHeatMapProps): JSX.Element {
             min: number,
             max: number
           ) => ({
-            background: `rgb(0, 151, 230, ${getOpacity(value, min, max)})`,
+            background: `rgb(59, 130, 246, ${getOpacity(value, min, max)})`,
             fontSize: '11.5px',
             color: '#444',
             border: '2px solid gray',
