@@ -8,7 +8,6 @@ import {
   createHeatMapDataAndScheduleSelectorData,
   mergeEventPlanAvailabilities,
 } from '../../lib/availability';
-import { isUserAHost } from '../../lib/eventHelpers';
 import {
   EventPlanDocument,
   EventPlanAvailabilityDocument,
@@ -19,17 +18,6 @@ import {
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 import EventPlanning from './EventPlanning';
 
-import './EventPlanPage.css';
-
-/**
- *
- *  Refactor needed!
- *
- *  Once an established style for the app
- *  is designed and event stages are outlined,
- *  update this component to refect the changes.
- *
- */
 export default function EventPlanPage({
   match,
 }: {
@@ -46,7 +34,6 @@ export default function EventPlanPage({
   const [heatMapData, setHeatMapData] = React.useState<HeatMapData>();
   const [scheduleSelectorData, setScheduleSelectorData] =
     React.useState<ScheduleSelectorData>();
-  const isHost = isUserAHost(userRecord);
 
   React.useEffect(() => {
     if (userRecord) {
@@ -147,7 +134,7 @@ export default function EventPlanPage({
           eventPlanAvailability={eventAvailability}
           heatMapData={heatMapData}
           scheduleSelector={scheduleSelectorData}
-          isHost={isHost}
+          isHost={userRecord.uid === eventPlanData.current.hostId}
         />
       </Sidebar>
     );

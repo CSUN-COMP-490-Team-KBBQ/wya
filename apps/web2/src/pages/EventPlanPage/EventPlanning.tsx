@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 import AvailabilityHeatMap from '../../components/AvailabilityHeatMap/AvailabilityHeatMap';
 import ConfirmEventModal from '../../components/ConfirmEventModal/ConfirmEventModal';
@@ -16,6 +16,8 @@ import {
 } from '../../interfaces';
 
 import './EventPlanPage.css';
+import api from '../../modules/api';
+import { useHistory } from 'react-router-dom';
 
 type AddAvailabilityModalProps = {
   scheduleSelectorData: ScheduleSelectorData;
@@ -98,12 +100,18 @@ function AddAvailabilityModal({
         />
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="outline-secondary" onClick={onClickCancelHandle}>
+        <button
+          className="hover:bg-gray-500 text-gray-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+          onClick={onClickCancelHandle}
+        >
           Cancel
-        </Button>
-        <Button onClick={onSubmitHandler} variant="outline-success">
+        </button>
+        <button
+          className="hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+          onClick={onSubmitHandler}
+        >
           Submit
-        </Button>
+        </button>
       </Modal.Footer>
     </Modal>
   );
@@ -127,6 +135,17 @@ export default function EventPlanning({
   isHost,
 }: EventPlanningProps): JSX.Element {
   const [modalShow, setModalShow] = React.useState<boolean>(false);
+  const history = useHistory();
+
+  const deleteEventPlanHandler = async () => {
+    await api.post(
+      '/event-plans/delete',
+      JSON.stringify({ eventPlanId: eventPlanData.eventPlanId })
+    );
+
+    console.log('Event Plan deleted');
+    history.push('/dashboard');
+  };
 
   return (
     <div
@@ -171,29 +190,36 @@ export default function EventPlanning({
               </dd>
             </div>
             <div className="sm:mt-8 sm:flex justify-end">
-              <div className="inline-flex rounded-md shadow">
-                <Button
-                  className="eventAddAvailabilityButton"
+              {isHost && (
+                <button
                   type="button"
-                  onClick={() => setModalShow(true)}
+                  className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  onClick={() => deleteEventPlanHandler()}
                 >
-                  Add Availability
-                </Button>
-                <AddAvailabilityModal
-                  scheduleSelectorData={scheduleSelector}
-                  show={modalShow}
-                  onHide={() => setModalShow(false)}
-                  eventPlanAvailability={eventPlanAvailability}
-                  eventPlanId={eventPlanData.eventPlanId}
-                  uid={userId}
+                  Delete Event Plan
+                </button>
+              )}
+              <button
+                type="button"
+                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                onClick={() => setModalShow(true)}
+              >
+                Add Availability
+              </button>
+              <AddAvailabilityModal
+                scheduleSelectorData={scheduleSelector}
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                eventPlanAvailability={eventPlanAvailability}
+                eventPlanId={eventPlanData.eventPlanId}
+                uid={userId}
+              />
+              {isHost && (
+                <ConfirmEventModal
+                  eventPlanDocument={eventPlanData}
+                  heatMapData={heatMapData}
                 />
-                {isHost && (
-                  <ConfirmEventModal
-                    eventPlanDocument={eventPlanData}
-                    heatMapData={heatMapData}
-                  />
-                )}
-              </div>
+              )}
             </div>
           </div>
         </dl>
