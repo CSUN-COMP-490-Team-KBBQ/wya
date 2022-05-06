@@ -57,9 +57,7 @@ export default function RegisterForm(): JSX.Element {
     <>
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <img className="mx-auto h-12 w-auto" src={logo} alt="wya? logo" />
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Create your new account
-        </h2>
+        <h1 className="pt-4 mb-4 flex justify-center">Sign Up</h1>
       </div>
       {/* Negative Alert Banner */}
       {displayError.length > 0 && (

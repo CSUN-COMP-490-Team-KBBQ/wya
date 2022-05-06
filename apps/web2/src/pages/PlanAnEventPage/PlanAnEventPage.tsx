@@ -121,12 +121,12 @@ export default function PlanAnEventPage() {
 
   return (
     <Sidebar>
-      <main className="max-w-lg mx-auto pt-20 pb-12 px-4 lg:pb-16">
+      <main className="max-w-lg mx-auto py-8 px-4 lg:pb-16">
         <form onSubmit={onSubmitHandler}>
           <input type="hidden" name="hostId" value={user?.uid} />
           <div className="space-y-6">
             <div>
-              <h1 className="text-lg leading-6 font-medium text-gray-900">
+              <h1 className="flex">
                 Event Details
               </h1>
               <p className="mt-1 text-sm text-gray-500">
