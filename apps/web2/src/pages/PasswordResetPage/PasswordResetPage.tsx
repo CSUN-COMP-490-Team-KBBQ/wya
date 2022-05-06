@@ -1,14 +1,14 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { XCircleIcon } from '@heroicons/react/solid';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 
 import { passwordReset } from '../../lib/auth';
 
 import logo from '../../assets/wya-logo.png';
+import { Link } from 'react-router-dom';
 
 export default function PasswordResetPage(): JSX.Element {
-  const history = useHistory();
   const [displayError, setDisplayError] = React.useState<string>('');
+  const [displayMessage, setDisplayMessage] = React.useState<string>('');
 
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,7 +18,8 @@ export default function PasswordResetPage(): JSX.Element {
 
     passwordReset(email as string)
       .then(() => {
-        history.push('/login');
+        const messageResponse = `Please check your email and follow the link provided`
+        setDisplayMessage(messageResponse);
       })
       .catch((err) => {
         const errorResponse = `Error: ${err.code}`;
@@ -37,7 +38,7 @@ export default function PasswordResetPage(): JSX.Element {
           </h2>
         </div>
 
-        {/* Alert Banner */}
+        {/* Negative Alert Banner */}
         {displayError.length > 0 && (
           <div className="rounded-md bg-red-50 p-4 sm:mx-auto">
             <div className="flex">
@@ -52,6 +53,26 @@ export default function PasswordResetPage(): JSX.Element {
                   There was an error with your submission
                 </h3>
                 <div className="mt-2 text-sm text-red-700">{displayError}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Positive Alert Banner */}
+        {displayMessage.length > 0 && (
+          <div className="rounded-md bg-green-50 p-4 sm:mx-auto">
+            <div className="flex">
+            <div className="flex-shrink-0">
+                <CheckCircleIcon
+                  className="h-5 w-5 text-green-400"
+                  aria-hidden="true"
+                />
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-green-800">
+                  Password Reset Link: Sent!
+                </h3>
+                <div className="mt-2 text-sm text-green-700">{displayMessage}</div>
               </div>
             </div>
           </div>
@@ -89,6 +110,14 @@ export default function PasswordResetPage(): JSX.Element {
                 >
                   Continue
                 </button>
+                <div className="text-sm pt-4 text-center">
+                <Link
+                  to="/login"
+                  className="font-medium text-indigo-600 hover:text-indigo-500 no-underline"
+                >
+                  Return to Log-In Page
+                </Link>
+              </div>
               </div>
             </form>
           </div>

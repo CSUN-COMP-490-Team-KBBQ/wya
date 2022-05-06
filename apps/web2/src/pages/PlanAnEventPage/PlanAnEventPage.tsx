@@ -4,7 +4,7 @@ import moment from 'moment';
 import TimePicker from 'rc-time-picker';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useHistory } from 'react-router-dom';
-import { PlusIcon } from '@heroicons/react/solid';
+import { PlusIcon, XCircleIcon } from '@heroicons/react/solid';
 import { ClockIcon } from '@heroicons/react/outline';
 
 import Recaptcha from '../../components/Recaptcha/Recaptcha';
@@ -29,6 +29,7 @@ export default function PlanAnEventPage() {
   const [invitees, updateInvitees] = React.useState<Email[]>([]);
   const recaptchaRef = React.useRef<ReCAPTCHA>(null);
   const inputRef = React.useRef<HTMLInputElement>();
+  const [displayError, setDisplayError] = React.useState<string>('');
 
   const currentDate = moment().format('YYYY-MM-DD');
   const [startTimeValue, setStartTimeValue] = React.useState<moment.Moment>(
@@ -92,10 +93,23 @@ export default function PlanAnEventPage() {
   };
 
   const AddGuestHandler = () => {
+    const regex = new RegExp(
+      // eslint-disable-next-line no-control-regex
+      '(?:[a-z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*|"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])',
+      'gm'
+    );
+
+    //This returns true if it matches the pattern above (which the pattern above is checking for standard emails)
+
     if (inputRef.current) {
-      const newGuestUID = inputRef.current.value;
-      updateInvitees([...invitees, newGuestUID]);
-      inputRef.current.value = '';
+      const newGuestEmail = inputRef.current.value;
+      if (regex.test(newGuestEmail)) {
+        setDisplayError('');
+        updateInvitees([...invitees, newGuestEmail]);
+        inputRef.current.value = '';
+      } else {
+        setDisplayError('Please try again');
+      }
     }
   };
 
@@ -326,6 +340,28 @@ export default function PlanAnEventPage() {
                     </li>
                   ))}
                 </div>
+
+                {/* Negative Alert Banner */}
+                {displayError.length > 0 && (
+                  <div className="rounded-md mb-4 bg-red-50 p-4 sm:mx-auto">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <XCircleIcon
+                          className="h-5 w-5 text-red-400"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="text-sm font-medium text-red-800">
+                          Error: Invalid Email Address
+                        </h3>
+                        <div className="mt-2 text-sm text-red-700">
+                          {displayError}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
