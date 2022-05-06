@@ -52,6 +52,8 @@ export const etlEventPlansAvailabilitiesUpdate = async (
   const data: Partial<Params> = {};
   const errors: JSON_API_ERROR[] = [];
 
+  debug('availability', params);
+
   try {
     await firebaseFirestore.runTransaction(async (transaction) => {
       assert(context.user?.uid, makeApiError(401, 'Invalid user'));

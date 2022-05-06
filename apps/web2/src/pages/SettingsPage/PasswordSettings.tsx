@@ -2,7 +2,7 @@ import React from 'react';
 import { XCircleIcon, CheckCircleIcon } from '@heroicons/react/solid';
 
 import { useUserContext } from '../../contexts/UserContext';
-import { logIn, changePassword } from '../../lib/auth';
+import { logIn, changePassword } from '../../modules/firebase/auth';
 
 export default function PasswordSettings() {
   const { user } = useUserContext();
@@ -66,7 +66,7 @@ export default function PasswordSettings() {
       setDisplayError(
         'New password must be different from the current password!'
       );
-    } else if (currentPassword !== confirmNewPassword) {
+    } else if (newPassword !== confirmNewPassword) {
       setDisplayError('New password confirmation failed!');
     } else {
       // eslint-disable-next-line

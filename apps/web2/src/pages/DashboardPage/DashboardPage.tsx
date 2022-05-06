@@ -1,7 +1,7 @@
 import React from 'react';
 import Calendar from '../../components/Calendar/Calendar';
 import EventPlanList from '../../components/EventPlanList/EventPlanList';
-import EventList from '../../components/FinalizedEventList/FinalizedEventList';
+import EventList from '../../components/EventList/EventList';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import { getAllSubCollDocsSnapshot$ } from '../../lib/firestore';
@@ -11,6 +11,7 @@ import {
   EventPlanInfo,
   EventId,
   EventInfo,
+  EventPlanFinalizedFlag,
 } from '../../interfaces/';
 import PageSpinner from '../../components/PageSpinner/PageSpinner';
 import Sidebar from '../../components/Sidebar/Sidebar';
@@ -20,7 +21,9 @@ export default function DashboardPage(): JSX.Element {
   const { userRecord, pending } = useUserRecordContext();
 
   const [eventPlans, setEventPlans] = React.useState<
-    (EventPlanInfo & { eventPlanId: EventPlanId })[]
+    (EventPlanInfo & { eventPlanId: EventPlanId } & {
+      isFinalized: EventPlanFinalizedFlag;
+    })[]
   >([]);
   const [events, setEvents] = React.useState<
     (EventInfo & { eventId: EventId })[]
@@ -38,7 +41,9 @@ export default function DashboardPage(): JSX.Element {
             eventPlansSnapshot.docs.map((doc) => {
               return {
                 eventPlanId: doc.id as EventPlanId,
-                ...(doc.data() as EventPlanInfo),
+                ...(doc.data() as EventPlanInfo & {
+                  isFinalized: EventPlanFinalizedFlag;
+                }),
               };
             })
           );

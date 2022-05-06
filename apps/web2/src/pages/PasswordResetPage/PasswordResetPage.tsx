@@ -1,7 +1,7 @@
 import React from 'react';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 
-import { passwordReset } from '../../lib/auth';
+import { passwordReset } from '../../modules/firebase/auth';
 
 import logo from '../../assets/wya-logo.png';
 import { Link } from 'react-router-dom';

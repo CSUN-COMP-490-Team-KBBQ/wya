@@ -2,7 +2,7 @@ import React from 'react';
 import { LockClosedIcon, XCircleIcon } from '@heroicons/react/solid';
 
 import { useHistory, Link } from 'react-router-dom';
-import { logIn } from '../../lib/auth';
+import { logIn } from '../../modules/firebase/auth';
 import { useUserContext } from '../../contexts/UserContext';
 
 import logo from '../../assets/wya-logo.png';

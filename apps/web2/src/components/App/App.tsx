@@ -4,9 +4,6 @@ import LoginPage from '../../pages/LoginPage/LoginPage';
 import RegisterPage from '../../pages/RegisterPage/RegisterPage';
 import PrivateRoute from '../PrivateRoute/PrivateRoute';
 import PasswordResetPage from '../../pages/PasswordResetPage/PasswordResetPage';
-import CreateEventPage from '../../pages/CreateEventPage/CreateEventPage';
-import CreateEventPlanPage from '../../pages/CreateEventPlanPage/CreateEventPlanPage';
-import EventPage from '../../pages/EventPage/EventPage';
 import FriendsPage from '../../pages/FriendsPage/FriendsPage';
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
 import { UserAuthProvider } from '../../contexts/UserContext';
@@ -18,10 +15,8 @@ import DashboardPage from '../../pages/DashboardPage/DashboardPage';
 import PlanAnEventPage from '../../pages/PlanAnEventPage/PlanAnEventPage';
 import SettingsPage from '../../pages/SettingsPage/SettingsPage';
 import AvailabilityPage from '../../pages/AvailabilityPage/AvailabilityPage';
-
-// Legacy
 import EventPlanPage from '../../pages/EventPlanPage/EventPlanPage';
-import EventFinalizedPage from '../../pages/EventFinalizedPage/EventFinalizedPage';
+import EventPage from '../../pages/EventPage/EventPage';
 
 export default function App(): JSX.Element {
   return (
@@ -34,32 +29,17 @@ export default function App(): JSX.Element {
             <Route path="/register" exact component={RegisterPage} />
             <Route path="/password-reset" exact component={PasswordResetPage} />
 
-            {/* legacy page */}
-            <PrivateRoute path="/create-event" component={CreateEventPage} />
-            {/* legacy page */}
-            <PrivateRoute
-              path="/create-event-plan"
-              component={CreateEventPlanPage}
-            />
-            {/* legacy page */}
-            <PrivateRoute path="/friends" component={FriendsPage} />
-            {/* legacy page */}
-            <PrivateRoute path="/event/:id" component={EventPage} />
-            {/* legacy page */}
-            <PrivateRoute path="/event-plans/:id" component={EventPlanPage} />
-            {/* legacy page */}
-            <PrivateRoute
-              path="/events-finalized/:id"
-              component={EventFinalizedPage}
-            />
-            {/* legacy page */}
             <PrivateRoute path="/dashboard" component={DashboardPage} />
+
             <PrivateRoute path="/plan-event" component={PlanAnEventPage} />
+            <PrivateRoute path="/friends" component={FriendsPage} />
+            <PrivateRoute path="/availability" component={AvailabilityPage} />
+
+            <PrivateRoute path="/event-plans/:id" component={EventPlanPage} />
+            <PrivateRoute path="/events/:id" component={EventPage} />
 
             <PrivateRoute path="/settings/general" component={SettingsPage} />
             <PrivateRoute path="/settings/password" component={SettingsPage} />
-
-            <PrivateRoute path="/availability" component={AvailabilityPage} />
 
             {/* legacy page */}
             <Route path="*" exact component={NotFoundPage} />

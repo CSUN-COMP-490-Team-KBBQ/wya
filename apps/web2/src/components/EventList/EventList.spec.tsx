@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import EventList from './FinalizedEventList';
+import EventList from './EventList';
 import { EventId, EventInfo } from '../../interfaces';
 
 const FAKE_USER_EVENTS: (EventInfo & { eventId: EventId })[] = [

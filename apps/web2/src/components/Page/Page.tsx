@@ -13,7 +13,7 @@ import Button from 'react-bootstrap/Button';
 import Header from '../Header/Header';
 import logo from '../../assets/wya-logo.png';
 import { useUserContext } from '../../contexts/UserContext';
-import { logOut } from '../../lib/auth';
+import { logOut } from '../../modules/firebase/auth';
 import './Page.css';
 import '../../index.css';
 

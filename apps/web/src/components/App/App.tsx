@@ -7,7 +7,6 @@ import PrivateRoute from '../PrivateRoute/PrivateRoute';
 import PasswordResetPage from '../../pages/PasswordResetPage/PasswordResetPage';
 import CreateEventPage from '../../pages/CreateEventPage/CreateEventPage';
 import CreateEventPlanPage from '../../pages/CreateEventPlanPage/CreateEventPlanPage';
-import EventPage from '../../pages/EventPage/EventPage';
 import CalendarPage from '../../pages/CalendarPage/CalendarPage';
 import ProfilePage from '../../pages/ProfilePage/ProfilePage';
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
@@ -35,7 +34,6 @@ export default function App(): JSX.Element {
               path="/create-event-plan"
               component={CreateEventPlanPage}
             />
-            <PrivateRoute path="/event/:id" component={EventPage} />
             <PrivateRoute path="/event-plans/:id" component={EventPlanPage} />
             <PrivateRoute
               path="/events-finalized/:id"

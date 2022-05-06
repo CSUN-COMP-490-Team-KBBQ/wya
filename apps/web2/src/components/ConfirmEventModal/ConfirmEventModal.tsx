@@ -5,18 +5,11 @@ import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
 import { useHistory } from 'react-router-dom';
 
-import {
-  EventInfo,
-  EventPlanDocument,
-  EventPlanId,
-  HeatMapData,
-} from '../../interfaces';
-import { createEventFinalized } from '../../lib/firestore';
+import { EventPlanDocument, HeatMapData } from '../../interfaces';
 import { convertStringArrayToObjectWithValueAndLabel } from '../../lib/eventHelpers';
 
 import './ConfirmEventModal.css';
-
-type UserId = string;
+import api from '../../modules/api';
 
 interface ConfirmEventModalProps {
   eventPlanDocument: EventPlanDocument;
@@ -68,20 +61,17 @@ export default function ConfirmEventModal(
       if (startTime >= endTime) {
         setDisplayError('The start time must be less than the end time!');
       } else {
-        const { eventPlanId, ...restOfParams } = eventPlanDocument;
-
-        const newEventData: EventInfo & { eventPlanId: EventPlanId } & {
-          inviteesByUserId: UserId[];
-        } = {
-          day,
-          eventPlanId,
-          ...restOfParams,
-        };
-
-        const eventId = await createEventFinalized(newEventData);
+        const {
+          data: {
+            data: [eventId],
+          },
+        } = await api.post(
+          '/events/create',
+          JSON.stringify({ eventPlanId: eventPlanDocument.eventPlanId, day })
+        );
 
         console.log('Event finalized: ', eventId);
-        history.push(`/events-finalized/${eventId}`);
+        history.push(`/events/${eventId}`);
       }
     } else {
       setDisplayError('All values need to be entered to update event!');
