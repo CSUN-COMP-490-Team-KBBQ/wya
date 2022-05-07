@@ -1,10 +1,3 @@
-import { UserDocument } from '../interfaces';
-
-export const isUserAHost = (userRecord: UserDocument | null): boolean => {
-  if (!userRecord) return false;
-  return true;
-};
-
 /** 
     add appropriate 15 minute increment to startTime
 */

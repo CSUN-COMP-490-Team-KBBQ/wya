@@ -1,22 +1,22 @@
-import React from 'react';
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
 import LoginPage from '../../pages/LoginPage/LoginPage';
 import RegisterPage from '../../pages/RegisterPage/RegisterPage';
 import PrivateRoute from '../PrivateRoute/PrivateRoute';
 import PasswordResetPage from '../../pages/PasswordResetPage/PasswordResetPage';
-import CreateEventPage from '../../pages/CreateEventPage/CreateEventPage';
-import CreateEventPlanPage from '../../pages/CreateEventPlanPage/CreateEventPlanPage';
-import CalendarPage from '../../pages/CalendarPage/CalendarPage';
-import ProfilePage from '../../pages/ProfilePage/ProfilePage';
+import FriendsPage from '../../pages/FriendsPage/FriendsPage';
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
 import { UserAuthProvider } from '../../contexts/UserContext';
 import { UserRecordProvider } from '../../contexts/UserRecordContext';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LandingPage from '../../pages/LandingPage/LandingPage';
+import DashboardPage from '../../pages/DashboardPage/DashboardPage';
+import PlanAnEventPage from '../../pages/PlanAnEventPage/PlanAnEventPage';
+import SettingsPage from '../../pages/SettingsPage/SettingsPage';
+import AvailabilityPage from '../../pages/AvailabilityPage/AvailabilityPage';
 import EventPlanPage from '../../pages/EventPlanPage/EventPlanPage';
-import EventFinalizedPage from '../../pages/EventFinalizedPage/EventFinalizedPage';
+import EventPage from '../../pages/EventPage/EventPage';
 
 export default function App(): JSX.Element {
   return (
@@ -29,18 +29,19 @@ export default function App(): JSX.Element {
             <Route path="/register" exact component={RegisterPage} />
             <Route path="/password-reset" exact component={PasswordResetPage} />
 
-            <PrivateRoute path="/create-event" component={CreateEventPage} />
-            <PrivateRoute
-              path="/create-event-plan"
-              component={CreateEventPlanPage}
-            />
+            <PrivateRoute path="/dashboard" component={DashboardPage} />
+
+            <PrivateRoute path="/plan-event" component={PlanAnEventPage} />
+            <PrivateRoute path="/friends" component={FriendsPage} />
+            <PrivateRoute path="/availability" component={AvailabilityPage} />
+
             <PrivateRoute path="/event-plans/:id" component={EventPlanPage} />
-            <PrivateRoute
-              path="/events-finalized/:id"
-              component={EventFinalizedPage}
-            />
-            <PrivateRoute path="/calendar" component={CalendarPage} />
-            <PrivateRoute path="/profile" component={ProfilePage} />
+            <PrivateRoute path="/events/:id" component={EventPage} />
+
+            <PrivateRoute path="/settings/general" component={SettingsPage} />
+            <PrivateRoute path="/settings/password" component={SettingsPage} />
+
+            {/* legacy page */}
             <Route path="*" exact component={NotFoundPage} />
           </Switch>
         </BrowserRouter>

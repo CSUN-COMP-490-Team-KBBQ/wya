@@ -1,7 +1,6 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Alert from 'react-bootstrap/Alert';
-import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
 import { useHistory } from 'react-router-dom';
 
@@ -71,7 +70,7 @@ export default function ConfirmEventModal(
         );
 
         console.log('Event finalized: ', eventId);
-        history.push(`/events-finalized/${eventId}`);
+        history.push(`/events/${eventId}`);
       }
     } else {
       setDisplayError('All values need to be entered to update event!');
@@ -80,9 +79,13 @@ export default function ConfirmEventModal(
 
   return (
     <div>
-      <Button id="confirmButton" type="button" onClick={handleShow}>
+      <button
+        type="button"
+        className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        onClick={handleShow}
+      >
         Confirm Event
-      </Button>
+      </button>
 
       <Modal
         show={show}
@@ -133,16 +136,18 @@ export default function ConfirmEventModal(
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="outline-secondary" onClick={handleClose}>
+          <button
+            className="hover:bg-gray-500 text-gray-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+            onClick={handleClose}
+          >
             Cancel
-          </Button>
-          <Button
-            id="confirmEventUpdateButton"
+          </button>
+          <button
+            className="hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
             onClick={onSubmitHandler}
-            variant="outline-success"
           >
             Finalize Event
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

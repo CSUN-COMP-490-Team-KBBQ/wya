@@ -1,16 +1,12 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container';
 import LoginForm from '../../components/LoginForm/LoginForm';
-import Page from '../../components/Page/Page';
-import './LoginPage.css';
 
-export default function LoginPage(): JSX.Element {
+export default function LoginPage() {
   return (
-    <Page>
-      <Container id="loginPageContainer" fluid>
-        <h1>Log In</h1>
+    <div className="min-h-screen bg-slate-50">
+      <div className="min-h-full flex items-center justify-center py-40 px-4 sm:px-6 lg:px-8">
         <LoginForm />
-      </Container>
-    </Page>
+      </div>
+    </div>
   );
 }

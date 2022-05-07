@@ -53,6 +53,12 @@ export type UserEventDocument = {
   endTime: string;
 };
 
+export enum FRIEND_REQUEST_STATUS {
+  ACCEPTED = 'ACCEPTED',
+  DECLINED = 'DECLINED',
+  PENDING = 'PENDING',
+}
+
 /** event-plans */
 export enum EVENT_PLAN_ROLE {
   HOST = 'HOST',
@@ -162,3 +168,14 @@ export interface ScheduleSelectorData {
   yTimesFormattedTo12Or24Hour: string[];
   timeFormat: string;
 }
+
+export type EventPlan = {
+  name: string;
+  description: string;
+  dailyStartTime: string;
+  dailyEndTime: string;
+  startDate: string;
+  endDate: string;
+  eventPlanId: EventPlanId;
+  isFinalized: EventPlanFinalizedFlag;
+};

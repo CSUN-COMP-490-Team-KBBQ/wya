@@ -1,29 +1,13 @@
-import React from 'react';
-import { ListGroup } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-import {
-  EventPlanInfo,
-  EventPlanId,
-  EventPlanFinalizedFlag,
-} from '../../interfaces';
-
-import './EventPlanList.css';
+import { EventPlan } from '../../interfaces';
 
 interface EventPlanListProps {
   elementId: string;
-  eventPlans: (EventPlanInfo & { eventPlanId: EventPlanId } & {
-    isFinalized: EventPlanFinalizedFlag;
-  })[];
+  eventPlans: EventPlan[];
 }
 
-function _sortEventPlans(
-  eventPlans: (EventPlanInfo & { eventPlanId: EventPlanId } & {
-    isFinalized: EventPlanFinalizedFlag;
-  })[]
-): (EventPlanInfo & { eventPlanId: EventPlanId } & {
-  isFinalized: EventPlanFinalizedFlag;
-})[] {
+function sortEventPlans(eventPlans: EventPlan[]): EventPlan[] {
   return eventPlans.sort((a, b) => {
     const aStart = Date.parse(a.startDate);
     const bStart = Date.parse(b.startDate);
@@ -33,27 +17,29 @@ function _sortEventPlans(
 
 export default function EventPlanList(props: EventPlanListProps): JSX.Element {
   const history = useHistory();
-  const eventPlans = _sortEventPlans(props.eventPlans);
+  const { elementId, eventPlans } = props;
+  const eventList = sortEventPlans(eventPlans);
 
   return (
-    <div id={props.elementId}>
-      <h1>Event Plans</h1>
-      <ListGroup className="event-plan-list">
-        {eventPlans.map(({ isFinalized, eventPlanId, name }) => {
+    <div id={elementId}>
+      <h1 className="py-4 flex justify-center">Pending Events</h1>
+      <ul className="space-y-3 pr-8">
+        {eventList.map(({ isFinalized, eventPlanId, name }) => {
           if (!isFinalized) {
             return (
-              <ListGroup.Item
+              <li
                 key={eventPlanId}
-                action
                 onClick={() => history.push(`/event-plans/${eventPlanId}`)}
+                className="bg-white shadow overflow-hidden rounded-md px-6 py-4"
               >
+                {/* Your content */}
                 {name}
-              </ListGroup.Item>
+              </li>
             );
           }
           return <></>;
         })}
-      </ListGroup>
+      </ul>
     </div>
   );
 }

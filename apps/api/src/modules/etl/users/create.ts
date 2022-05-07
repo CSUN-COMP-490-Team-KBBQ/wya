@@ -18,6 +18,7 @@ import { authorize, AuthContext } from '../../../auth';
 type Params = {
   email: Email;
   password: string;
+  confirmPassword: string;
 
   firstName?: string;
   lastName?: string;
@@ -43,6 +44,9 @@ export const etlUsersCreate = async (
         password: {
           type: 'string',
         },
+        confirmPassword: {
+          type: 'string',
+        },
         firstName: {
           type: 'string',
         },
@@ -57,6 +61,11 @@ export const etlUsersCreate = async (
     },
     params,
     makeApiError(400, 'Bad request')
+  );
+
+  assert(
+    params.password === params.confirmPassword,
+    makeApiError(422, 'Mismatching password fields.')
   );
 
   authorize('etl/users/create', context, {});
@@ -78,6 +87,23 @@ export const etlUsersCreate = async (
     }));
   } catch (err: any) {
     debug(err);
+
+    // Firebase errors taken directly from:
+    // https://firebase.google.com/docs/auth/admin/errors
+    if (err.code === 'auth/email-already-exists') {
+      throw makeApiError(
+        422,
+        'The provided email is already in use by an existing user. Each user must have a unique email.',
+        err
+      );
+    }
+    if (err.code === 'auth/invalid-password') {
+      throw makeApiError(
+        422,
+        'The provided value for the password user property is invalid. It must be a string with at least six characters.',
+        err
+      );
+    }
     throw makeApiError(500, 'Unable to create user', err);
   }
 
