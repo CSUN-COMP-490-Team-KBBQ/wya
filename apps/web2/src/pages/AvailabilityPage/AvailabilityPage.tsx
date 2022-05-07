@@ -118,22 +118,22 @@ export default function AvailabilityPage() {
                               timeFormat={scheduleSelectorData.timeFormat}
                             />
                           </div>
-                          <div className="inline-flex mt-3">
-                            <button
-                              onClick={onClickResetHandle}
-                              className="ml-3 justify-center py-2 px-4 border border-cyan-700 shadow-sm text-sm font-medium rounded-md text-cyan-700 hover:bg-cyan-400 hover:text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                            >
-                              Reset
-                            </button>
+                          <div className="mt-3 flex justify-end">
                             <button
                               onClick={onClickClearHandle}
-                              className="ml-3 justify-center py-2 px-4 border border-blue-600 shadow-sm text-sm font-medium rounded-md text-blue-600 hover:bg-blue-400 hover:text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                              className="ml-3 hover:bg-red-500 text-red-500 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
                             >
                               Clear
                             </button>
                             <button
+                              onClick={onClickResetHandle}
+                              className="ml-3 hover:bg-gray-500 text-gray-500 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded"
+                            >
+                              Reset
+                            </button>
+                            <button
                               onClick={onClickUpdateHandle}
-                              className="ml-3 justify-center py-2 px-4 border border-green-700 shadow-sm text-sm font-medium rounded-md text-green-700 hover:bg-green-400 hover:text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                              className="ml-3 hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                             >
                               Update
                             </button>

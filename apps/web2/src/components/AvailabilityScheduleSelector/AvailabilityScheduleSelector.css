@@ -28,6 +28,11 @@
   background-color: rgb(191, 219, 254);
 }
 
+#selectedCell,
+#unSelectedCell {
+  user-select: text;
+}
+
 #yLabel {
   text-align: right;
 }
