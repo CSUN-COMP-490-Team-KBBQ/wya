@@ -119,4 +119,4 @@ dist/
 kbbq-wya*.json
 
 # tailwind generated output
-apps/web2/src/tailwind.output.css
+apps/web/src/tailwind.output.css
