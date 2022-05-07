@@ -50,9 +50,7 @@ export default function PlanAnEventPage() {
     assert(token, 'Missing ReCAPTCHA token');
 
     const formData = new FormData(e.target as HTMLFormElement);
-    const formValues = Object.fromEntries(
-      formData.entries()
-    ) as unknown as EventPlanInfo;
+    const formValues = Object.fromEntries(formData.entries()) as EventPlanInfo;
 
     // We always convert to 24 hour time when storing these time
     // intervals in firestore
@@ -128,9 +126,7 @@ export default function PlanAnEventPage() {
           <input type="hidden" name="hostId" value={user?.uid} />
           <div className="space-y-6">
             <div>
-              <h1 className="flex">
-                Event Details
-              </h1>
+              <h1 className="flex">Event Details</h1>
               <p className="mt-1 text-sm text-gray-500">
                 Let’s get started by filling in the information below to create
                 your new event plan.

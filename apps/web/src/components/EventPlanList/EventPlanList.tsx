@@ -1,25 +1,13 @@
 import { useHistory } from 'react-router-dom';
 
-import {
-  EventPlanInfo,
-  EventPlanId,
-  EventPlanFinalizedFlag,
-} from '../../interfaces';
+import { EventPlan } from '../../interfaces';
 
 interface EventPlanListProps {
   elementId: string;
-  eventPlans: (EventPlanInfo & { eventPlanId: EventPlanId } & {
-    isFinalized: EventPlanFinalizedFlag;
-  })[];
+  eventPlans: EventPlan[];
 }
 
-function sortEventPlans(
-  eventPlans: (EventPlanInfo & { eventPlanId: EventPlanId } & {
-    isFinalized: EventPlanFinalizedFlag;
-  })[]
-): (EventPlanInfo & { eventPlanId: EventPlanId } & {
-  isFinalized: EventPlanFinalizedFlag;
-})[] {
+function sortEventPlans(eventPlans: EventPlan[]): EventPlan[] {
   return eventPlans.sort((a, b) => {
     const aStart = Date.parse(a.startDate);
     const bStart = Date.parse(b.startDate);

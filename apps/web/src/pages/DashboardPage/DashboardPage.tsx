@@ -6,13 +6,7 @@ import { useUserRecordContext } from '../../contexts/UserRecordContext';
 
 import { getAllSubCollDocsSnapshot$ } from '../../lib/firestore';
 
-import {
-  EventPlanId,
-  EventPlanInfo,
-  EventId,
-  EventInfo,
-  EventPlanFinalizedFlag,
-} from '../../interfaces/';
+import { EventPlan, EventId, EventInfo } from '../../interfaces/';
 import PageSpinner from '../../components/PageSpinner/PageSpinner';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import LandingPage from '../LandingPage/LandingPage';
@@ -20,11 +14,7 @@ import LandingPage from '../LandingPage/LandingPage';
 export default function DashboardPage(): JSX.Element {
   const { userRecord, pending } = useUserRecordContext();
 
-  const [eventPlans, setEventPlans] = React.useState<
-    (EventPlanInfo & { eventPlanId: EventPlanId } & {
-      isFinalized: EventPlanFinalizedFlag;
-    })[]
-  >([]);
+  const [eventPlans, setEventPlans] = React.useState<EventPlan[]>([]);
   const [events, setEvents] = React.useState<
     (EventInfo & { eventId: EventId })[]
   >([]);
@@ -44,11 +34,9 @@ export default function DashboardPage(): JSX.Element {
           setEventPlans(
             eventPlansSnapshot.docs.map((doc) => {
               return {
-                eventPlanId: doc.id as EventPlanId,
-                ...(doc.data() as EventPlanInfo & {
-                  isFinalized: EventPlanFinalizedFlag;
-                }),
-              };
+                eventPlanId: doc.id,
+                ...doc.data(),
+              } as EventPlan;
             })
           );
         },

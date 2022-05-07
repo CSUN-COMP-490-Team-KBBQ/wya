@@ -168,3 +168,14 @@ export interface ScheduleSelectorData {
   yTimesFormattedTo12Or24Hour: string[];
   timeFormat: string;
 }
+
+export type EventPlan = {
+  name: string;
+  description: string;
+  dailyStartTime: string;
+  dailyEndTime: string;
+  startDate: string;
+  endDate: string;
+  eventPlanId: EventPlanId;
+  isFinalized: EventPlanFinalizedFlag;
+};
