@@ -19,7 +19,6 @@
     "@types/react-google-recaptcha": "^2.1.4",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-toggle": "^4.0.3",
-    "autoprefixer": "^10.4.7",
     "axios": "^0.26.0",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",
@@ -179,6 +178,7 @@
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.0",
     "@types/uuid": "^8.3.4",
+    "autoprefixer": "^10.4.4",
     "postcss": "^8.4.12",
     "tailwindcss": "^3.0.23"
   }
