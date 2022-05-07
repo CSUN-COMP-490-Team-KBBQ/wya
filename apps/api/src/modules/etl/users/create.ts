@@ -18,6 +18,7 @@ import { authorize, AuthContext } from '../../../auth';
 type Params = {
   email: Email;
   password: string;
+  confirmPassword: string;
 
   firstName?: string;
   lastName?: string;
@@ -43,6 +44,9 @@ export const etlUsersCreate = async (
         password: {
           type: 'string',
         },
+        confirmPassword: {
+          type: 'string',
+        },
         firstName: {
           type: 'string',
         },
@@ -57,6 +61,11 @@ export const etlUsersCreate = async (
     },
     params,
     makeApiError(400, 'Bad request')
+  );
+
+  assert(
+    params.password === params.confirmPassword,
+    makeApiError(422, 'Mismatching password fields.')
   );
 
   authorize('etl/users/create', context, {});
