@@ -45,14 +45,19 @@ export default function RegisterForm(): JSX.Element {
 
     try {
       await api.post('/users/create', JSON.stringify(formValue));
-    } catch (err) {
+    } catch (err: any) {
       // The api returns various different errors, depending on the statusCode
       // we can figure out what kind of error was returned.
       //
       // See apps/api/src/modules/etl/users/create.ts for the different
       // ApiErrors that are returned.
-      // TODO: Find specific error regarding email address already being in use
-      // setDisplayError('Email address is already in use!');
+
+      // Api tries to follow HTTP error statuses to make it easier
+      // to understand and handle errors coming from the api.
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/422
+      if (err.statusCode === 422) {
+        return setDisplayError(err.message);
+      }
 
       return setDisplayError(
         'Something went wrong while creating your account! Please try again or contact support.'

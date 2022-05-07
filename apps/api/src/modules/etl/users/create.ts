@@ -78,6 +78,23 @@ export const etlUsersCreate = async (
     }));
   } catch (err: any) {
     debug(err);
+
+    // Firebase errors taken directly from:
+    // https://firebase.google.com/docs/auth/admin/errors
+    if (err.code === 'auth/email-already-exists') {
+      throw makeApiError(
+        422,
+        'The provided email is already in use by an existing user. Each user must have a unique email.',
+        err
+      );
+    }
+    if (err.code === 'auth/invalid-password') {
+      throw makeApiError(
+        422,
+        'The provided value for the password user property is invalid. It must be a string with at least six characters.',
+        err
+      );
+    }
     throw makeApiError(500, 'Unable to create user', err);
   }
 
