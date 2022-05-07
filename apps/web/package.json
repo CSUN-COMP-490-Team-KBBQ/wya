@@ -95,10 +95,11 @@
   },
   "scripts": {
     "deploy": "echo deploy web",
+    "dev": "npm run build:tailwind && node scripts/start.js",
+    "build": "npm run build:tailwind && node scripts/build.js",
     "test": "node scripts/test.js src --watchAll=false",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf build",
-    "build:tailwind": "tailwindcss build -i src/tailwind.css -o src/tailwind.output.css",
-    "prestart": "npm run build:tailwind"
+    "build:tailwind": "tailwindcss build -i src/tailwind.css -o src/tailwind.output.css"
   },
   "eslintConfig": {
     "extends": [
