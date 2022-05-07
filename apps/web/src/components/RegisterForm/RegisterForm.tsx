@@ -40,18 +40,32 @@ export default function RegisterForm(): JSX.Element {
     assert(token, 'Missing ReCAPTCHA token');
 
     if (password !== confirmPassword) {
-      setDisplayError('Passwords do not match!');
-    } else {
-      setDisplayError('');
-      await await api
-        .post('/users/create', JSON.stringify(formValue))
-        .then(async () => {
-          await logIn(email, password);
-          history.push('/dashboard');
-        })
-        .catch(() => {
-          setDisplayError('Email address is already in use!');
-        });
+      return setDisplayError('Passwords do not match!');
+    }
+
+    try {
+      await api.post('/users/create', JSON.stringify(formValue));
+    } catch (err) {
+      // The api returns various different errors, depending on the statusCode
+      // we can figure out what kind of error was returned.
+      //
+      // See apps/api/src/modules/etl/users/create.ts for the different
+      // ApiErrors that are returned.
+      // TODO: Find specific error regarding email address already being in use
+      // setDisplayError('Email address is already in use!');
+
+      return setDisplayError(
+        'Something went wrong while creating your account! Please try again or contact support.'
+      );
+    }
+
+    try {
+      await logIn(email, password);
+    } catch (err) {
+      // Not expecting there to be any errors logging in so lets just log it
+      // just in case.
+
+      console.error('Error logging in after account was created', err);
     }
   };
 
