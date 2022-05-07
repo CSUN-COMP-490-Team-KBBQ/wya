@@ -94,8 +94,6 @@
     "workbox-webpack-plugin": "^6.4.1"
   },
   "scripts": {
-    "dev": "npm run prestart && node scripts/start.js",
-    "build": "npm run prestart && node scripts/build.js",
     "deploy": "echo deploy web",
     "test": "node scripts/test.js src --watchAll=false",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf build",
