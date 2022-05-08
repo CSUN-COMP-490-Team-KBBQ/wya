@@ -1,6 +1,6 @@
 import {
   getAuth as getFirebaseAuth,
-  sendPasswordResetEmail,
+  sendPasswordResetEmail as firebaseAuthSendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   User,
@@ -25,10 +25,22 @@ export const logOut = (): Promise<void> => {
   return signOut(firebaseAuth);
 };
 
-export const passwordReset = (email: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    sendPasswordResetEmail(firebaseAuth, email).then(resolve).catch(reject);
-  });
+export const sendPasswordResetEmail = async (email: string) => {
+  try {
+    await firebaseAuthSendPasswordResetEmail(firebaseAuth, email);
+  } catch (err: any) {
+    console.log(err);
+
+    if (err.code === 'auth/user-not-found') {
+      // TODO: Should make api error similar to how its done on api
+      const e = new Error('User not found.') as Error & { statusCode: number };
+      e.statusCode = 422;
+
+      throw e;
+    }
+
+    throw err;
+  }
 };
 
 export const changePassword = (newPassword: string): Promise<void> => {
