@@ -12,13 +12,14 @@ export default function PasswordResetPage(): JSX.Element {
 
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setDisplayError('');
     const formData = new FormData(e.target as HTMLFormElement);
     const formValue = Object.fromEntries(formData.entries());
     const { email } = formValue;
 
     passwordReset(email as string)
       .then(() => {
-        const messageResponse = `Please check your email and follow the link provided`
+        const messageResponse = `Please check your email and follow the link provided`;
         setDisplayMessage(messageResponse);
       })
       .catch((err) => {
@@ -62,7 +63,7 @@ export default function PasswordResetPage(): JSX.Element {
         {displayMessage.length > 0 && (
           <div className="rounded-md bg-green-50 p-4 sm:mx-auto">
             <div className="flex">
-            <div className="flex-shrink-0">
+              <div className="flex-shrink-0">
                 <CheckCircleIcon
                   className="h-5 w-5 text-green-400"
                   aria-hidden="true"
@@ -72,7 +73,9 @@ export default function PasswordResetPage(): JSX.Element {
                 <h3 className="text-sm font-medium text-green-800">
                   Password Reset Link: Sent!
                 </h3>
-                <div className="mt-2 text-sm text-green-700">{displayMessage}</div>
+                <div className="mt-2 text-sm text-green-700">
+                  {displayMessage}
+                </div>
               </div>
             </div>
           </div>
@@ -111,13 +114,13 @@ export default function PasswordResetPage(): JSX.Element {
                   Continue
                 </button>
                 <div className="text-sm pt-4 text-center">
-                <Link
-                  to="/login"
-                  className="font-medium text-indigo-600 hover:text-indigo-500 no-underline"
-                >
-                  Return to Log-In Page
-                </Link>
-              </div>
+                  <Link
+                    to="/login"
+                    className="font-medium text-indigo-600 hover:text-indigo-500 no-underline"
+                  >
+                    Return to Log-In Page
+                  </Link>
+                </div>
               </div>
             </form>
           </div>

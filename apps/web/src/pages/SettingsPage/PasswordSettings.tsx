@@ -58,6 +58,7 @@ export default function PasswordSettings() {
   // TODO: clear input fields on successful submission
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setDisplayError('');
     const formData = new FormData(e.target as HTMLFormElement);
     const formValue = Object.fromEntries(formData.entries());
     const { currentPassword, newPassword, confirmNewPassword } = formValue;
