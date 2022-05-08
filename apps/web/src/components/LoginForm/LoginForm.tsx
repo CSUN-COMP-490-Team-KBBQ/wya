@@ -22,7 +22,7 @@ export default function LoginForm(props: { nextURL?: string }) {
     }
 
     history.push('/dashboard');
-  }, [user, history]);
+  }, [user, history, props.nextURL]);
 
   const logInHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
