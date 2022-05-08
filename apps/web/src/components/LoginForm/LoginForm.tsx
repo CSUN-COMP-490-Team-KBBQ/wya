@@ -1,20 +1,27 @@
 import React from 'react';
 import { LockClosedIcon, XCircleIcon } from '@heroicons/react/solid';
-
 import { useHistory, Link } from 'react-router-dom';
+
 import { logIn } from '../../modules/firebase/auth';
 import { useUserContext } from '../../contexts/UserContext';
 
 import logo from '../../assets/wya-logo.png';
 
-export default function LoginForm(): JSX.Element {
+export default function LoginForm(props: { nextURL?: string }) {
   const history = useHistory();
   const { user } = useUserContext();
   const [displayError, setDisplayError] = React.useState<string>('');
+
   React.useEffect(() => {
-    if (user) {
-      history.push('/dashboard');
+    if (!user) {
+      return;
     }
+
+    if (props.nextURL) {
+      return history.push(props.nextURL);
+    }
+
+    history.push('/dashboard');
   }, [user, history]);
 
   const logInHandler = async (e: React.FormEvent<HTMLFormElement>) => {
