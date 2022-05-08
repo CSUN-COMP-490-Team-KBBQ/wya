@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import EventPlanList from './EventPlanList';
 
 const FAKE_USER_EVENT_PLANS = [
@@ -24,5 +24,4 @@ it('renders component', () => {
       eventPlans={FAKE_USER_EVENT_PLANS}
     />
   );
-  // expect(screen.getByText('test event plan')).toBeTruthy();
 });
