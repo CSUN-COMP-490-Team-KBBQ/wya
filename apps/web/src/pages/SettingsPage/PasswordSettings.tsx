@@ -2,90 +2,79 @@ import React from 'react';
 import { XCircleIcon, CheckCircleIcon } from '@heroicons/react/solid';
 
 import { useUserContext } from '../../contexts/UserContext';
-import { logIn, changePassword } from '../../modules/firebase/auth';
+import { changePassword, logIn } from '../../modules/firebase/auth';
+
+const DEFAULT_DISPLAY_MESSAGE_TIMEOUT_IN_SECONDS = 5;
 
 export default function PasswordSettings() {
   const { user } = useUserContext();
-  const [displaySuccess, setDisplaySuccess] = React.useState<string>('');
-  const [displayError, setDisplayError] = React.useState<string>('');
 
-  const DisplayPasswordChangeForm = (): JSX.Element => {
-    if (displayError.length > 0 && displaySuccess.length === 0) {
-      return (
-        <div className="rounded-md bg-red-50 p-4 sm:mx-auto">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <XCircleIcon
-                className="h-5 w-5 text-red-400"
-                aria-hidden="true"
-              />
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">
-                There was an error with your submission
-              </h3>
-              <div className="mt-2 text-sm text-red-700">{displayError}</div>
-            </div>
-          </div>
-        </div>
-      );
+  const [displayErrorMessage, setDisplayErrorMessage] = React.useState('');
+  const [displayMessage, setDisplayMessage] = React.useState('');
+
+  const displayMessageTimer = React.useRef<any>(null);
+
+  const setDisplayMessageWithTimeout = (message: string) => {
+    if (displayMessageTimer.current) {
+      clearTimeout(displayMessageTimer.current);
     }
 
-    if (displaySuccess.length > 0) {
-      return (
-        <div className="rounded-md bg-green-50 p-4 sm:mx-auto">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <CheckCircleIcon
-                className="h-5 w-5 text-green-400"
-                aria-hidden="true"
-              />
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-green-800">
-                Password was successfully changed
-              </h3>
-              <div className="mt-2 text-sm text-green-700">{displayError}</div>
-            </div>
-          </div>
-        </div>
-      );
-    }
+    setDisplayMessage(message);
 
-    return <></>;
+    displayMessageTimer.current = setTimeout(() => {
+      setDisplayMessage('');
+    }, DEFAULT_DISPLAY_MESSAGE_TIMEOUT_IN_SECONDS * 1000);
   };
 
   // TODO: clear input fields on successful submission
-  const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setDisplayError('');
+
+    if (!user) {
+      return;
+    }
+
+    // Reset display messages on submission
+    setDisplayErrorMessage('');
+    setDisplayMessage('');
+
     const formData = new FormData(e.target as HTMLFormElement);
     const formValue = Object.fromEntries(formData.entries());
     const { currentPassword, newPassword, confirmNewPassword } = formValue;
 
+    // HACK: Check if currentPassword is correct by trying to logIn
+    try {
+      await logIn(user.email as string, currentPassword as string);
+    } catch (err: any) {
+      if (err.statusCode === 422) {
+        return setDisplayErrorMessage(err.message);
+      }
+
+      setDisplayErrorMessage(`Error: ${err.message}`);
+    }
+    // End of HACK
+
     if (newPassword === currentPassword) {
-      setDisplayError(
+      return setDisplayErrorMessage(
         'New password must be different from the current password!'
       );
-    } else if (newPassword !== confirmNewPassword) {
-      setDisplayError('New password confirmation failed!');
-    } else {
-      // eslint-disable-next-line
-      logIn(user!.email as string, currentPassword as string)
-        .then(() => {
-          changePassword(newPassword as string)
-            .then(() => {
-              setDisplaySuccess('Password successfully updated!');
-            })
-            .catch((err) => {
-              const errorResponse = `Error: ${err.code}`;
-              setDisplayError(errorResponse);
-            });
-        })
-        .catch((err) => {
-          const errorResponse = `Error: ${err.code}`;
-          setDisplayError(errorResponse);
-        });
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return setDisplayErrorMessage('New password confirmation failed!');
+    }
+
+    try {
+      await changePassword(newPassword as string);
+
+      setDisplayMessageWithTimeout('Password successfully updated!');
+    } catch (err: any) {
+      if (err.statusCode === 422) {
+        setDisplayErrorMessage(err.message);
+        return;
+      }
+
+      setDisplayErrorMessage(`Error: ${err.message}`);
     }
   };
 
@@ -102,8 +91,46 @@ export default function PasswordSettings() {
           </p>
         </div>
 
-        {/* Alert Banner */}
-        <DisplayPasswordChangeForm />
+        {/* Negative Alert Banner */}
+        {displayErrorMessage && (
+          <div className="rounded-md bg-red-50 p-4 sm:mx-auto">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <XCircleIcon
+                  className="h-5 w-5 text-red-400"
+                  aria-hidden="true"
+                />
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">
+                  There was an error with your submission
+                </h3>
+                <div className="mt-2 text-sm text-red-700">
+                  {displayErrorMessage}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Positive Alert Banner */}
+        {displayMessage && (
+          <div className="rounded-md bg-green-50 p-4 sm:mx-auto">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <CheckCircleIcon
+                  className="h-5 w-5 text-green-400"
+                  aria-hidden="true"
+                />
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-green-800">
+                  {displayMessage}
+                </h3>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="mt-6">
           <form onSubmit={onSubmitHandler}>

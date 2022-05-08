@@ -12,20 +12,7 @@ export default function PasswordResetPage(): JSX.Element {
   const [displayErrorMessage, setDisplayErrorMessage] = React.useState('');
   const [displayMessage, setDisplayMessage] = React.useState('');
 
-  const displayErrorMessageTimer = React.useRef<any>(null);
   const displayMessageTimer = React.useRef<any>(null);
-
-  const setDisplayErrorMessageWithTimeout = (message?: string) => {
-    if (displayErrorMessageTimer.current) {
-      clearTimeout(displayErrorMessageTimer.current);
-    }
-
-    setDisplayErrorMessage(message ?? 'Uh-oh something went wrong');
-
-    displayErrorMessageTimer.current = setTimeout(() => {
-      setDisplayErrorMessage('');
-    }, DEFAULT_DISPLAY_MESSAGE_TIMEOUT_IN_SECONDS * 1000);
-  };
 
   const setDisplayMessageWithTimeout = (message: string) => {
     if (displayMessageTimer.current) {
@@ -58,11 +45,11 @@ export default function PasswordResetPage(): JSX.Element {
       );
     } catch (err: any) {
       if (err.statusCode === 422) {
-        setDisplayErrorMessageWithTimeout(err.message);
+        setDisplayErrorMessage(err.message);
         return;
       }
 
-      setDisplayErrorMessageWithTimeout(`Error: ${err.message}`);
+      setDisplayErrorMessage(`Error: ${err.message}`);
     }
   };
 
