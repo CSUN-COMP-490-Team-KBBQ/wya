@@ -183,7 +183,9 @@ export default function EventPage({
             <ListGroup className="attending-list">
               {eventGuests.map((guestName) => {
                 return guestName.status === 'ACCEPTED' ? (
-                  <ListGroup.Item>{guestName.uid}</ListGroup.Item>
+                  <ListGroup.Item>
+                    {guestName.firstName} {guestName.lastName}
+                  </ListGroup.Item>
                 ) : (
                   <></>
                 );
