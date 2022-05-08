@@ -1,22 +1,11 @@
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
-
-import { useUserContext } from '../../contexts/UserContext';
+import { Link } from 'react-router-dom';
 
 // Keep this for future reference
 // import logo from '../../assets/wya-logo.png';
 import image from '../../assets/background14.png';
 
 export default function LandingPage() {
-  const history = useHistory();
-  const { user } = useUserContext();
-
-  React.useEffect(() => {
-    if (user) {
-      history.push('/dashboard');
-    }
-  });
-
   return (
     <>
       <div className="relative bg-white overflow-auto-">

@@ -217,7 +217,7 @@ export const etlEventPlansCreate = async (
           ','
         );
 
-        const eventPlanUrl = `${domain}/event-plans/${eventPlanId}`;
+        const eventPlanUrl = `${domain}/login?nextURL=/event-plans/${eventPlanId}`;
         const { name } = restOfParams;
         const mailOptions = {
           from: process.env.NODEMAILER_USERNAME,
