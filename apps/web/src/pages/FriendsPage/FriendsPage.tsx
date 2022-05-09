@@ -1,12 +1,14 @@
 import React from 'react';
+import { XCircleIcon } from '@heroicons/react/solid';
+
+import createRandomString from '../../lib/createRandomString';
 import Sidebar from '../../components/Sidebar/Sidebar';
-
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
-
 import { Email, UserId, FRIEND_REQUEST_STATUS } from '../../interfaces';
 import api from '../../modules/api';
 import { getAllSubCollDocsSnapshot$ } from '../../lib/firestore';
-import { XCircleIcon } from '@heroicons/react/solid';
+
+const DEFAULT_UNIQUE_KEY_LENGTH = 5;
 
 type Friend = {
   friendFirstName: string;
@@ -42,49 +44,90 @@ export default function FriendsPage(): JSX.Element {
   >([]);
   const [displayError, setDisplayError] = React.useState<string>('');
 
+  // User friends
+  React.useEffect(() => {
+    if (!userRecord) {
+      return;
+    }
+    const { uid } = userRecord;
+
+    return getAllSubCollDocsSnapshot$(`/users/${uid}/friends/`, {
+      next: (friendsSnapshot) => {
+        setFriends(friendsSnapshot.docs.map((doc) => doc.data() as Friend));
+      },
+    });
+  }, [userRecord]);
+
+  // User receive-friend-requests
+  React.useEffect(() => {
+    if (!userRecord) {
+      return;
+    }
+    const { uid } = userRecord;
+
+    return getAllSubCollDocsSnapshot$(
+      `/users/${uid}/receive-friend-requests/`,
+      {
+        next: (receiveFriendRequestsSnapshot) => {
+          setReceivedFriendRequests(
+            receiveFriendRequestsSnapshot.docs.map(
+              (doc) => doc.data() as ReceiveFriend
+            )
+          );
+        },
+      }
+    );
+  }, [userRecord]);
+
+  // User sent-friend-requests
+  React.useEffect(() => {
+    if (!userRecord) {
+      return;
+    }
+    const { uid } = userRecord;
+
+    return getAllSubCollDocsSnapshot$(`/users/${uid}/send-friend-requests/`, {
+      next: (sendFriendRequestsSnapshot) => {
+        setSentFriendRequests(
+          sendFriendRequestsSnapshot.docs.map((doc) => doc.data() as SendFriend)
+        );
+      },
+    });
+  }, [userRecord]);
+
   const onAddFriendHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.target as HTMLFormElement);
-    const formValues: {
-      email: Email;
-    } = Object.fromEntries(formData.entries()) as unknown as {
+    const formValues = Object.fromEntries(formData.entries()) as {
       email: Email;
     };
-    const regex = new RegExp(
-      // eslint-disable-next-line no-control-regex
-      '(?:[a-z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*|"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])',
-      'gm'
-    );
 
-    if (regex.test(formValues.email)) {
-      setDisplayError('');
+    const EMAIL_REGEX =
+      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 
-      const data = await api.post(
-        '/users/send-friend-requests/create',
-        JSON.stringify({ sendToUsersByEmail: [formValues.email] })
-      );
-      if (data.data.errors) {
-        if (
-          data.data.errors.length !== 0 &&
-          data.data.errors[0].status === 500
-        ) {
-          setDisplayError('Email does not exist');
-        }
-      }
-    } else {
-      setDisplayError('Please try again');
+    if (!EMAIL_REGEX.test(formValues.email)) {
+      return setDisplayError('Please try again');
     }
 
-    const data = await api.post(
+    const {
+      data: { errors },
+    } = await api.post(
       '/users/send-friend-requests/create',
       JSON.stringify({ sendToUsersByEmail: [formValues.email] })
     );
-    console.log(data);
+
+    if (errors.length > 0) {
+      console.log(errors);
+      // TODO: Fix the error that is returned from the api call
+      if (errors[0].status === 500) {
+        setDisplayError('Email does not exist');
+      }
+    }
   };
 
   const onAcceptFriendRequestHandler = async (fromUid: UserId) => {
-    const data = await api.post(
+    const { data } = await api.post(
       '/users/receive-friend-requests/update-status',
       JSON.stringify({ status: FRIEND_REQUEST_STATUS.ACCEPTED, fromUid })
     );
@@ -92,7 +135,7 @@ export default function FriendsPage(): JSX.Element {
   };
 
   const onDeclineFriendRequestHandler = async (fromUid: UserId) => {
-    const data = await api.post(
+    const { data } = await api.post(
       '/users/receive-friend-requests/update-status',
       JSON.stringify({ status: FRIEND_REQUEST_STATUS.DECLINED, fromUid })
     );
@@ -100,61 +143,12 @@ export default function FriendsPage(): JSX.Element {
   };
 
   const onDeleteFriendRequestHandler = async (friendUid: UserId) => {
-    const data = await api.post(
+    const { data } = await api.post(
       '/users/friends/delete',
       JSON.stringify({ friendByUserId: friendUid })
     );
     console.log(data);
   };
-
-  React.useEffect(() => {
-    if (userRecord) {
-      const { uid } = userRecord;
-
-      // Get friends
-      const unsubscribeFriendSnapshot = getAllSubCollDocsSnapshot$(
-        `/users/${uid}/friends/`,
-        {
-          next: (friendsSnapshot) => {
-            setFriends(friendsSnapshot.docs.map((doc) => doc.data() as Friend));
-          },
-        }
-      );
-
-      // Get received friend requests
-      const unsubscribeReceiveFriendRequestSnapshot =
-        getAllSubCollDocsSnapshot$(`/users/${uid}/receive-friend-requests/`, {
-          next: (receiveFriendRequestsSnapshot) => {
-            setReceivedFriendRequests(
-              receiveFriendRequestsSnapshot.docs.map(
-                (doc) => doc.data() as ReceiveFriend
-              )
-            );
-          },
-        });
-
-      // Get sent friend requests
-      const unsubscribeSendFriendRequestSnapshot = getAllSubCollDocsSnapshot$(
-        `/users/${uid}/send-friend-requests/`,
-        {
-          next: (sendFriendRequestsSnapshot) => {
-            setSentFriendRequests(
-              sendFriendRequestsSnapshot.docs.map(
-                (doc) => doc.data() as SendFriend
-              )
-            );
-          },
-        }
-      );
-
-      // Not sure about this
-      return () => {
-        unsubscribeFriendSnapshot();
-        unsubscribeReceiveFriendRequestSnapshot();
-        unsubscribeSendFriendRequestSnapshot();
-      };
-    }
-  }, [userRecord]);
 
   return (
     <Sidebar>
@@ -184,7 +178,10 @@ export default function FriendsPage(): JSX.Element {
                   {friends.map(
                     ({ friendUid, friendFirstName, friendLastName }) => {
                       return (
-                        <div className="py-4">
+                        <div
+                          className="py-4"
+                          key={createRandomString(DEFAULT_UNIQUE_KEY_LENGTH)}
+                        >
                           <div className="flex items-center space-x-4">
                             <div className="flex-shrink-0"></div>
                             <div className="flex-1 min-w-0">
@@ -227,7 +224,10 @@ export default function FriendsPage(): JSX.Element {
                   {receivedFriendRequests.map(
                     ({ fromUid, fromFirstName, fromLastName, status }) => {
                       return (
-                        <div className="py-4">
+                        <div
+                          className="py-4"
+                          key={createRandomString(DEFAULT_UNIQUE_KEY_LENGTH)}
+                        >
                           <div className="flex items-center space-x-4">
                             <div className="flex-shrink-0"></div>
                             <div className="flex-1 min-w-0">
@@ -279,7 +279,10 @@ export default function FriendsPage(): JSX.Element {
                   {sentFriendRequests.map(
                     ({ toFirstName, toLastName, status }) => {
                       return (
-                        <div className="py-4">
+                        <div
+                          className="py-4"
+                          key={createRandomString(DEFAULT_UNIQUE_KEY_LENGTH)}
+                        >
                           <div className="flex items-center space-x-4">
                             <div className="flex-shrink-0"></div>
                             <div className="flex-1 min-w-0">
