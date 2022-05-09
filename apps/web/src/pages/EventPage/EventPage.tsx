@@ -231,7 +231,7 @@ export default function EventPage({
                 <dt className="text-sm font-medium text-gray-500">Attendees</dt>
                 <dd className="mt-1 text-sm text-gray-900">
                   <ul
-                    role="list"
+                    // role="list"
                     className="max-w-sm border border-gray-200 rounded-md divide-y divide-gray-200"
                   >
                     {eventGuests.map((guestName) => {
