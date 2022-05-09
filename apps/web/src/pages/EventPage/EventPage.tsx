@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
-import { MinusSmIcon as MinusIconSolid } from '@heroicons/react/solid';
+import { useHistory } from 'react-router-dom';
+// import { MinusSmIcon as MinusIconSolid } from '@heroicons/react/solid';
 
 import {
   EventDocument,
