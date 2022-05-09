@@ -76,7 +76,7 @@ export default function DashboardPage(): JSX.Element {
     return (
       <Sidebar>
         {/* 3 column wrapper */}
-        <div className="flex-grow w-full max-w-7xl mx-auto xl:px-8 lg:flex bg-white">
+        <div className="overflow-auto flex-grow w-full max-w-7xl mx-auto xl:px-8 lg:flex bg-white">
           {/* Left sidebar & main wrapper */}
           <div className="flex-1 min-w-0 bg-white xl:flex">
             <div className="bg-white lg:min-w-0 lg:flex-1">
