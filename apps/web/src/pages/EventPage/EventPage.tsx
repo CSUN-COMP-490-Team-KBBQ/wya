@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button, ListGroup } from 'react-bootstrap';
 import { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { MinusSmIcon as MinusIconSolid } from '@heroicons/react/solid';
@@ -14,8 +13,6 @@ import {
   getAllSubCollDocsSnapshot$,
 } from '../../lib/firestore';
 import { useUserRecordContext } from '../../contexts/UserRecordContext';
-
-import Page from '../../components/Page/Page';
 
 import api from '../../modules/api';
 import Sidebar from '../../components/Sidebar/Sidebar';
@@ -110,7 +107,7 @@ export default function EventPage({
     }
   };
 
-  // The following code is here to keep a record of how to use the api calls
+  // api calls
 
   const handleDelete = async () => {
     if (eventData !== undefined && userRecord) {
@@ -272,95 +269,10 @@ export default function EventPage({
             </dl>
           </div>
         </div>
-        {/* <div
-          id="eventContainer"
-          className="text-left bg-white shadow overflow-hidden sm:rounded-lg"
-        >
-          <div className="mb-2 px-4 pt-5 sm:px-6">
-            <h3 className="text-left text-lg leading-6 font-medium text-gray-900">
-              {eventData.name}
-            </h3>
-          </div>
-          <div className="">
-            <dl className="sm:divide-y sm:divide-gray-200">
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500">Full name</dt>
-                <dd className="mt-1 text-sm text-gray-900">Margot Foster</dd>
-              </div>
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500">
-                  Application for
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900">
-                  Backend Developer
-                </dd>
-              </div>
-              <div className="py-4 mt-6 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-left text-sm font-medium text-gray-500">
-                  Description
-                </dt>
-                <dd className="text-left mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {eventData.description}
-                </dd>
-              </div>
-              <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-left text-sm font-medium text-gray-500">
-                  Date
-                </dt>
-                <dd className="text-left mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {eventData.day}
-                </dd>
-              </div>
-              <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-left text-sm font-medium text-gray-500">
-                  Time
-                </dt>
-                <dd className="text-left mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {eventData.dailyStartTime} to {eventData.dailyEndTime}
-                </dd>
-              </div> */}
-
-        {/* render for a guest only */}
-        {/* {eventData.hostId !== userRecord.uid && (
-                <div id="eventFinalizedButtons">
-                  <Button onClick={handleDecline} variant="danger">
-                    Decline
-                  </Button>
-                  <Button onClick={handleAccept} variant="success">
-                    Accept
-                  </Button>
-                </div>
-              )}
-              <div className="py-4 mt-6 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-left text-sm font-medium text-gray-500">
-                  Attending
-                </dt>
-                <dd className="text-left mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  <ListGroup className="attending-list">
-                    {eventGuests.map((guestName) => {
-                      return guestName.status === 'ACCEPTED' ? (
-                        <ListGroup.Item>
-                          {guestName.firstName} {guestName.lastName}
-                        </ListGroup.Item>
-                      ) : (
-                        <></>
-                      );
-                    })}
-                  </ListGroup>
-                </dd>
-              </div>
-              <div></div>
-            </dl>
-          </div>
-        </div> */}
       </Sidebar>
     );
   }
 
   // default render
-  return (
-    // <Page>
-    <></>
-    // {/* </Page> */}
-  );
+  return <></>;
 }
