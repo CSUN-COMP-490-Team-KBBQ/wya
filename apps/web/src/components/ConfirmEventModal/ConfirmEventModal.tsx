@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import Modal from 'react-bootstrap/Modal';
 import Alert from 'react-bootstrap/Alert';
 import Select from 'react-select';
@@ -9,6 +10,8 @@ import { convertStringArrayToObjectWithValueAndLabel } from '../../lib/eventHelp
 
 import './ConfirmEventModal.css';
 import api from '../../modules/api';
+
+import { TIME_FORMAT, SUPPORTED_TIME_FORMATS } from '../../interfaces';
 
 interface ConfirmEventModalProps {
   eventPlanDocument: EventPlanDocument;
@@ -56,8 +59,15 @@ export default function ConfirmEventModal(
   const handleShow = () => setShow(true);
 
   const onSubmitHandler = async () => {
+    const startTime24hr = moment(startTime, SUPPORTED_TIME_FORMATS).format(
+      TIME_FORMAT.TWENTY_FOUR_HOURS
+    );
+    const endTime24hr = moment(endTime, SUPPORTED_TIME_FORMATS).format(
+      TIME_FORMAT.TWENTY_FOUR_HOURS
+    );
+
     if (day && startTime && endTime) {
-      if (startTime >= endTime) {
+      if (startTime24hr >= endTime24hr) {
         setDisplayError('The start time must be less than the end time!');
       } else {
         const {
