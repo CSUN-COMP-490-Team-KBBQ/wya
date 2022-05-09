@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 // import { MinusSmIcon as MinusIconSolid } from '@heroicons/react/solid';
@@ -30,6 +31,8 @@ export default function EventPage({
   const { userRecord } = useUserRecordContext();
   const [eventData, setEventData] = useState<EventDocument>();
   const [eventGuests, setEventGuests] = useState<EventGuest[]>([]);
+  const [startTimeLabel, setStartTimeLabel] = useState<String>('');
+  const [endTimeLabel, setEndTimeLabel] = useState<String>('');
 
   React.useEffect(() => {
     console.log('rendered - react use effect');
@@ -74,6 +77,12 @@ export default function EventPage({
           });
 
           setEventData(event);
+          setStartTimeLabel(
+            moment(event.dailyStartTime, 'HH').format(userRecord.timeFormat)
+          );
+          setEndTimeLabel(
+            moment(event.dailyEndTime, 'HH').format(userRecord.timeFormat)
+          );
         },
       });
     }
@@ -146,7 +155,7 @@ export default function EventPage({
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-gray-500">Time</dt>
                 <dd className="mt-1 text-sm text-gray-900">
-                  {eventData.dailyStartTime} - {eventData.dailyEndTime}
+                  {startTimeLabel} - {endTimeLabel}
                 </dd>
               </div>
               <div className="sm:col-span-2">

@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 
 import { EventInfo, EventId } from '../../interfaces';
@@ -5,6 +6,7 @@ import { EventInfo, EventId } from '../../interfaces';
 interface EventListProps {
   elementId: string;
   eventsFiltered: (EventInfo & { eventId: EventId })[];
+  timeFormat: string;
 }
 
 function sortEvents(
@@ -19,7 +21,7 @@ function sortEvents(
 
 export default function EventList(props: EventListProps): JSX.Element {
   const history = useHistory();
-  const { elementId, eventsFiltered } = props;
+  const { elementId, eventsFiltered, timeFormat } = props;
   const eventList = sortEvents(eventsFiltered);
 
   return (
@@ -35,8 +37,9 @@ export default function EventList(props: EventListProps): JSX.Element {
             >
               {/* Your content */}
               {name} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {day} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {dailyStartTime} - {dailyEndTime}
+              <br></br>
+              {day},&nbsp;{moment(dailyStartTime, 'HH').format(timeFormat)} -{' '}
+              {moment(dailyEndTime, 'HH').format(timeFormat)}
             </li>
           )
         )}

@@ -21,6 +21,7 @@ it('renders component', () => {
     <EventList
       elementId="calender-event-plan-list"
       eventsFiltered={FAKE_USER_EVENTS}
+      timeFormat={'HH:mm'}
     />
   );
   expect(screen.getByText('Upcoming Events')).toBeTruthy();

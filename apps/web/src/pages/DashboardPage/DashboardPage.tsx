@@ -105,6 +105,7 @@ export default function DashboardPage(): JSX.Element {
                   <EventList
                     elementId="calendar-event-plan-list"
                     eventsFiltered={eventsFiltered}
+                    timeFormat={userRecord.timeFormat}
                   />
                 </div>
                 {/* Upcoming Section End */}
