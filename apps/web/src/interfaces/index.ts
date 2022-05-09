@@ -138,7 +138,9 @@ export enum EVENT_GUEST_STATUS {
 }
 export type EventGuest = {
   uid: UserId;
-  email: Email;
+  firstName: string;
+  lastName: string;
+  // email: Email;
   status: EVENT_GUEST_STATUS;
 };
 /** End of RO3 */
