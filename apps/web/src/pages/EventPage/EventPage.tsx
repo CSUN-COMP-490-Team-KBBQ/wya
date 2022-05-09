@@ -117,7 +117,7 @@ export default function EventPage({
       );
 
       console.log('Event deleted');
-      history.push('/calendar');
+      history.push('/dashboard');
     }
   };
 
@@ -126,7 +126,7 @@ export default function EventPage({
       await api.post('/events/guests/delete', { eventId: eventData.eventId });
 
       console.log('Event Guest removed');
-      history.push('/calendar');
+      history.push('/dashboard');
     }
   };
 
