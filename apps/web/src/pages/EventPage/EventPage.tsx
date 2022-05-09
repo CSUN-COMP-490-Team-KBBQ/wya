@@ -2,7 +2,6 @@ import React from 'react';
 import moment from 'moment';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-// import { MinusSmIcon as MinusIconSolid } from '@heroicons/react/solid';
 
 import {
   EventDocument,
@@ -212,7 +211,7 @@ export default function EventPage({
                   </dd>
                 </div>
               )}
-              <div className="sm:col-span-2">
+              <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-gray-500">Attendees</dt>
                 <dd className="mt-1 text-sm text-gray-900">
                   <ul
@@ -228,21 +227,6 @@ export default function EventPage({
                             </span>
                           </div>
                           {/* render for the host only */}
-                          {/* TODO: allow host to remove guests */}
-                          {/* {eventData.hostId === userRecord.uid && (
-                            <dd className="mt-1 text-sm text-gray-900">
-                              <button
-                                type="button"
-                                className="inline-flex items-end p-1 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                onClick={handleRemove}
-                              >
-                                <MinusIconSolid
-                                  className="h-5 w-5"
-                                  aria-hidden="true"
-                                />
-                              </button>
-                            </dd>
-                          )} */}
                         </li>
                       ) : (
                         <></>
@@ -251,6 +235,34 @@ export default function EventPage({
                   </ul>
                 </dd>
               </div>
+              {eventData.hostId === userRecord.uid && (
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Declinees
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    <ul
+                      // role="list"
+                      className="max-w-sm border border-gray-200 rounded-md divide-y divide-gray-200"
+                    >
+                      {eventGuests.map((guestName) => {
+                        return guestName.status === 'DECLINED' ? (
+                          <li className="pr-4 py-3 flex items-center justify-between text-sm">
+                            <div className="w-0 flex-1 flex items-center">
+                              <span className="ml-2 flex-1 w-0 truncate">
+                                {guestName.firstName} {guestName.lastName}
+                              </span>
+                            </div>
+                            {/* render for the host only */}
+                          </li>
+                        ) : (
+                          <></>
+                        );
+                      })}
+                    </ul>
+                  </dd>
+                </div>
+              )}
             </dl>
           </div>
         </div>
