@@ -32,6 +32,7 @@ export default function EventPlanList(props: EventPlanListProps): JSX.Element {
                 history.push(`/event-plans/${eventPlan.eventPlanId}`)
               }
               className="bg-white shadow overflow-hidden rounded-md px-6 py-4"
+              style={{ cursor: 'pointer' }}
             >
               {/* Your content */}
               {eventPlan.name}
